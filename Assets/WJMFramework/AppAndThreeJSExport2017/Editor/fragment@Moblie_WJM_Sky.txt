@@ -1,0 +1,21 @@
+//5b	
+//		highp 
+//		mediump 
+//		lowp
+
+		precision mediump float;
+
+        uniform vec4 _Color;		
+        uniform samplerCube _CubeMap;
+        uniform vec4 _lightmap_color;
+				varying vec3 wPos;
+
+        void main( void ) 
+        {
+			vec3 cubeUV=normalize(wPos);
+            vec4 mainTex=textureCube(_CubeMap,vec3( cubeUV.x,cubeUV.y,-cubeUV.z));
+
+            gl_FragColor.rgb =mainTex.rgb*_lightmap_color.rgb;
+			gl_FragColor.a=1.0;
+				
+        }

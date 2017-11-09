@@ -1,0 +1,36 @@
+//9b
+	precision mediump float;
+
+
+
+		uniform vec3 _FOGCOLOR; 
+		uniform float _FOGNEAR;                                                    
+		uniform float _FOGFAR;   
+		
+        uniform vec4 _Color;		
+        uniform sampler2D _MainTex;
+
+		uniform float _Cutoff;
+
+
+        varying vec2 fuv;
+
+
+
+        void main( void ) 
+        {
+            vec4 mainTex =texture2D(_MainTex, 1.0-fuv);
+
+			gl_FragColor.rgb =2.0*mainTex.rgb*_Color.rgb;
+
+			float depth = gl_FragCoord.z / gl_FragCoord.w; 
+			float fogFactor = smoothstep( _FOGNEAR, _FOGFAR, depth );   
+			gl_FragColor.rgb=mix( gl_FragColor.rgb,_FOGCOLOR, fogFactor ); 	
+
+			gl_FragColor.a=mainTex.a*_Color.a;	
+
+	
+
+        }
+
+		

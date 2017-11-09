@@ -1,0 +1,16 @@
+//5a	
+precision highp float;
+	
+			uniform mat4 modelMatrix;
+		uniform mat4 modelViewMatrix;
+		uniform mat4 projectionMatrix;	
+			
+		attribute vec3 position;
+		varying vec3 wPos;
+	
+        void main()
+        {
+			wPos=(modelMatrix * vec4( position*0.001, 1.0 )).xyz;
+            vec4 mvPosition = modelViewMatrix * vec4( position*0.001, 1.0 );
+            gl_Position = projectionMatrix * mvPosition;
+        }

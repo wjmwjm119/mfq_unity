@@ -1,0 +1,53 @@
+//6b
+	precision mediump float;
+
+		uniform sampler2D _LIMAP;
+		uniform vec4 _LIMAPOFFSET;
+
+		uniform vec3 _SUNDIR;
+		uniform vec3 _SUNINTENSITY;		
+
+		uniform vec3 _FOGCOLOR; 
+		uniform float _FOGNEAR;                                                    
+		uniform float _FOGFAR;   
+		
+        uniform vec4 _SpecColor2;
+        uniform float _Shininess;	
+
+        uniform vec4 _Color;		
+        uniform sampler2D _MainTex;
+
+        uniform vec4 _lightmap_color;
+        uniform sampler2D _LightMap;
+	
+		uniform float _Cutoff;
+
+
+        varying vec2 fuv;
+        varying vec2 fuv2;
+		varying vec3 fnormal;
+
+
+        void main( void ) 
+        {
+            vec4 mainTex =texture2D(_MainTex, fuv);
+
+			if ( mainTex.a < _Cutoff ) discard;
+
+            vec4 lightMap=2.0*texture2D(_LightMap, fuv2);
+			vec4 innderLightMap=2.0*texture2D(_LIMAP, fuv2*_LIMAPOFFSET.xy+_LIMAPOFFSET.zw);
+
+
+			gl_FragColor.rgb =mainTex.rgb*(_Color.rgb*innderLightMap.rgb+_lightmap_color.rgb*lightMap.rgb);
+
+			float depth = gl_FragCoord.z / gl_FragCoord.w; 
+			float fogFactor = smoothstep( _FOGNEAR, _FOGFAR, depth );   
+			gl_FragColor.rgb=mix( gl_FragColor.rgb,_FOGCOLOR, fogFactor ); 	
+
+			gl_FragColor.a=1.0;	
+//			gl_FragColor.a=_Color.a*mainTex.a;	
+	
+
+        }
+
+		

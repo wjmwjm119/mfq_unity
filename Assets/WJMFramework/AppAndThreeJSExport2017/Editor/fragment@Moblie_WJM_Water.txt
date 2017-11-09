@@ -1,0 +1,104 @@
+//8b	
+		precision mediump float;
+
+		uniform  float _GLOBALTIME;
+
+        uniform samplerCube _ENVMAP;
+        uniform sampler2D _LIMAP;
+		uniform vec4 _LIMAPOFFSET;
+
+		uniform vec3 _SUNDIR;
+		uniform vec3 _SUNINTENSITY;
+
+		uniform vec3 _FOGCOLOR; 
+		uniform float _FOGNEAR;                                                    
+		uniform float _FOGFAR;  
+
+        uniform vec4 _Color;		
+        uniform sampler2D _MainTex;
+	
+		uniform sampler2D _BumpMap;
+
+        uniform vec4 _lightmap_color;
+        uniform sampler2D _LightMap;
+
+		uniform float _Smooth;
+		uniform float _Reflect;
+		uniform float _FresnelPower;
+		uniform float _FresnelBias;
+
+		uniform vec4 _WaveSpeed;
+
+
+		varying vec2 fuv;
+		varying vec2 fuv2;
+		varying vec3 fnormal;
+		varying vec3 ftangent;
+		varying vec3 fbinormal;
+
+        varying vec4 wPos;
+		varying vec3 viewDir;
+
+
+
+        void main( void ) 
+        {		
+		
+			vec3 nviewDir=normalize(viewDir);
+
+			vec3 nfnormal=normalize(fnormal);
+			vec3 nftangent=normalize(ftangent);
+			vec3 nfbinormal=normalize(fbinormal);
+
+			mat3 tangentSpaceToWordRotation = mat3(nftangent, nfbinormal, nfnormal);
+
+			vec3 bump0 = texture2D(_BumpMap,fuv*(1.0+0.033*sin(0.3*_GLOBALTIME))+0.1*_WaveSpeed.xy*_GLOBALTIME).xyz*2.0-vec3(1.0,1.0,1.0);
+			vec3 bump1 = texture2D(_BumpMap,fuv*(1.0+0.077*sin(0.1*_GLOBALTIME))+0.1*_WaveSpeed.zw*_GLOBALTIME).xyz*2.0-vec3(1.0,1.0,1.0);
+			vec3 bump = (bump0 + bump1) * 0.5;
+
+			
+			vec4 tex0 = texture2D(_MainTex,fuv.xy*(1.0 + 0.02*sin(0.1*_GLOBALTIME)) + 0.1*_WaveSpeed.xy*_GLOBALTIME);
+			vec4 tex1 = texture2D(_MainTex,0.77*fuv.xy*(1.0 + 0.03*sin(0.3*_GLOBALTIME)) + 0.1*_WaveSpeed.zw*_GLOBALTIME);
+			vec4 mainTex = (tex0 + tex1) * 0.5;
+
+
+            vec4 lightMap=2.0*texture2D(_LightMap, fuv2);
+			vec4 innderLightMap=2.0*texture2D(_LIMAP, fuv2*_LIMAPOFFSET.xy+_LIMAPOFFSET.zw);
+
+			nfnormal = normalize(bump*tangentSpaceToWordRotation);
+//			nfnormal.x=-nfnormal.x;
+
+			float lightDiff =max(0.0, dot (fnormal,_SUNDIR));	
+
+
+			gl_FragColor.rgb =mainTex.rgb*(_Color.rgb*innderLightMap.rgb+_lightmap_color.rgb*lightMap.rgb);
+//			gl_FragColor.rgb+=mainTex.rgb*lightDiff;
+
+
+			vec3 h = normalize(_SUNDIR + nviewDir);
+			float vh = dot(nviewDir,h);		
+			float nh = max(0.0, dot (nfnormal, h));
+			float spec = pow(nh, 0.8*2048.0);
+
+			float  fresnel = 1.0 - clamp(dot(nviewDir, nfnormal),0.0,1.0);
+			fresnel = pow(fresnel, _FresnelPower);
+			fresnel = min(fresnel + _FresnelBias, 1.0);
+			vec3 worldRefl = normalize(-reflect(nviewDir, nfnormal));
+			worldRefl.z=-worldRefl.z;
+
+			vec3 cubeMapCol=textureCube(_ENVMAP,worldRefl).rgb;
+
+			gl_FragColor.rgb = mix(gl_FragColor.rgb, cubeMapCol, _Reflect*fresnel);
+			gl_FragColor.rgb+=vec3(spec,spec,spec);
+
+			float depth = gl_FragCoord.z / gl_FragCoord.w; 
+			float fogFactor = smoothstep( _FOGNEAR, _FOGFAR, depth );   
+			gl_FragColor.rgb=mix(gl_FragColor.rgb,_FOGCOLOR, fogFactor); 	
+
+//			gl_FragColor.rgb=fnormal;
+//			gl_FragColor.rgb=vec3(lightDiff,lightDiff,lightDiff);
+			gl_FragColor.a=min(fresnel+0.5,1.0);
+
+//			gl_FragColor.a=1.0;
+
+        }

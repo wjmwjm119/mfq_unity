@@ -1,0 +1,64 @@
+//4b	
+//		highp 
+//		mediump 
+//		lowp
+
+		precision mediump float;
+
+        uniform samplerCube _ENVMAP;
+        uniform sampler2D _LIMAP;
+		uniform vec4 _LIMAPOFFSET;
+
+		uniform vec3 _SUNDIR;
+		uniform vec3 _SUNINTENSITY;
+
+		uniform vec3 _FOGCOLOR; 
+		uniform float _FOGNEAR;                                                    
+		uniform float _FOGFAR;  
+
+        uniform vec4 _Color;		
+        uniform sampler2D _MainTex;
+	
+        uniform vec4 _lightmap_color;
+        uniform sampler2D _LightMap;
+
+		uniform float _Smooth;
+		uniform float _Reflect;
+		uniform float _FresnelPower;
+		uniform float _FresnelBias;
+
+        varying vec2 fuv;
+        varying vec2 fuv2;
+		varying vec3 fnormal;
+		varying vec3 viewDir;
+
+        void main( void ) 
+        {			
+			vec3 nfnormal=normalize(fnormal);
+			vec3 nviewDir=normalize(viewDir);
+            vec4 mainTex =texture2D(_MainTex, fuv);
+            vec4 lightMap=2.0*texture2D(_LightMap, fuv2);
+			vec4 innderLightMap=2.0*texture2D(_LIMAP, fuv2*_LIMAPOFFSET.xy+_LIMAPOFFSET.zw);
+
+			gl_FragColor.rgb =mainTex.rgb*(_Color.rgb*innderLightMap.rgb+_lightmap_color.rgb*lightMap.rgb);
+
+			float  fresnel = 1.0 - clamp(dot(nviewDir, nfnormal),0.0,1.0);
+			fresnel = pow(fresnel, _FresnelPower);
+			fresnel = min(fresnel + _FresnelBias, 1.0);
+			vec3 worldRefl = normalize(-reflect(nviewDir, nfnormal));
+			worldRefl.z=-worldRefl.z;
+
+			vec3 cubeMapCol=textureCube(_ENVMAP,worldRefl).rgb;
+
+			//乘以0.25是弱化web反射
+			gl_FragColor.rgb = mix(gl_FragColor.rgb, cubeMapCol, _Reflect*fresnel*0.25);
+
+
+
+			float depth = gl_FragCoord.z / gl_FragCoord.w; 
+			float fogFactor = smoothstep( _FOGNEAR, _FOGFAR, depth );   
+			gl_FragColor.rgb=mix(gl_FragColor.rgb,_FOGCOLOR, fogFactor); 	
+//			gl_FragColor.rgb=cubeMapCol;
+			gl_FragColor.a=1.0;
+
+        }

@@ -1,0 +1,47 @@
+//8a	
+	precision highp float;
+		
+	
+		uniform mat4 viewMatrix;
+		uniform mat4 modelMatrix;
+		uniform mat4 modelViewMatrix;
+		uniform mat4 projectionMatrix;	
+		uniform vec3 cameraPosition;
+
+		attribute vec3 position;
+		attribute vec3 normal;
+		attribute vec3 tangent;
+
+		attribute vec2 uv;
+		attribute vec2 uv2;
+		
+		varying vec2 fuv;
+		varying vec2 fuv2;
+		varying vec3 fnormal;
+		varying vec3 ftangent;
+		varying vec3 fbinormal;
+
+        varying vec4 wPos;
+		varying vec3 viewDir;
+
+        void main()
+        {	
+			fuv =uv*0.001;
+			fuv2=uv2*0.001;
+
+			ftangent=tangent*0.007874;
+			fnormal=normal*0.007874;
+			fbinormal=cross(fnormal,ftangent);
+
+			ftangent=(modelMatrix*vec4(ftangent,0)).rgb;
+			fnormal=(modelMatrix*vec4(fnormal,0)).rgb;
+			fbinormal=(modelMatrix*vec4(fbinormal,0)).rgb;
+
+            vec4 mvPosition = modelViewMatrix * vec4( position*0.001, 1.0 );
+			wPos=modelMatrix * vec4( position*0.001, 1.0 );
+
+			viewDir =cameraPosition -wPos.xyz;
+
+
+            gl_Position = projectionMatrix * mvPosition;
+        }
