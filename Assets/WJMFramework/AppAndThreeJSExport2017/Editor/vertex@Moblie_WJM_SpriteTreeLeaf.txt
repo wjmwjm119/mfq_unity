@@ -1,0 +1,98 @@
+//6a		
+		precision highp float;
+
+		uniform mat4 viewMatrix;
+		uniform mat4 modelMatrix;
+		uniform mat4 modelViewMatrix;
+		uniform mat4 projectionMatrix;	
+			
+		attribute vec3 position;
+		attribute vec3 normal;
+		attribute vec2 uv;
+		attribute vec2 uv2;
+		attribute vec4 worldPosAndScale;
+
+        varying vec2 fuv;
+        varying vec2 fuv2;
+		varying vec3 fnormal;
+		varying vec4 fworldPosAndScale;
+		
+
+			float GetAngleDegree(vec3 viewDir)
+			{
+				float a;
+				float temp = sqrt(viewDir.y*viewDir.y + viewDir.x*viewDir.x);
+				float mZconut = length(viewDir);
+				float mXconut = acos(temp / mZconut);
+
+				float j = 0.0;
+
+				mXconut-=0.1;
+				mXconut=clamp(mXconut,0.0,1.096);
+
+
+				mXconut = mXconut / (0.35 *3.1415926);
+
+				a = 1.0*mXconut;
+
+				float eachSize = 1.0 / 16.0;
+
+				j = floor(a / (eachSize * 1.0)) * 1.0 ;
+
+				return  j;
+			}
+
+
+		
+        void main()
+        {
+            fuv =uv*0.001;
+            fuv2=uv2*0.001;
+			fuv= vec2(fuv.x - 0.875, fuv.y - 0.875) * 8.0;
+			fworldPosAndScale=worldPosAndScale*0.001;
+			fnormal=normal*0.007874;
+
+			vec3 viewDir=(vec4(0,0,1,0)*viewMatrix).xyz;
+			vec3 viewX =(vec4(1,0,0,0)*viewMatrix).xyz;
+			vec3 viewY =(vec4(0,1,0,0)*viewMatrix).xyz;
+
+			//centerPos
+			vec4 worldPos = modelMatrix*vec4(0, 0, 0, 1) + fworldPosAndScale;
+			//view to world Space
+
+			viewX = normalize(viewX);
+			viewY = normalize(viewY);
+
+			float width = fuv.x - 0.5;
+			float height = fuv.y - 0.5;
+
+			vec3 scale= (vec4(1,0,0,0)*modelMatrix).xyz;
+			float scaleLenth = length(scale);
+
+			vec3 spriteFace = viewX*width * 1.2 * scaleLenth *fworldPosAndScale.a + viewY*height * 1.2 * scaleLenth *fworldPosAndScale.a + worldPos.xyz ;
+
+//			vec3 spriteFace = viewX*width * 3.0 * scaleLenth  + viewY*height * 3.0 * scaleLenth;
+
+
+			float random = 0.0;
+			float oneStep = 1.0 / 8.0;
+
+			random = worldPos.x*0.3 + worldPos.z*0.3;
+
+			//得到视角的XY0～15值整数值，不使用水平切换，只使用垂直切换
+			float viewXYid = GetAngleDegree(viewDir.xzy);
+
+
+			float colID =2.0* floor(random*4.0);
+			
+			float needAddCol =floor( viewXYid / 8.0);
+			viewXYid=floor(viewXYid -needAddCol*8.0);
+			
+
+			fuv = vec2(oneStep*(colID+ needAddCol),oneStep*viewXYid)+ fuv*vec2(oneStep,oneStep);
+
+            vec4 fPosition = viewMatrix * vec4( spriteFace, 1.0 );
+
+            gl_Position = projectionMatrix * fPosition;
+
+        }

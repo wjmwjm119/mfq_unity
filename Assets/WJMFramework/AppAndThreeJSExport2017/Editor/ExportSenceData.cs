@@ -822,7 +822,7 @@ public class ExportSenceData : EditorWindow
             System.IO.File.WriteAllBytes(savePath, binFileBuffer.ToArray());
         }
 
-        string[] shadersGroup = new string[] { "@Moblie_WJM_Alpha", "@Moblie_WJM_Base", "@Moblie_WJM_CubeMap", "@Moblie_WJM_Glass_Middle", "@Moblie_WJM_Mirror", "@Moblie_WJM_Sky", "@Moblie_WJM_SpriteTree", "@Moblie_WJM_TreeLeaf", "@Moblie_WJM_Water", "@Moblie_WJM_WFaceCamera" };
+        string[] shadersGroup = new string[] { "@Moblie_WJM_Alpha", "@Moblie_WJM_Base", "@Moblie_WJM_CubeMap", "@Moblie_WJM_Glass_Middle", "@Moblie_WJM_Mirror", "@Moblie_WJM_Sky", "@Moblie_WJM_SpriteTree", "@Moblie_WJM_TreeLeaf", "@Moblie_WJM_Water", "@Moblie_WJM_WFaceCamera", "@Moblie_WJM_SpriteTreeLeaf" };
 
         List<Vector4> shadersVec4Pos = new List<Vector4>();
 
@@ -1340,6 +1340,8 @@ public class ExportSenceData : EditorWindow
             case "@Moblie_WJM_WFaceCamera":
                 return Vector4ToString(s.shadersVector4Pos[9], 9);
 
+            case "@Moblie_WJM_SpriteTreeLeaf":
+                return Vector4ToString(s.shadersVector4Pos[10], 10);
             default:
                 Debug.LogError(shaderName+"材质不支持");
                 return "[]";

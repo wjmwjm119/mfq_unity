@@ -193,7 +193,7 @@ Shader "@Moblie_WJM_SpriteTreeLeaf"
 			half scaleLenth = length(scale);
 
 			//				//放大了两倍
-			float3 spriteFace = viewX*width * 1 * scaleLenth *v.worldPosAndScale.a + viewY*height * 1 * scaleLenth *v.worldPosAndScale.a + o.worldPos;
+			float3 spriteFace = viewX*width * 1.2 * scaleLenth *v.worldPosAndScale.a + viewY*height * 1.2 * scaleLenth *v.worldPosAndScale.a + o.worldPos;
 
 
 
