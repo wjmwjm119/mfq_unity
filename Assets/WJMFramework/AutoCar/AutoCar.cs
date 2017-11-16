@@ -32,6 +32,10 @@ public class AutoCar : MonoBehaviour
 
     public void Initl(CarManger inCarManger, Vector3[] inMovePaht, int startID,float speedFactor)
     {
+#if UNITY_EDITOR
+        SceneInteractiveManger.RecoverMatShader(transform);
+#endif
+
         speed *= speedFactor;
         carManger = inCarManger;
         movePath = inMovePaht;

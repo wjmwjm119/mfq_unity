@@ -54,6 +54,7 @@ public class BirdsSpawn : MonoBehaviour
             genBirds[i].transform.localScale = new Vector3(scale, scale, scale);
             genBirds[i].GetComponent<BirdAnimation>().StartFly(singerBirdCenterPos,sphereR, flyspeed);
 
+
         }
 
     }

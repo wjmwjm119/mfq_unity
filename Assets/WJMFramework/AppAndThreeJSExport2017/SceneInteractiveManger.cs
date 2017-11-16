@@ -108,7 +108,6 @@ public class SceneInteractiveManger : MonoBehaviour
         {
 
             case "0":
-
                 //加载主场景
                 Loading loadingScene = loadingManager.AddALoading(3);
                 loadingScene.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[0], LoadSceneMode.Additive), "正在加载");
@@ -116,8 +115,8 @@ public class SceneInteractiveManger : MonoBehaviour
                 break;
 
             case "1":
-                //不加载主场景,只加载户型,以供AR扫描,跳过第一个主场景
-                defaultGUI.triggerMusic.AlphaPlayBackward();
+                //不加载主场景,只加载户型,跳过第一个主场景
+//                defaultGUI.triggerMusic.AlphaPlayBackward();
                 currentAddSceneID = 0;
                 LoopAdditiveScene(true);
                 //arManager.OpenARCamrea();
@@ -226,7 +225,18 @@ public class SceneInteractiveManger : MonoBehaviour
 
     public void AddSenceInteractiveInfo(SenceInteractiveInfo s)
     {
-//        Debug.Log(2222);
+
+#if UNITY_EDITOR
+
+        if (s.meshRoot != null)
+        {
+            RecoverMatShader(s.meshRoot);
+        }
+        
+#endif
+
+
+        //        Debug.Log(2222);
         s.sceneName = addSceneName;
 
         if (senceInteractiveInfoGroup == null)
@@ -483,6 +493,36 @@ public class SceneInteractiveManger : MonoBehaviour
 
     }
 
+
+    /// <summary>
+    /// Editor下替换Shader使得场景在Editor下可以正常显示
+    /// </summary>
+    /// <param name="root"></param>
+    static public void RecoverMatShader(Transform root)
+    {
+        MeshRenderer[] allChildMeshRenderer = root.GetComponentsInChildren<MeshRenderer>(true);
+        for (int i = 0; i < allChildMeshRenderer.Length; i++)
+        {
+            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
+            for (int j = 0; j < allChildMeshRenderer[i].sharedMaterials.Length; j++)
+            {
+                allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);
+            }
+        }
+    }
+
+    static public void RecoverMatShaderSkinMesh(Transform root)
+    {
+        SkinnedMeshRenderer[] allChildMeshRenderer = root.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+        for (int i = 0; i < allChildMeshRenderer.Length; i++)
+        {
+            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
+            for (int j = 0; j < allChildMeshRenderer[i].sharedMaterials.Length; j++)
+            {
+                allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);
+            }
+        }
+    }
 
 }
 

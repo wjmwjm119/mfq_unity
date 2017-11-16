@@ -36,6 +36,9 @@ public class BirdAnimation : MonoBehaviour
         transform.DOPath(flyPath.ToArray(), flyTime, PathType.Linear, PathMode.Full3D, 5, new Color(1, 0, 0)).OnComplete(FlyNextPosition).SetEase(Ease.InOutSine);
         transform.DOLookAt(flyPath[1], 1f);
 
+#if UNITY_EDITOR
+        SceneInteractiveManger.RecoverMatShaderSkinMesh(transform);
+#endif
     }
 
     void FlyNextPosition()

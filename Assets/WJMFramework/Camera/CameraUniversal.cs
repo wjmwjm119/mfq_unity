@@ -193,6 +193,15 @@ public  void TouchDown(Vector2 pos)
         if (!hasInit)
         {
 
+            if (camBase != null && camBase.GetComponent<CharacterController>() != null)
+            {
+                camBase.GetComponent<CharacterController>().height = 0.02f;
+                camBase.GetComponent<CharacterController>().radius = 0.02f;
+                camBase.GetComponent<CharacterController>().stepOffset = 0.01f;
+                camBase.GetComponent<CharacterController>().center = new Vector3(0, -1000, 0);
+            }
+                
+
             hasInit = true;
 
             camName = transform.name;
@@ -733,14 +742,26 @@ public  void TouchDown(Vector2 pos)
 
     public void EnableCamera()
     {
+
+
         SleepWake();
 
         gameObject.SetActive(true);
+
         EnableCameraCtrl();
+        if (camBase != null && camBase.GetComponent<CharacterController>() != null)
+        {
+            camBase.GetComponent<CharacterController>().height = 0.2f;
+            camBase.GetComponent<CharacterController>().radius = 0.2f;
+            camBase.GetComponent<CharacterController>().stepOffset = 0.01f;
+            camBase.GetComponent<CharacterController>().center = new Vector3(0, -1, 0);
+        }
     }
 
     public string DisableCamera()
     {
+
+
         SleepWake();
         string currentStateJson = GetCameraSmoothStateJson();
 
@@ -752,7 +773,18 @@ public  void TouchDown(Vector2 pos)
 //            Debug.Log(this.gameObject.name+ "ccccccccd");
             ResetCameraStateToInitial();
         }
-        return currentStateJson;
+
+        if (camBase != null && camBase.GetComponent<CharacterController>() != null)
+        {
+            camBase.GetComponent<CharacterController>().height = 0.02f;
+            camBase.GetComponent<CharacterController>().radius = 0.02f;
+            camBase.GetComponent<CharacterController>().stepOffset = 0.01f;
+            camBase.GetComponent<CharacterController>().center = new Vector3(0, -1000, 0);
+        }
+
+
+            return currentStateJson;
+
     }
 
     public void PauseRender()

@@ -90,6 +90,11 @@ public class HumanAutoAnimation : MonoBehaviour
 
     public void StartMove(Transform searchRoot)
 	{
+
+#if UNITY_EDITOR
+        SceneInteractiveManger.RecoverMatShaderSkinMesh(transform);
+#endif
+
         SearchPointGroup = searchRoot;
         likeGroup = new bool[12] { likeClaphands, likeDance, likeEatsitting, likeIdle, likeListen, likeManipulate, likeSitidle, likeTalk, likeWalk, likeWalkCarry, likeFtStart, likeFtEnd };
 		

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DefaultGUI : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class DefaultGUI : MonoBehaviour
     public CanveGroupFade triggerMusic;
     public CanveGroupFade triggerEnterFangJianPortrait;
 
+    public ImageButton musicBtn;
+
     public CanveGroupFade leftWarning;
     public CanveGroupFade rightWarning;
 
@@ -25,8 +28,9 @@ public class DefaultGUI : MonoBehaviour
     public static bool isLandscape;
     public static bool lastIsLandscape;
 
-
     AudioCtrl audioCtrl;
+
+    string currentMusicState = "1";
 
     void Start()
     {
@@ -48,7 +52,7 @@ public class DefaultGUI : MonoBehaviour
 
             if (isLandscape)
             {
-                Landscape();
+                Landscape(currentMusicState);
             }
             else
             {
@@ -59,8 +63,12 @@ public class DefaultGUI : MonoBehaviour
     }
 
     //全屏
-    public void Landscape()
+    public void Landscape(string musicState)
     {
+        triggerMusic.AlphaPlayForward();
+
+        currentMusicState = musicState;
+
         leftWarning.AlphaPlayBackward();
         rightWarning.AlphaPlayForward();
 
@@ -77,6 +85,22 @@ public class DefaultGUI : MonoBehaviour
         appBridege.Unity2App("unityLandscape");
         Debug.Log("unityLandscape");
         GlobalDebug.Addline("unityLandscape");
+
+        if (musicState == "0" && !musicBtn.buttonState)
+        {
+            musicBtn.buttonState = true;
+            musicBtn.GetComponent<Image>().sprite = musicBtn.downSprite;
+        }
+        else if (musicState == "1" && musicBtn.buttonState)
+        {
+            musicBtn.buttonState = false;
+            musicBtn.GetComponent<Image>().sprite = musicBtn.normalSprite;
+        }
+        else if (musicState == "2")
+        {
+            triggerMusic.AlphaPlayBackward();
+        }
+
     }
 
     //半屏
@@ -95,33 +119,40 @@ public class DefaultGUI : MonoBehaviour
         triggerVRBtn.AlphaPlayBackward();
         triggerShare.AlphaPlayBackward();
         triggerEnterFangJianPortrait.AlphaPlayForward();
-
+        triggerMusic.AlphaPlayBackward();
 
         appBridege.Unity2App("unityProtrait");
         Debug.Log("unityProtrait");
         GlobalDebug.Addline("unityProtrait");
 
+
     }
 
     public void OpenMusic()
     {
+        /*
         FindBGMusic();
 
         if (audioCtrl != null)
         {
             audioCtrl.PlayMusic();
         }
+        */
+        appBridege.Unity2App("unitySetMusic","1");
     }
 
     public void CloseMusic()
     {
+        /*
         FindBGMusic();
 
         if (audioCtrl != null)
         {
             audioCtrl.MuteMusic();
         }
+        */
 
+        appBridege.Unity2App("unitySetMusic", "0");
     }
 
     void FindBGMusic()

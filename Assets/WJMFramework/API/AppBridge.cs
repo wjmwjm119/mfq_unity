@@ -48,10 +48,14 @@ public class AppBridge : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void unityBackRoomTypeDone();// 户型返回完毕
 
-//    [DllImport("__Internal")]
-//    private static extern void unityEnterMYInPortraitDone();//竖屏进入户型漫游
+    [DllImport("__Internal")]
+    private static extern void unitySetMusic(string musicState);//音乐开关
 
-    //unityOpenRoomType(string roomID)    进入户型
+ //    [DllImport("__Internal")]
+ //    private static extern void unityEnterMYInPortraitDone();//竖屏进入户型漫游
+
+ //unityOpenRoomType(string roomID)    进入户型
+
 
 #endif
 
@@ -113,6 +117,10 @@ public class AppBridge : MonoBehaviour
 //              case "unityEnterMYInPortraitDone":
 //                  unityEnterMYInPortraitDone();
 //                  break;
+                case "unitySetMusic":
+                    unitySetMusic((string)args[0]);
+                    break;
+
                 default:
                     GlobalDebug.Addline("未定义的方法："+ methodName);
                     break;
@@ -141,11 +149,11 @@ public class AppBridge : MonoBehaviour
     }
 
 
-    void Landscape()
+    void Landscape(string musicState)
     {
         GlobalDebug.Addline("APP2Unity Landscape");
         Debug.Log("APP2Unity Landscape");
-        defaultGUI.Landscape();
+        defaultGUI.Landscape(musicState);
 
     }
 

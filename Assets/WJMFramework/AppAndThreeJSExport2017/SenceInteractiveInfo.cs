@@ -109,6 +109,16 @@ public class SenceInteractiveInfo : MonoBehaviour
             if (i.needDisplayRoot.name == hxName)
             {
                 ProcessInteractiveAction(i);
+
+                //将碰撞改成trigger
+                if (i.needDisplayRoot != null)
+                {
+                    foreach (Collider c in i.needDisplayRoot.GetComponentsInChildren<Collider>())
+                    {
+                        c.isTrigger = true;
+                    }
+                }
+
                 return true;
             }
         }

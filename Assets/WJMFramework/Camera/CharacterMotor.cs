@@ -144,6 +144,7 @@ public class CharacterMotor : MonoBehaviour {
 	void Update ()
     {
 
+
         if (childCamera!=null&&childCamera.GetComponent<CameraUniversal>().cameraEnableState)
         {
             directionVector = new Vector3(Input.GetAxis("Horizontal") + firstPersonHorizontal, 0, Input.GetAxis("Vertical") + firstPersonVertical);

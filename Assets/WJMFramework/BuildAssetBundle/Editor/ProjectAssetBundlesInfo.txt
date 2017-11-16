@@ -1,1 +1,1 @@
-{"buildTime":"2017,10,16,16,5,52","hiddenDefaultUI":false,"needExportScenePath":[],"sceneAssetBundle":[],"sceneAssetBundleHash":[],"sceneAssetBundleCRC":[],"addCommonAssetBundle":["basesource"]}
+{"buildTime":"2017,11,16,13,40,11","hiddenDefaultUI":false,"needExportScenePath":["Assets/MYTest/outdoor.unity"],"sceneAssetBundle":["outdoor"],"sceneAssetBundleHash":["1616ad3af0be81fe48e098ad2f212575"],"sceneAssetBundleCRC":[831045912],"addCommonAssetBundle":["basesource"]}
