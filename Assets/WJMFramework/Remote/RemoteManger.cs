@@ -143,7 +143,8 @@ public class RemoteManger : MonoBehaviour
                         }
                         else
                         {
-                            string log = "重试发送信息达到最大次数,准备重新连接讲盘网络!";
+//                            string log = "重试发送信息达到最大次数,准备重新连接讲盘网络!";
+                            string log = "重试发送信息达到最大次数,结束讲盘!";
                             GlobalDebug.Addline(log);
                             Debug.Log(log);
                             Debug.LogWarning(log);
@@ -152,10 +153,15 @@ public class RemoteManger : MonoBehaviour
                             waitingAck = false;
                             waitingAckPastTime = 0;
                             currentRetryCount = 0;
-                            //断开连接重新尝试进入房间
-                            DisConnect();
-                            StartMFQTcpClient(runAtType, remoteID, userID);
-                            EnterRoom();
+
+                            //断开连接,使用退出一样的操作
+
+                            remoteGUI.OKCloseOnLineTalk();
+
+//                            DisConnect();
+
+ //                         StartMFQTcpClient(runAtType, remoteID, userID);
+ //                         EnterRoom();
                         }
                     }
                 }
@@ -164,9 +170,19 @@ public class RemoteManger : MonoBehaviour
             {
                 if (isOtherSideOnline)
                 {
-                    //判断10内有没有收到对方消息,如果没有收到消息,判定对方掉线重新发送AreYouReady消息;
+
                     lastMessageReceiveFromOtherSidePastTime += Time.deltaTime;
-                    if (lastMessageReceiveFromOtherSidePastTime > 15)
+
+                    //判断10内有没有收到对方消息,发送StillOnline信息确定对方是否在线，由控制方发送,
+                    if (runAtType==RunAtType.Master&& lastMessageReceiveFromOtherSidePastTime > 10)
+                    {
+                        //如果没有收到对方的应答，会以每5秒重试3次,15+11=25秒。超过25秒将会执行断开。
+                        SendCtrlMessage(new RemoteGather.RemoteMessage(98).GetBytesData());
+                    }
+
+
+                    //判断25秒有没有收到Master消息,如果没有收到消息,判定掉线,执行断开。
+                    if (lastMessageReceiveFromOtherSidePastTime > 25)
                         isOtherSideOnline = false;
                 }
 
@@ -287,7 +303,7 @@ public class RemoteManger : MonoBehaviour
         }
         else if (runAtType == RunAtType.Master)
         {
-            roomID = inUserID;
+            roomID = remoteID;
         }
         else if (runAtType == RunAtType.Slave)
         {
@@ -308,9 +324,7 @@ public class RemoteManger : MonoBehaviour
     public void DisConnect()
     {
 
-
 //      Debug.LogError(log);
-
 //      StopCoroutine(WaitingReceiveIE());
         StopAllCoroutines();
 
@@ -378,6 +392,7 @@ public class RemoteManger : MonoBehaviour
                     log = "ScaleImage";
                     break;
 
+
                 case 72:
                     log = "CameraStateMessage Ack";
                     break;
@@ -391,6 +406,12 @@ public class RemoteManger : MonoBehaviour
                     log = "ScaleImage Ack";
                     break;
 
+                case 98:
+                    log = "Still Online";
+                    break;
+                case 99:
+                    log = "Still Online Ack";
+                    break;
             }
 
 
@@ -526,11 +547,12 @@ public class RemoteManger : MonoBehaviour
                         switch (rMessage.messageType)
                         {
 
-                            //不能在这里处理，因为该程序不再主线程下运行,将
+                            //不能在这里处理，因为该程序不在主线程下运行,将消息传递至下方处理
                             case 49:
                             case 50:
                             case 51:
                             case 52:
+                            case 98:
                                 RemoteGather.needProcessMessages.Add(rMessage);
                                 break;
 
@@ -583,6 +605,19 @@ public class RemoteManger : MonoBehaviour
                                 waitingAck = false;
                                 currentRetryCount = 0;
                                 break;
+
+                            //Still Onlinr Ack
+                            case 99:
+
+                                log = "Receive Still Onlinr Ack";
+                                Debug.Log(log);
+                                GlobalDebug.Addline(log, true);
+
+                                isOtherSideOnline = true;
+                                waitingAck = false;
+                                currentRetryCount = 0;
+                                break;
+
 
                             case 200:
 
@@ -705,15 +740,32 @@ public class RemoteManger : MonoBehaviour
                 //                RemoteGather.needSendAckMessages.Add(new RemoteGather.RemoteMessage(74));
                 break;
 
-            //对方断开连接    
 
-            case 106:
-                string log5 = "Receive 对方主动断开连接";
+            //StillOnlineMessage
+            case 98:
+
+                string log5 = "Process StillOnlineMessage";
                 Debug.Log(log5);
                 GlobalDebug.Addline(log5, true);
-                isOtherSideOnline = false;
                 RemoteGather.needProcessMessages.Remove(p);
+                //Send Ack
+                SendCtrlMessage(new RemoteGather.RemoteMessage(99).GetBytesData(), false);
                 break;
+
+
+            //对方断开连接    
+            case 106:
+                string log6 = "Receive 对方主动断开连接";
+                Debug.Log(log6);
+                GlobalDebug.Addline(log6, true);
+//              isOtherSideOnline = false;
+                RemoteGather.needProcessMessages.Remove(p);
+
+                //对方挂断，己方也推出
+                remoteGUI.OKCloseOnLineTalk();
+
+                break;
+
 
             default:
             break;

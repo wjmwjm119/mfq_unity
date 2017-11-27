@@ -111,7 +111,7 @@ Shader "@Moblie_WJM_Water"
 				half4 uv1And2:TEXCOORD0;
 				half3 tangent:TEXCOORD1;
 				half4 unityLightMapUVAndBumpUV:TEXCOORD2;
-				half4 viewDir : TEXCOORD3;
+				float4 viewDir : TEXCOORD3;
 				half3 lightDir : TEXCOORD4;
 //				fixed fog : TEXCOORD1;
 

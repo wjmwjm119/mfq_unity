@@ -46,7 +46,7 @@ public class XFGUI : MonoBehaviour
 
     void Start()
     {
-        //选房选中用的材质球及代理模型.设置代理模型的层到31,毛坯相机将看不到31层的物体
+        //选房选中用的材质球及代理模型.设置代理模型的层到30,毛坯相机将看不到30层的物体
         selectMat.SetColor("_Color", new Color(0, 0, 0, 0.0f));
         selectMeshProxy.gameObject.layer = 30;
         thumbnailTouchCtrl.raycastTarget = false;

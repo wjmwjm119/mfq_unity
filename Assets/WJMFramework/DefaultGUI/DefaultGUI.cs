@@ -56,7 +56,7 @@ public class DefaultGUI : MonoBehaviour
             }
             else
             {
-                Portrait();
+                SetPortraitGUIState();
             }
 
          }
@@ -66,13 +66,9 @@ public class DefaultGUI : MonoBehaviour
     public void Landscape(string musicState)
     {
         triggerMusic.AlphaPlayForward();
-
-        currentMusicState = musicState;
-
         leftWarning.AlphaPlayBackward();
         rightWarning.AlphaPlayForward();
 
-        Screen.orientation= ScreenOrientation.LandscapeLeft;
         defaultGUIRoot.AlphaPlayForward();
         mainBtnGroup.AlphaPlayForward();
         triggerHXList.AlphaPlayForward();
@@ -82,6 +78,9 @@ public class DefaultGUI : MonoBehaviour
         triggerShare.AlphaPlayForward();
         triggerEnterFangJianPortrait.AlphaPlayBackward();
 
+        currentMusicState = musicState;
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
+    
         appBridege.Unity2App("unityLandscape");
         Debug.Log("unityLandscape");
         GlobalDebug.Addline("unityLandscape");
@@ -103,14 +102,11 @@ public class DefaultGUI : MonoBehaviour
 
     }
 
-    //半屏
-    public void Portrait()
+
+    public void SetPortraitGUIState()
     {
         leftWarning.AlphaPlayForward();
         rightWarning.AlphaPlayBackward();
-
-        Screen.orientation = ScreenOrientation.Portrait;
-
         defaultGUIRoot.AlphaPlayForward();
         mainBtnGroup.AlphaPlayBackward();
         triggerHXList.AlphaPlayBackward();
@@ -121,11 +117,19 @@ public class DefaultGUI : MonoBehaviour
         triggerEnterFangJianPortrait.AlphaPlayForward();
         triggerMusic.AlphaPlayBackward();
 
+    }
+
+
+    //半屏
+    public void Portrait()
+    {
+        SetPortraitGUIState();
+
+        Screen.orientation = ScreenOrientation.Portrait;
+
         appBridege.Unity2App("unityProtrait");
         Debug.Log("unityProtrait");
         GlobalDebug.Addline("unityProtrait");
-
-
     }
 
     public void OpenMusic()

@@ -71,7 +71,7 @@ Shader "@Moblie_WJM_Base"
 				half4 uv1And2:TEXCOORD0;
 				fixed fog:TEXCOORD1;
 				half2 unityLightMapUV:TEXCOORD2;
-				half3 viewDir : TEXCOORD3;
+				float3 viewDir : TEXCOORD3;
 				half3 lightDir : TEXCOORD4;
 				LIGHTING_COORDS(5,6)
 			};

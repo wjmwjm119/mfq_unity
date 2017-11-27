@@ -18,8 +18,18 @@ public class Unload : MonoBehaviour
         //在Unload场景会自动执行清空资源操作,之后再加载Start场景
         if (autoUnloadAndReset)
         {
+            AppBridge.needSendUnloadMessageToUnity = true;
             StartCoroutine(UnloadUnusedAssetsIE());
         }
+        else if (AppBridge.needSendUnloadMessageToUnity)
+        {
+            AppBridge.needSendUnloadMessageToUnity = false;
+
+            appBridge.Unity2App("unityUnloadDone");
+            Debug.Log("unityUnloadDone");
+            GlobalDebug.Addline("unityUnloadDone");
+        }
+
 	}
 
     IEnumerator UnloadUnusedAssetsIE()
@@ -36,13 +46,7 @@ public class Unload : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        appBridge.Unity2App("unityUnloadDone");
-        Debug.Log("unityUnloadDone");
-        GlobalDebug.Addline("unityUnloadDone");
-
         SceneManager.LoadSceneAsync(0);
-
-
     }
 
 

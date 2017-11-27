@@ -67,7 +67,7 @@ public class CarManger : MonoBehaviour
 
         float speedFactor = Random.Range(0.8f, 1.2f);
 
-        GameObject car = GameObject.Instantiate(carPerfabGroup[carPrefabID], lanePath[startPosID],new Quaternion());
+        GameObject car = GameObject.Instantiate(carPerfabGroup[carPrefabID], lanePath[startPosID],new Quaternion(),this.transform);
         car.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
         car.transform.DOScale(new Vector3(scale, scale, scale),0.5f);
 

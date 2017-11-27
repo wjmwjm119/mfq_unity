@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 public class RemoteGUI : MonoBehaviour
 {
+    public NetCtrlManager netCtrlManager;
+    public LoadingManager loadingManager;
     public AppBridge appBridge;
     public RemoteManger remoteManger;
     public CanveGroupFade touchBlock;
     public CanveGroupFade bg_Group;
     public CanveGroupFade exitOnlineTalk;
     public CanveGroupFade avatar;
-    public Image avatarICO;
+    public RawImage avatarICO;
 
     float currentConnectPastTime;
     int currentTimeInt;
@@ -53,12 +56,14 @@ public class RemoteGUI : MonoBehaviour
             lastIsOtherSideOnline = remoteManger.isOtherSideOnline;
             if (lastIsOtherSideOnline)
             {
-
                 SucessConnect();
             }
             else
             {
-                LostConnect();
+                //LostConnect();
+                //网络掉线
+                OKCloseOnLineTalk();
+
             }
 
         }
@@ -93,6 +98,20 @@ public class RemoteGUI : MonoBehaviour
         infoLabelGroup[5].text ="已连接";
 
         bg_Group.AlphaPlayBackward();
+
+
+        Loading loading = loadingManager.AddALoading(4);
+        netCtrlManager.WebRequest("Loading:" + "HeadImage",appBridge.appProjectInfo.remoteUserHeadUrl, loading.LoadingAnimation,
+        (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => { Debug.LogError("头像下载失败！"); },
+         null,
+         (DownloadHandlerTexture t) =>
+         {
+             avatarICO.texture = t.texture;
+         },
+         null
+         );
+
+
     }
 
     public void LostConnect()
@@ -104,13 +123,10 @@ public class RemoteGUI : MonoBehaviour
         infoLabelGroup[5].text = "已掉线";
 
         bg_Group.AlphaPlayForward();
-
-
-
+    
     }
 
     
-
 
     public void OKCloseOnLineTalk()
     {
@@ -119,7 +135,7 @@ public class RemoteGUI : MonoBehaviour
 
         remoteManger.DisConnect();
 
-        appBridge.Unity2App("unityCloseRemote");
+        appBridge.Unity2App("unityCloseRemote","0");
         Debug.Log("unityCloseRemote");
         GlobalDebug.Addline("unityCloseRemote");
     }

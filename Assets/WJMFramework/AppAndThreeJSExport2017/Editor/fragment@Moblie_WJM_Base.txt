@@ -34,7 +34,7 @@
             vec4 mainTex =texture2D(_MainTex, fuv);
             vec4 lightMap=2.0*texture2D(_LightMap, fuv2);
 			vec4 innderLightMap=2.0*texture2D(_LIMAP, fuv2*_LIMAPOFFSET.xy+_LIMAPOFFSET.zw);
-			gl_FragColor.rgb =mainTex.rgb*(_Color.rgb*innderLightMap.rgb+_lightmap_color.rgb*lightMap.rgb);
+//			gl_FragColor.rgb =mainTex.rgb*(_Color.rgb*innderLightMap.rgb+_lightmap_color.rgb*lightMap.rgb);
 
 			vec3 lightDiff =_Color.xyz*max(0.0,dot(-nfnormal,vec3(_SUNDIR.x,_SUNDIR.y,_SUNDIR.z)))*_SUNINTENSITY;						
 			gl_FragColor.rgb =mainTex.rgb*(_Color.rgb*mix(innderLightMap.rgb,lightDiff,max(0.0,_BlendLight))+_lightmap_color.rgb*lightMap.rgb);

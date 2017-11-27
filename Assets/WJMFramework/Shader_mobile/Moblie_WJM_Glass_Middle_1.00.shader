@@ -83,7 +83,7 @@ Shader "@Moblie_WJM_Glass_Middle"
 				half4 uv1And2:TEXCOORD0;
 				float3 worldPos:TEXCOORD1;
 				half2 unityLightMapUV:TEXCOORD2;
-				half3 viewDir : TEXCOORD3;
+				float3 viewDir : TEXCOORD3;
 				half3 lightDir : TEXCOORD4;
 				fixed fog : TEXCOORD7;
 				LIGHTING_COORDS(5,6)

@@ -135,7 +135,7 @@ Shader "@Moblie_WJM_SpriteTree"
 			float3 worldPos:TEXCOORD1;
 			fixed fog : TEXCOORD7;
 			half2 unityLightMapUV:TEXCOORD2;
-			half3 viewDir : TEXCOORD3;
+			float3 viewDir : TEXCOORD3;
 			half3 lightDir : TEXCOORD4;
 			LIGHTING_COORDS(5, 6)
 

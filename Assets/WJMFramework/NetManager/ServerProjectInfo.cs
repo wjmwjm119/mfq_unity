@@ -75,7 +75,6 @@ public class ServerProjectInfo : MonoBehaviour
 
     }
 
-
     public void GetProjectInfoFromServer(string projectid)
     {
 
@@ -135,11 +134,6 @@ public class ServerProjectInfo : MonoBehaviour
 
     }
 
-
-
-
-
-
     public void SaveProjectInfoToLocal()
     {
         if (projectInfoJsonFromServer != "")
@@ -150,7 +144,6 @@ public class ServerProjectInfo : MonoBehaviour
         }
 
     }
-
 
     void PrcessProjectInfo(ProjectRootInfo inProjectRootInfo,bool isLoadFromCache=false)
     {
@@ -265,7 +258,6 @@ public class ServerProjectInfo : MonoBehaviour
 
 
     }
-
 
     public bool CheckHasLocalCached(string inProjectid)
     {

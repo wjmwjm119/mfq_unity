@@ -13,6 +13,7 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
     bool inTouch = false;
 	bool inZoom=false;
     Vector2 firstPosition = new Vector2(0, 0);
+    Vector2 secondPostion = new Vector2(0,0);
     float disVec2 = 0;
     float disVec2_first = 0;
     float zCountStart = 0;
@@ -20,6 +21,9 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
     float xConutOffset = 0;
     float yConutOffset = 0;
     float zConutOffset = 0;
+
+    float xConutOffsetSecond = 0;
+    float yConutOffsetSecond = 0;
 
     //双击使用
     bool flip;
@@ -36,6 +40,8 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
     //用来关闭缩略图用的
     public UnityEvent touchDownEvent;
 
+
+
 //  [System.Serializable]
     public class DoubleClickEvent : UnityEvent<PointerEventData>
     {
@@ -44,14 +50,14 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
 
     public DoubleClickEvent doubleClickEvent;
 
-    override protected void  Start()
+    override protected void Start()
 	{
         dpiScaleFactor = 100.0f / Screen.dpi;
         touchDownEvent = new UnityEvent();
         doubleClickEvent = new DoubleClickEvent();
     }
 
-	public  void OnPointerDown(PointerEventData eventData)
+	public void OnPointerDown(PointerEventData eventData)
 	{
   //      doubleClickEvent.is
         touchDownEvent.Invoke();
@@ -65,8 +71,12 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
                 disVec2_first = disVec2;
                 zCountStart = cameraCenter.currentCamera.Zcount;
 
+                firstPosition = Input.touches[0].position;
+                secondPostion = Input.touches[1].position;
+
                 inZoom = true;
                 inTouch = false;
+                cameraCenter.currentCamera.inZoomState = true;
             }
             else if (Input.touches.Length == 1)
             {
@@ -75,6 +85,7 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
                 firstPosition = Input.touches[0].position;
 
                 inZoom = false;
+                cameraCenter.currentCamera.inZoomState = false;
                 inTouch = true;
             }
 
@@ -117,13 +128,14 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
         if (cameraCenter != null)
         { 
             inZoom = false;
+            cameraCenter.currentCamera.inZoomState = false;
             inTouch = false;
 
             cameraCenter.currentCamera.TouchUp();
         }
     }
 
-	public  void OnDrag(PointerEventData eventData)
+	public void OnDrag(PointerEventData eventData)
 	{
 
         if (cameraCenter != null)
@@ -141,6 +153,15 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
                 zConutOffset = disVec2_first - disVec2;
                 //zCountStart
                 cameraCenter.currentCamera.SetCameraZoom(zCountStart + zCountStart * 0.01f * dpiScaleFactor * zConutOffset);
+
+                //漫游上下抬头
+                xConutOffset = Input.touches[0].position.y - firstPosition.y;
+                yConutOffset = Input.touches[0].position.x - firstPosition.x;
+
+                xConutOffsetSecond = Input.touches[1].position.y - secondPostion.y;
+                yConutOffsetSecond = Input.touches[1].position.x - secondPostion.x;
+
+                cameraCenter.currentCamera.TouchMoveForLookupAndLookDown(0.5f*(firstPosition+ secondPostion), new Vector2(-(xConutOffset+xConutOffsetSecond) * 5 * dpiScaleFactor, (yConutOffset+ yConutOffsetSecond) * 2.5f * dpiScaleFactor));
             }
 
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
@@ -184,10 +205,7 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
         {
             cameraCenter.currentCamera.MouseScroll(-Input.mouseScrollDelta.y);
         }
-
-
-        #endif
-
+#endif
 
 
     }

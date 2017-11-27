@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class BirdsSpawn : MonoBehaviour
 {
-
     public bool autoSpawn=true;
     /// <summary>
     ///最大范围
@@ -18,13 +15,7 @@ public class BirdsSpawn : MonoBehaviour
     int randomBirdType;
     public GameObject[] birdsPerfab;
 
-
-
-
-
     List< GameObject> genBirds;
-
-
 
     void Start()
     {
@@ -46,7 +37,7 @@ public class BirdsSpawn : MonoBehaviour
             
             randomBirdType = Random.Range(0, birdsPerfab.Length);
 
-            genBirds.Add(GameObject.Instantiate(birdsPerfab[randomBirdType]));
+            genBirds.Add(GameObject.Instantiate(birdsPerfab[randomBirdType],this.transform));
 
             Vector3 singerBirdCenterPos =  Random.onUnitSphere *sphereR;
             singerBirdCenterPos = new Vector3(singerBirdCenterPos.x, singerBirdCenterPos.y*0.1f, singerBirdCenterPos.z) + transform.position;

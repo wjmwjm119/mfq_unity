@@ -87,7 +87,7 @@ Shader "@Moblie_WJM_CubeMap"
 				half4 uv1And2:TEXCOORD0;
 				float3 worldPos:TEXCOORD1;
 				half2 unityLightMapUV:TEXCOORD2;
-				half3 viewDir : TEXCOORD3;
+				float3 viewDir : TEXCOORD3;
 				half3 lightDir : TEXCOORD4;
 				LIGHTING_COORDS(5, 6)
 					fixed fog : TEXCOORD7;
@@ -139,12 +139,12 @@ Shader "@Moblie_WJM_CubeMap"
 			half atten=LIGHT_ATTENUATION(i);		
 
 			half3 h = normalize (_WorldSpaceLightPos0 + i.viewDir);
-			half vh = dot(i.viewDir,h);		
+//			half vh = dot(i.viewDir,h);		
 			half nh = max (0, dot (i.normal, h));
 			
 
 //			half fresnel = 1.0f - saturate(dot(i.viewDir, i.normal));
-			half fresnel = 1.0f - clamp(dot(i.viewDir, i.normal),0.0f,1.0f);
+			float fresnel = 1.0f - clamp(dot(i.viewDir, i.normal),0.0f,1.0f);
 
 			fresnel = pow(fresnel, _FresnelPower);
 			fresnel = min(fresnel + _FresnelBias, 1.0f);
@@ -164,7 +164,7 @@ Shader "@Moblie_WJM_CubeMap"
 
 
 			diffuseColor = lerp(diffuseColor, cubeColor, _Reflect*fresnel);
-
+//			diffuseColor = fresnel;
 
 			half4 lightStrength = 0;
 			#if !defined(LIGHTMAP_ON)

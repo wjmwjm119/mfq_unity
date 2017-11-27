@@ -13,9 +13,12 @@ public class AppBridge : MonoBehaviour
     public ServerProjectInfo serverProjectInfo;
     public DefaultGUI defaultGUI;
     public RemoteGUI remoteGUI;
+    public RemoteManger remoteManger;
     public HXGUI hxGUI;
     public BackAction backAction;
     public AppProjectInfo appProjectInfo;
+
+    public static bool needSendUnloadMessageToUnity;
 
 //  public BackAction backAction;
 
@@ -130,6 +133,13 @@ public class AppBridge : MonoBehaviour
 
     }
 
+
+    public void Load_Test()
+    {
+        Load(JsonUtility.ToJson(appProjectInfo));   
+//        Load(serverProjectInfo.projectInfoJsonFromServer);
+    }
+
     //以下函数为,外部调用Unity函数
     void Load(string info)
     {
@@ -137,6 +147,49 @@ public class AppBridge : MonoBehaviour
         Debug.Log("APP2Unity ReceiveInfo:" + info);
 
         appProjectInfo = JsonUtility.FromJson<AppProjectInfo>(info);
+
+        int remoteUserIDLength = appProjectInfo.remoteUserID.Length;
+        int userIDLenght = appProjectInfo.userID.Length;
+
+        //必须使用10位长度，才能正确建立房间
+        if (remoteUserIDLength > 10)
+        {
+            appProjectInfo.remoteUserID = appProjectInfo.remoteUserID.Substring(remoteUserIDLength - 10, 10);
+        }
+
+        if (userIDLenght > 10)
+        {
+            appProjectInfo.userID = appProjectInfo.userID.Substring(userIDLenght - 10, 10);
+        }
+
+        if (remoteUserIDLength < 10)
+        {
+            Debug.Log(remoteUserIDLength);
+            appProjectInfo.remoteUserID = appProjectInfo.remoteUserID.PadLeft(10,'0');
+        }
+
+        if (userIDLenght < 10)
+        {
+            Debug.Log(remoteUserIDLength);
+            appProjectInfo.userID = appProjectInfo.userID.PadLeft(10,'0');
+        }
+
+        appProjectInfo.userID=appProjectInfo.userID.Remove(0, 1).PadLeft(10,'0');
+
+        if (appProjectInfo.userType == "1")
+        {
+            remoteManger.runAtType = RemoteManger.RunAtType.Master;
+            appProjectInfo.remoteUserID = appProjectInfo.userID.Substring(4, 6).PadLeft(10, '0');
+        }
+        else if (appProjectInfo.userType == "2")
+        {
+            remoteManger.runAtType = RemoteManger.RunAtType.Slave;
+            appProjectInfo.remoteUserID = appProjectInfo.remoteUserID.Substring(4, 6).PadLeft(10, '0');
+        }
+        remoteManger.userID = appProjectInfo.userID;
+        remoteManger.remoteID = appProjectInfo.remoteUserID;
+
+
         serverProjectInfo.LoadServerProjectInfo(appProjectInfo.dataServer, appProjectInfo.dataServer,appProjectInfo.projectID, appProjectInfo.sceneLoadMode);
     }
 
@@ -325,6 +378,7 @@ public class AppBridge : MonoBehaviour
         public string mobileNetworkDownload;
         public string userID;
         public string remoteUserID;
+        public string remoteUserHeadUrl;
         public string userType;
         public string isRemote;
         public string remoteServer;

@@ -17,7 +17,9 @@ public class SimpleVR : MonoBehaviour
     public Camera leftEyeCamera;
     public Camera rightEyeCamera;
 
-
+    public CanveGroupFade vrViewCanveGroupFade;
+    public RawImage leftViewImage;
+    public RawImage rightViewImage;
 
     public Gyroscope gyroscope;
 
@@ -30,14 +32,25 @@ public class SimpleVR : MonoBehaviour
     Ray ray;
     RaycastHit hit;
 
+	CameraClearFlags orginCameraClearFlags;
+	Color orginBackgroundColor;
+
     public void OpenVRGlass()
     {
+
+//     leftViewImage.rectTransform.anchoredPosition = new Vector2(-0.25f * Screen.width, 0);
+//     leftViewImage.rectTransform.sizeDelta = new Vector2(-0.5f * Screen.width, 0);
+//     rightViewImage.rectTransform.anchoredPosition = new Vector2(0.25f * Screen.width, 0);
+//     rightViewImage.rectTransform.sizeDelta = new Vector2(-0.5f * Screen.width, 0);
+//     rightViewImage
+
         defaultGUI.AlphaPlayBackward();
         CameraUniversal inCamera = globalManager.GetComponent<SceneInteractiveManger>().currentActiveSenceInteractiveInfo.cameraUniversalCenter.currentCamera;
         Input.gyro.enabled = true;
 
         cameraUniversal = inCamera;
-        cameraUniversal.GetComponent<Camera>().enabled = false;
+//      cameraUniversal.GetComponent<Camera>().enabled = false;
+
         leftEyeCamera.enabled = true;
         rightEyeCamera.enabled = true;
 
@@ -49,13 +62,22 @@ public class SimpleVR : MonoBehaviour
 
         leftEyeCamera.cullingMask = inCamera.GetComponent<Camera>().cullingMask;
         rightEyeCamera.cullingMask = inCamera.GetComponent<Camera>().cullingMask;
+		orginCameraClearFlags = cameraUniversal.GetComponent<Camera> ().clearFlags;
+		orginBackgroundColor = cameraUniversal.GetComponent<Camera> ().backgroundColor;
+
+		cameraUniversal.GetComponent<Camera>().cullingMask=0;
+		cameraUniversal.GetComponent<Camera> ().clearFlags = CameraClearFlags.SolidColor;
+		cameraUniversal.GetComponent<Camera> ().backgroundColor = Color.white;
 
 
+        vrViewCanveGroupFade.AlphaPlayForward();
     }
 
     public void CloseVRGlass()
     {
-        Input.gyro.enabled = true;
+        vrViewCanveGroupFade.AlphaPlayBackward();
+
+        Input.gyro.enabled = false;
         this.transform.parent = globalManager;
         this.transform.localPosition = Vector3.zero;
         this.transform.localRotation = Quaternion.identity;
@@ -64,9 +86,14 @@ public class SimpleVR : MonoBehaviour
 
         leftEyeCamera.enabled = false;
         rightEyeCamera.enabled = false;
-        cameraUniversal.GetComponent<Camera>().enabled = true;
+//      cameraUniversal.GetComponent<Camera>().enabled = true;
+
+		cameraUniversal.GetComponent<Camera>().cullingMask=leftEyeCamera.cullingMask;
+		cameraUniversal.GetComponent<Camera> ().clearFlags = orginCameraClearFlags;
+		cameraUniversal.GetComponent<Camera> ().backgroundColor = orginBackgroundColor;
+
         cameraUniversal.ResetCameraStateToInitial();
-//        cameraUniversal.vrMoveForward = false;
+//      cameraUniversal.vrMoveForward = false;
         cameraUniversal = null;
         defaultGUI.AlphaPlayForward();
 

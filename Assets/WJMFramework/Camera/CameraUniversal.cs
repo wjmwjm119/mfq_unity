@@ -106,6 +106,8 @@ public class CameraUniversal : MonoBehaviour
 
     public bool isARCamera = false;
 
+    //双指控制抬头低头
+    public bool inZoomState;
 
     public void SetYSmooth(float inF)
     {
@@ -139,13 +141,12 @@ public  void TouchDown(Vector2 pos)
             {
                 Xcount = 0;
             }
+
         }
     }
 
     public  void TouchMove(Vector2 pos, Vector2 offset)
     {
-        
-
         if (cameraEnableState&& pressed)
         {
             SleepWake();
@@ -154,6 +155,18 @@ public  void TouchDown(Vector2 pos)
             Ycount = countYBegin + 0.02f * offset.y * sensitivityY;
         }
     }
+
+    
+    public void TouchMoveForLookupAndLookDown(Vector2 pos, Vector2 offset)
+    {
+        if (cameraEnableState)
+        {
+            SleepWake();
+            Xcount = countXBegin + 0.02f * offset.x * sensitivityX;
+            Ycount = countYBegin + 0.02f * offset.y * sensitivityY;
+        }
+    }
+    
 
     public  void MouseScroll(float scroll)
     {
@@ -261,7 +274,7 @@ public  void TouchDown(Vector2 pos)
         if(!isARCamera)
         UpdatePosition();
 
-        if (pressed&& maximumZ < 0.1f)
+        if (!inZoomState&&pressed && maximumZ < 0.1f)
         {
             if (currentTouchPos.y < 0.3f * Screen.height)
             {

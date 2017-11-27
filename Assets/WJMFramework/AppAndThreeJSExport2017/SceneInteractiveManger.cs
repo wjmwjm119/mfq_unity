@@ -467,6 +467,7 @@ public class SceneInteractiveManger : MonoBehaviour
 
             defaultGUI.DisplayDefaultGUI();
 
+
         }
         else
         {
