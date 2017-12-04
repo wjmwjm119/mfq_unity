@@ -80,7 +80,7 @@ public class NetCtrlManager : MonoBehaviour
         public UnityWebRequest request;
         public UnityWebRequestAsyncOperation asyncOpertion;
 
-        const int timeOut=10;
+        const int timeOut=6;
         int finalTimeOut = 0;
         const int retryCount = 2;
         public int currentRetryCount = 0;

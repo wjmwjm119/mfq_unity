@@ -5,11 +5,13 @@ using System;
 using System.Text;
 using System.Net;
 using System.Threading;
-using System.Net.Sockets;
-    
+using System.Net.Sockets;    
+
 public class MFQTcpClient 
 {
-    const string SERVERNAME = "hlf.meifangquan.com";
+//  public static string SERVERNAME = "hlf.meifangquan.com";
+    public static string SERVERNAME = "";
+    public static IPAddress remoteIPAddress;
     const int PORT = 7891;          
     const int BUFFERLENGTH = 256;
 
@@ -22,29 +24,66 @@ public class MFQTcpClient
 //  byte[] writeBuffer;
 
     public bool hasInit;
+    public bool isConnecting;
     bool isWriting;
     bool isReading;
+    int retryCount;
 
     RemoteManger remoteManger;
 
+    public bool IsStillConnectd()
+    {
+        return tcpClient.Client.Connected;
+    }
+
     public MFQTcpClient(RemoteManger r)
     {
+        retryCount = 0;
         remoteManger = r;
         tcpClient = new TcpClient();
 
         tcpClient.SendBufferSize = BUFFERLENGTH;
         tcpClient.ReceiveBufferSize = BUFFERLENGTH;
 
-        try
-        {
-            tcpClient.BeginConnect(SERVERNAME, PORT, connectCallback, null);
-        }
-        catch(Exception e)
-        {
-            Debug.LogError(e.Message);
-            GlobalDebug.Addline(e.Message);
-        }  
+        StartConnection();
+
     }
+
+    public void StartConnection()
+    {
+        isConnecting = true;
+
+        retryCount++;
+        if (retryCount < 3)
+        {
+
+            try
+            {                
+                string log = "正在连接服务器，第" + retryCount + "次";
+                Debug.Log(log);
+                GlobalDebug.Addline(log);
+                remoteManger.remoteGUI.SetHelpInfoString(log);
+
+                // tcpClient.BeginConnect(SERVERNAME, PORT, connectCallback, null);
+                tcpClient.BeginConnect(remoteIPAddress, PORT, connectCallback, null);
+            }
+            catch (Exception e)
+            {
+
+                Debug.LogError(e.Message);
+                GlobalDebug.Addline(e.Message);
+            }
+        }
+        else
+        {
+            remoteManger.remoteGUI.SetHelpInfoString("连接服务器失败，请挂断重试");
+        }
+
+
+
+    }
+
+
 
     void connectCallback(IAsyncResult iAsyncResult)
     {
@@ -60,12 +99,17 @@ public class MFQTcpClient
         }
         else
         {
+            isConnecting = false;
             connectResult = "连接失败";
             hasInit = false;
+            
         }
-
+        
         tcpClient.EndConnect(iAsyncResult);
     }
+
+
+
 
     /// <summary>
     /// 当前的服务器会处理收到的请求,如果请求没有被处理,服务器已有的readbuffer不会被清空.如果Client再多次发送将发生Write错误.这时服务上的readbuffer应该是溢出
@@ -82,16 +126,31 @@ public class MFQTcpClient
     {
         try
         {
+            
             isWriting = true;
             bytesStream.BeginWrite(needSendBytes, 0, needSendBytes.Length, WriteBufferCallBack, null);
         }
         catch(Exception e)
-        {
+        {    
             string log = e.Message;
             Debug.Log(log);
             Debug.LogWarning(log);
             Debug.LogError(log);
             GlobalDebug.Addline(log);
+
+            //目前知道的是此链接会被同样的申请房间挤下来
+            if (!tcpClient.Connected)
+            {
+                remoteManger.ReEnterRoom();
+ //               log="Scoket断开";
+ //               Debug.Log(log);
+ //               Debug.LogWarning(log);
+ //               Debug.LogError(log);
+ //               GlobalDebug.Addline(log);
+
+            }
+
+
         }
     }
 
@@ -100,7 +159,8 @@ public class MFQTcpClient
     {
         bytesStream.EndWrite(iAsyncResult);
         isWriting = false;
-//        Debug.Log("WriteEnd");
+        //      Debug.Log("WriteEnd");
+//        bytesStream.Flush();
         GlobalDebug.Addline("WriteEnd");
         if (remoteManger.waitingAck)
         {

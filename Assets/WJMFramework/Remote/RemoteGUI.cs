@@ -16,6 +16,8 @@ public class RemoteGUI : MonoBehaviour
     public CanveGroupFade avatar;
     public RawImage avatarICO;
 
+    public CanveGroupFade bg_Group_Trriger;
+
     float currentConnectPastTime;
     int currentTimeInt;
     int hour;
@@ -26,9 +28,10 @@ public class RemoteGUI : MonoBehaviour
     string tickString;
     string helpInfo;
 
-    public Text[] infoLabelGroup;
+    bool hasFinishExitOnlineTalk;
+    bool hasHeadIcoLoaded;
 
-    bool lastIsOtherSideOnline;
+    public Text[] infoLabelGroup;
 
 
     void Update()
@@ -51,29 +54,37 @@ public class RemoteGUI : MonoBehaviour
             infoLabelGroup[3].text = infoLabelGroup[2].text;
         }
 
-        if (lastIsOtherSideOnline != remoteManger.isOtherSideOnline)
+		/*
+        if (remoteManger.isOtherSideOnline != remoteManger.lastIsOtherSideOnline)
         {
-            lastIsOtherSideOnline = remoteManger.isOtherSideOnline;
-            if (lastIsOtherSideOnline)
+            remoteManger.lastIsOtherSideOnline = remoteManger.isOtherSideOnline;
+
+            if (remoteManger.isOtherSideOnline)
             {
+                currentConnectPastTime = 0;
                 SucessConnect();
             }
             else
             {
-                //LostConnect();
-                //网络掉线
-                OKCloseOnLineTalk();
-
+                //各种原因结束
+                FinishOnLineTalk();
             }
-
         }
-
-
+		*/
 
     }
 
+	public void CheckConnectState(bool isOtherOnline)
+	{
+
+
+
+	}
+		
+
     public void LoadAvatarICO()
     {
+
 
     }
 
@@ -88,67 +99,126 @@ public class RemoteGUI : MonoBehaviour
         helpInfo = info;
     }
 
-    public void SucessConnect()
+    public void SucessConnectGUI()
     {
+        remoteManger.isOtherSideOnline = true;
+        remoteManger.lastIsOtherSideOnline = true;
+
         if (remoteManger.runAtType == RemoteManger.RunAtType.Slave)
             touchBlock.AlphaPlayForward();
 
         SetHelpInfoString("成功连线!开始讲盘");
         infoLabelGroup[4].text ="已连接";
         infoLabelGroup[5].text ="已连接";
+        GlobalDebug.Addline("成功连线!开始讲盘");
+        Debug.Log("成功连线!开始讲盘");
 
         bg_Group.AlphaPlayBackward();
 
+        //只要连接上后，全屏的连接提示就不使用；
+        bg_Group_Trriger.AlphaPlayBackward();
 
-        Loading loading = loadingManager.AddALoading(4);
-        netCtrlManager.WebRequest("Loading:" + "HeadImage",appBridge.appProjectInfo.remoteUserHeadUrl, loading.LoadingAnimation,
-        (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => { Debug.LogError("头像下载失败！"); },
-         null,
-         (DownloadHandlerTexture t) =>
-         {
-             avatarICO.texture = t.texture;
-         },
-         null
-         );
+
+        if (!hasHeadIcoLoaded)
+        {
+            Loading loading = loadingManager.AddALoading(4);
+            netCtrlManager.WebRequest("Loading:" + "HeadImage", appBridge.appProjectInfo.remoteUserHeadUrl, loading.LoadingAnimation,
+            (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => { Debug.LogError("头像下载失败！"); },
+             null,
+             (DownloadHandlerTexture t) =>
+             {
+                 avatarICO.texture = t.texture;
+                 hasHeadIcoLoaded = true;
+             },
+             null
+             );
+        }//这是重新连接后的状况
+        else
+        {
+
+        }
 
 
     }
 
-    public void LostConnect()
+
+    public void ReConnectGUI()
     {
-        SetHelpInfoString("对方已掉线,等待对方重新连接");
+        SetHelpInfoString("已掉线,开始重新连接");
         infoLabelGroup[2].text = "--:--:--";
         infoLabelGroup[3].text = infoLabelGroup[2].text;
-        infoLabelGroup[4].text = "已掉线";
-        infoLabelGroup[5].text = "已掉线";
-
-        bg_Group.AlphaPlayForward();
-    
+        infoLabelGroup[4].text = "连线中";
+        infoLabelGroup[5].text = "连线中";
+        bg_Group.AlphaPlayForward(); 
     }
 
+  
     
-
-    public void OKCloseOnLineTalk()
+    public void OKCloseOnLineTalk(string invokeFrom)
     {
+        if (!remoteManger.lastIsOtherSideOnline)
+        {
+            FinishOnLineTalk(invokeFrom);
+        }
+        else
+        {
+            //向对方发送退出命令
+            remoteManger.SendCtrlMessage(new RemoteGather.RemoteMessage(252).GetBytesData(), false);
+            //执行一个延迟3秒的强制退出
+            StartCoroutine(DelayExitOnLineTalk_IE());
+        }
+    }
+
+    IEnumerator DelayExitOnLineTalk_IE()
+    {
+        yield return new WaitForSeconds(4f);
+
+        if (!hasFinishExitOnlineTalk)
+        {
+            FinishOnLineTalk("4秒强制退出");
+        }
+
+    }
+
+
+
+    public void FinishOnLineTalk(string invokeFrom)
+    {
+
+        string logStr = "结束讲盘 InvokeFrom:" + invokeFrom;
+        Debug.Log(logStr);
+        GlobalDebug.Addline(logStr);
+
+        touchBlock.AlphaPlayBackward();
         exitOnlineTalk.AlphaPlayBackward();
         GetComponent<CanveGroupFade>().AlphaPlayBackward();
-
-        remoteManger.DisConnect();
-
-        appBridge.Unity2App("unityCloseRemote","0");
-        Debug.Log("unityCloseRemote");
-        GlobalDebug.Addline("unityCloseRemote");
+        StartCoroutine(FinishOnLineTalk_IE());
     }
+
+    IEnumerator FinishOnLineTalk_IE()
+    {
+        yield return new WaitForSeconds(0.3f);
+        remoteManger.DisConnect();
+        yield return new WaitForSeconds(0.2f);
+
+        if (!hasFinishExitOnlineTalk)
+        {
+            appBridge.Unity2App("unityCloseRemote", "0");
+            string logStr = "unityCloseRemote";
+            Debug.Log(logStr);
+            GlobalDebug.Addline(logStr);
+            hasFinishExitOnlineTalk = true;
+        }
+
+    }
+
 
     //由app控制的关闭远程讲盘
     public void AppCloseOnLineTalk()
     {
-        exitOnlineTalk.AlphaPlayBackward();
-        GetComponent<CanveGroupFade>().AlphaPlayBackward();
-
-        remoteManger.DisConnect();
-
-
+//        exitOnlineTalk.AlphaPlayBackward();
+//        GetComponent<CanveGroupFade>().AlphaPlayBackward();
+//        remoteManger.DisConnect();
     }
 
 

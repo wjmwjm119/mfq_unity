@@ -21,6 +21,7 @@ public class ServerProjectInfo : MonoBehaviour
     public ImageCache imageCache;
 
     public ProjectRootInfo projectRootInfo;
+    public TextTable proInfoTextTable;
     public Text warningLabel;
     public Text warningLabel2;
 
@@ -29,6 +30,7 @@ public class ServerProjectInfo : MonoBehaviour
     OnServerProjectInfoLoaded onServerProjectInfoLoaded;
 
     public bool hasLocalCached = false;
+    public bool loadSceneFromCache = false;
 
     [System.Serializable]
     public class OnServerProjectInfoLoaded : UnityEvent<string>
@@ -52,12 +54,13 @@ public class ServerProjectInfo : MonoBehaviour
 
     public void LoadServerProjectInfo(string rojectInfoServerURL, string assetBundleURL, string projectid, string sceneLoadMode, bool loadLocalScene = false)
     {
+//      defaultGUI.DisplayDefaultGUI();
 
         pathAndURL.assetBundleServerUrl = assetBundleURL;
-
         pathAndURL.projectInfoServerUrl = rojectInfoServerURL;
 
         appBridge.appProjectInfo.sceneLoadMode = sceneLoadMode;
+        
 
         onServerProjectInfoLoaded = new OnServerProjectInfoLoaded();
 
@@ -86,12 +89,16 @@ public class ServerProjectInfo : MonoBehaviour
                   loading.LoadingAnimation,
                  (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => 
                  {
-                     Debug.Log("ServerProjectInfo Load Failed!");
+                     Debug.Log("Cant Get ServerProjectInfo From Server");
                      //网络未连接且
                      if (hasLocalCached)
                      {
+                         loadSceneFromCache = true;
+
                          projectRootInfo = JsonUtility.FromJson<ProjectRootInfo>(File.ReadAllText(pathAndURL.localProjectInfoPath));
                          projectRootInfo.data.projectid = projectid;
+
+//                       Debug.Log(File.ReadAllText(pathAndURL.localProjectInfoPath));
                          PrcessProjectInfo(projectRootInfo, true);
                          loading.FinishLoading();
                      }
@@ -101,7 +108,9 @@ public class ServerProjectInfo : MonoBehaviour
                      }
                  },
                  (DownloadHandler t) =>
-                 {     
+                 {
+                     loadSceneFromCache = false;
+
                      ProcessProjectInfoText(projectid,t.text);
                  },
                   null,
@@ -117,7 +126,7 @@ public class ServerProjectInfo : MonoBehaviour
         projectInfoJsonFromServer = infoText;
         projectRootInfo = JsonUtility.FromJson<ProjectRootInfo>(infoText);
         projectRootInfo.data.projectid = inProjectid;
-        //Debug.Log(projectRootInfo.data.proName);
+//        Debug.Log(infoText);
 
         if (projectRootInfo.data.proName == null)
         {
@@ -136,7 +145,7 @@ public class ServerProjectInfo : MonoBehaviour
 
     public void SaveProjectInfoToLocal()
     {
-        if (projectInfoJsonFromServer != "")
+        if (!loadSceneFromCache&&projectInfoJsonFromServer != "")
         {
             File.WriteAllText(pathAndURL.localProjectInfoPath, projectInfoJsonFromServer);
             Debug.Log("缓存当前项目");
@@ -162,6 +171,10 @@ public class ServerProjectInfo : MonoBehaviour
         {
             warningLabel2.text = "";
         }
+
+        proInfoTextTable.SetString(inProjectRootInfo.data.proName, inProjectRootInfo.data.proDiscr);
+
+
 
         imageCache.allNetTextrue2D = new List<NetTexture2D>();
 
@@ -293,6 +306,7 @@ public class ProjectInfo
 {
     public string projectid;
     public string proName;
+    public string proDiscr;
     public string declareSwitch;
     public string declareContent;
     public QwImage[] qwInfo;

@@ -465,8 +465,7 @@ public class SceneInteractiveManger : MonoBehaviour
                 toInteractiveScene.meshRoot.gameObject.SetActive(true);
             mainSenceInteractiveInfo = toInteractiveScene;
 
-            defaultGUI.DisplayDefaultGUI();
-
+//            defaultGUI.DisplayDefaultGUI();
 
         }
         else
@@ -504,7 +503,7 @@ public class SceneInteractiveManger : MonoBehaviour
         MeshRenderer[] allChildMeshRenderer = root.GetComponentsInChildren<MeshRenderer>(true);
         for (int i = 0; i < allChildMeshRenderer.Length; i++)
         {
-            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
+//            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
             for (int j = 0; j < allChildMeshRenderer[i].sharedMaterials.Length; j++)
             {
                 allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);
@@ -517,7 +516,7 @@ public class SceneInteractiveManger : MonoBehaviour
         SkinnedMeshRenderer[] allChildMeshRenderer = root.GetComponentsInChildren<SkinnedMeshRenderer>(true);
         for (int i = 0; i < allChildMeshRenderer.Length; i++)
         {
-            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
+//            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
             for (int j = 0; j < allChildMeshRenderer[i].sharedMaterials.Length; j++)
             {
                 allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);

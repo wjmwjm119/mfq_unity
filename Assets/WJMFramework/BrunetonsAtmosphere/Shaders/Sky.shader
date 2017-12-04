@@ -34,7 +34,7 @@ Shader "BrunetonsAtmosphere/Sky"
 			#define betaR  float3(0.0058f, 0.0135f, 0.0331f)
 			#define mieG 0.75f
 
-			#define M_PI 3.141592
+			#define M_PI 3.14152
 			#define Rg 6360000.0
 			#define Rt 6420000.0
 			#define RL 6421000.0

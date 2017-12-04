@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Unload : MonoBehaviour
 {
-
+    public ServerProjectInfo serverProjectInfo;
     public AssetBundleManager assetBundleManager;
     public AppBridge appBridge;
 
@@ -28,6 +28,14 @@ public class Unload : MonoBehaviour
             appBridge.Unity2App("unityUnloadDone");
             Debug.Log("unityUnloadDone");
             GlobalDebug.Addline("unityUnloadDone");
+
+			GlobalDebug.Clear ();
+
+            if (serverProjectInfo != null)
+            {
+                serverProjectInfo.LoadServerProjectInfo("http://mfq.meifangquan.com/", "http://mfq.meifangquan.com/", "201700000259", "0");
+            }
+
         }
 
 	}
@@ -46,6 +54,9 @@ public class Unload : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
+        RemoteGather.hasInit = false;
+
+        yield return new WaitForEndOfFrame();
         SceneManager.LoadSceneAsync(0);
     }
 

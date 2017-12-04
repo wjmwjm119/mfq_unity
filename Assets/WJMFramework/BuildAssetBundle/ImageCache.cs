@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class ImageCache : MonoBehaviour
 {
 
-//  https://123.59.40.145/APP/map.png
+//  https://123.5.40.145/APP/map.png
 //  public RawImage rawImage;
     public PathAndURL pathAndURL;
     public ServerProjectInfo serverProjectInfo;

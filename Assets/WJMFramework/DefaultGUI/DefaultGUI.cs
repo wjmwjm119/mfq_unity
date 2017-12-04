@@ -9,6 +9,7 @@ public class DefaultGUI : MonoBehaviour
     public CanveGroupFade defaultGUIRoot;
     public CanveGroupFade mainBtnGroup;
     public ImagePlayer2 quweiImagePlayer;
+    public CanveGroupFade triggerExit;
     public CanveGroupFade triggerHXList;
     public CanveGroupFade triggerXFGroup;
     public CanveGroupFade triggerBackBtn;
@@ -21,7 +22,6 @@ public class DefaultGUI : MonoBehaviour
 
     public CanveGroupFade leftWarning;
     public CanveGroupFade rightWarning;
-
 
     bool oneTime = false;
 
@@ -43,24 +43,26 @@ public class DefaultGUI : MonoBehaviour
 //        DisplayDefaultGUI();
     }
 
-    public void DisplayDefaultGUI()
-    {
-
-        if (lastIsLandscape != isLandscape)
+    /*
+        public void DisplayDefaultGUI()
         {
-            lastIsLandscape = isLandscape;
+            Debug.Log("DisplayDefaultGUI");
 
-            if (isLandscape)
+            if (lastIsLandscape != isLandscape)
             {
-                Landscape(currentMusicState);
-            }
-            else
-            {
-                SetPortraitGUIState();
-            }
+                lastIsLandscape = isLandscape;
 
-         }
-    }
+                if (isLandscape)
+                {
+                    Landscape(currentMusicState);
+                }
+                else
+                {
+                    SetPortraitGUIState();
+                }
+            }
+        }
+    */
 
     //全屏
     public void Landscape(string musicState)
@@ -74,13 +76,14 @@ public class DefaultGUI : MonoBehaviour
         triggerHXList.AlphaPlayForward();
         triggerXFGroup.AlphaPlayForward();
         triggerBackBtn.AlphaPlayForward();
+        triggerExit.AlphaPlayForward();
         triggerVRBtn.AlphaPlayForward();
         triggerShare.AlphaPlayForward();
         triggerEnterFangJianPortrait.AlphaPlayBackward();
 
         currentMusicState = musicState;
         Screen.orientation = ScreenOrientation.LandscapeLeft;
-    
+
         appBridege.Unity2App("unityLandscape");
         Debug.Log("unityLandscape");
         GlobalDebug.Addline("unityLandscape");
@@ -100,22 +103,15 @@ public class DefaultGUI : MonoBehaviour
             triggerMusic.AlphaPlayBackward();
         }
 
-    }
+        if (appBridege.appProjectInfo.sceneLoadMode == "9")
+        {
+            triggerExit.AlphaPlayBackward();
+            triggerVRBtn.AlphaPlayBackward();
+            triggerShare.AlphaPlayBackward();
+            AppBridge.isInRemoteState = true;
+        }
 
-
-    public void SetPortraitGUIState()
-    {
-        leftWarning.AlphaPlayForward();
-        rightWarning.AlphaPlayBackward();
-        defaultGUIRoot.AlphaPlayForward();
-        mainBtnGroup.AlphaPlayBackward();
-        triggerHXList.AlphaPlayBackward();
-        triggerXFGroup.AlphaPlayBackward();
-        triggerBackBtn.AlphaPlayBackward();
-        triggerVRBtn.AlphaPlayBackward();
-        triggerShare.AlphaPlayBackward();
-        triggerEnterFangJianPortrait.AlphaPlayForward();
-        triggerMusic.AlphaPlayBackward();
+            
 
     }
 
@@ -123,14 +119,31 @@ public class DefaultGUI : MonoBehaviour
     //半屏
     public void Portrait()
     {
-        SetPortraitGUIState();
+
+        leftWarning.AlphaPlayForward();
+        rightWarning.AlphaPlayBackward();
+        defaultGUIRoot.AlphaPlayForward();
+        mainBtnGroup.AlphaPlayBackward();
+        triggerHXList.AlphaPlayBackward();
+        triggerXFGroup.AlphaPlayBackward();
+        triggerBackBtn.AlphaPlayBackward();
+        triggerExit.AlphaPlayBackward();
+        triggerVRBtn.AlphaPlayBackward();
+        triggerShare.AlphaPlayBackward();
+        triggerEnterFangJianPortrait.AlphaPlayForward();
+        triggerMusic.AlphaPlayBackward();
 
         Screen.orientation = ScreenOrientation.Portrait;
 
         appBridege.Unity2App("unityProtrait");
         Debug.Log("unityProtrait");
         GlobalDebug.Addline("unityProtrait");
+
     }
+
+
+
+
 
     public void OpenMusic()
     {

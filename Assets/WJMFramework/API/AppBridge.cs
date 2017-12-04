@@ -20,6 +20,8 @@ public class AppBridge : MonoBehaviour
 
     public static bool needSendUnloadMessageToUnity;
 
+    public static bool isInRemoteState;
+
 //  public BackAction backAction;
 
     public void ExitLandscape()
@@ -63,6 +65,7 @@ public class AppBridge : MonoBehaviour
 #endif
 
 #endif
+    
 
     //Unity调用外部代码
     public void Unity2App(string methodName, params object[] args)
@@ -88,7 +91,7 @@ public class AppBridge : MonoBehaviour
 
 #if !TEST
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         switch(methodName) {
                 case "unityReady":
                     unityReady();
@@ -137,7 +140,7 @@ public class AppBridge : MonoBehaviour
     public void Load_Test()
     {
         Load(JsonUtility.ToJson(appProjectInfo));   
-//        Load(serverProjectInfo.projectInfoJsonFromServer);
+//      Load(serverProjectInfo.projectInfoJsonFromServer);
     }
 
     //以下函数为,外部调用Unity函数
@@ -147,6 +150,17 @@ public class AppBridge : MonoBehaviour
         Debug.Log("APP2Unity ReceiveInfo:" + info);
 
         appProjectInfo = JsonUtility.FromJson<AppProjectInfo>(info);
+
+        string[] ipS = appProjectInfo.remoteServer.Split('.');
+        if (ipS.Length == 4)
+        {
+            byte[] ipBytes = new byte[] { (byte)int.Parse(ipS[0]), (byte)int.Parse(ipS[1]), (byte)int.Parse(ipS[2]), (byte)int.Parse(ipS[3]) };
+            MFQTcpClient.remoteIPAddress = new System.Net.IPAddress(ipBytes);
+        }
+        else
+        {
+            Debug.LogError("RemoteServerIPAdressError!");
+        }
 
         int remoteUserIDLength = appProjectInfo.remoteUserID.Length;
         int userIDLenght = appProjectInfo.userID.Length;
@@ -164,13 +178,13 @@ public class AppBridge : MonoBehaviour
 
         if (remoteUserIDLength < 10)
         {
-            Debug.Log(remoteUserIDLength);
+//            Debug.Log(remoteUserIDLength);
             appProjectInfo.remoteUserID = appProjectInfo.remoteUserID.PadLeft(10,'0');
         }
 
         if (userIDLenght < 10)
         {
-            Debug.Log(remoteUserIDLength);
+//            Debug.Log(remoteUserIDLength);
             appProjectInfo.userID = appProjectInfo.userID.PadLeft(10,'0');
         }
 
@@ -219,10 +233,9 @@ public class AppBridge : MonoBehaviour
 
     void CloseRemote(string state)
     {
-        GlobalDebug.Addline("APP2Unity CloseRemote ,state:"+state);
-        Debug.Log("APP2Unity CloseRemote ,state:" + state);
-
-        remoteGUI.AppCloseOnLineTalk();
+//        GlobalDebug.Addline("APP2Unity CloseRemote ,state:"+state);
+//        Debug.Log("APP2Unity CloseRemote ,state:" + state);
+//        remoteGUI.AppCloseOnLineTalk();
     }
 
     void Home()
@@ -375,16 +388,16 @@ public class AppBridge : MonoBehaviour
         public string sceneLoadMode;
         public string projectName;
         public string dataServer;
-        public string mobileNetworkDownload;
+//        public string mobileNetworkDownload;
         public string userID;
         public string remoteUserID;
         public string remoteUserHeadUrl;
         public string userType;
-        public string isRemote;
+//        public string isRemote;
         public string remoteServer;
-        public string portraitWidth;
-        public string portraitHeight;
-        public string debug;
+//        public string portraitWidth;
+//        public string portraitHeight;
+//        public string debug;
     }
 
     //App2Unity

@@ -262,7 +262,7 @@ public  void TouchDown(Vector2 pos)
         if(!playAnimationPath&&maximumZ>1)
         sleepTime += Time.deltaTime;
 
-        if (sleepTime > maxTimeToSleep)
+        if (!AppBridge.isInRemoteState && sleepTime > maxTimeToSleep)
         {
             if(!hasSleep)
             OnSleep();

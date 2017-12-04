@@ -66,12 +66,17 @@ public class GlobalDebug : MonoBehaviour
         }
     }
 
-    static public void Clear()
+	static public void Clear()
     {
-        if (staticGlobalDebug)
-        {
+//        if (staticGlobalDebug)
+//        {
+			for (int i = 0; i < 20; i++)
+			{
+				GlobalInfoString [i] = "";
+			}
+
             GlobalInfoString[20] = "";
-        }
+//        }
 
     }
 

@@ -12,7 +12,7 @@ public class RoadPath : MonoBehaviour
     /// </summary>
     public float baseOffset = 0.5f;
     public float widthPerLane = 3.5f;
-//    public float roadMaxSpeed = 90f;
+//    public float roadMaxSpeed = 0f;
 
 
     public Vector3[] dir;

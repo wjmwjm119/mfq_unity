@@ -36,6 +36,8 @@ public static class RemoteGather
             needSendAckMessages = new List<RemoteMessage>();
             needSendBtnCtrlMessages = new List<RemoteMessage>();
             needProcessMessages = new List<RemoteMessage>();
+            currentCtrlScaleImage = null;
+            currentCameraUniversal = null;
             RemoteMessage.globalID = 0;
             hasInit = true;
             Debug.Log("RemoteGatherInit");
@@ -58,7 +60,7 @@ public static class RemoteGather
                 }
 
                 allImageButton.Add(iBtn.btnNameForRemote, iBtn);
-                string log = "GatherImageBtnCount:" + allImageButton.Count;
+//                string log = "GatherImageBtnCount:" + allImageButton.Count;
 //                Debug.Log(log);
 //                GlobalDebug.Addline(log);
             }
@@ -73,7 +75,7 @@ public static class RemoteGather
             if (!allScaleImage.ContainsKey(iBtn.btnNameForRemote))
             {
                 allScaleImage.Add(iBtn.btnNameForRemote, iBtn);
-                string log = "GatherScaleImageCount:" + allScaleImage.Count;
+//              string log = "GatherScaleImageCount:" + allScaleImage.Count;
 //              Debug.Log(log);
 //              GlobalDebug.Addline(log);
             }
@@ -82,7 +84,8 @@ public static class RemoteGather
 
     public static void AddBtnCtrlMessages(string iBtnName,bool btnState)
     {
-        if (RemoteManger.isUseRemoteGather&&iBtnName != "" && iBtnName.Length < 33)
+//        if (RemoteManger.isUseRemoteGather&&iBtnName != "" && iBtnName.Length < 33)
+        if (iBtnName != "" && iBtnName.Length < 33)
         {
             needSendBtnCtrlMessages.Add(new RemoteMessage(50, iBtnName, btnState));
 //            Debug.Log(needSendBtnCtrlMessages.Count);
@@ -112,6 +115,7 @@ public static class RemoteGather
     {
         //Ascii码
         //对方退出/106
+
         //CameraStateMessage:/49
         //BtnCtrlMessage:/50
         //AreYouReady:/51 对方是否在

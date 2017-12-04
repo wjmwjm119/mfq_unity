@@ -89,7 +89,7 @@ Shader "BrunetonsAtmosphere/PostEffectAtmosphericScattering"
 			// paper formula
 			//float uMuS = 0.5 / RES_MU_S + max((1.0 - exp(-3.0 * muS - 0.6)) / (1.0 - exp(-3.6)), 0.0) * (1.0 - 1.0 / RES_MU_S);
 			// better formula
-			float uMuS = 0.5 / RES_MU_S + (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / RES_MU_S);
+			float uMuS = 0.5 / RES_MU_S + (atan(max(muS, -0.175) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / RES_MU_S);
 
 			float lep = (nu + 1.0) / 2.0 * (RES_NU - 1.0);
 			float uNu = floor(lep);
