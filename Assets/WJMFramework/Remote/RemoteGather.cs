@@ -84,11 +84,10 @@ public static class RemoteGather
 
     public static void AddBtnCtrlMessages(string iBtnName,bool btnState)
     {
-//        if (RemoteManger.isUseRemoteGather&&iBtnName != "" && iBtnName.Length < 33)
         if (iBtnName != "" && iBtnName.Length < 33)
         {
+            if(needSendBtnCtrlMessages!=null)
             needSendBtnCtrlMessages.Add(new RemoteMessage(50, iBtnName, btnState));
-//            Debug.Log(needSendBtnCtrlMessages.Count);
         }
     }
 

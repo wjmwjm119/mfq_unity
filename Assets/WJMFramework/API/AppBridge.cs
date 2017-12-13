@@ -211,7 +211,6 @@ public class AppBridge : MonoBehaviour
     {
         GlobalDebug.Addline("APP2Unity Unload");
         Debug.Log("APP2Unity Unload");
-
         unload.LoadUnloadScene();
     }
 
@@ -220,7 +219,7 @@ public class AppBridge : MonoBehaviour
     {
         GlobalDebug.Addline("APP2Unity Landscape");
         Debug.Log("APP2Unity Landscape");
-        defaultGUI.Landscape(musicState);
+        defaultGUI.Landscape(musicState,true);
 
     }
 
@@ -229,6 +228,22 @@ public class AppBridge : MonoBehaviour
         GlobalDebug.Addline("APP2Unity Portrait");
         Debug.Log("APP2Unity Portrait");
         defaultGUI.Portrait();
+    }
+
+    void ChangeUIOrientation(string orientation)
+    {
+
+        if (orientation == "0")
+        {
+            defaultGUI.Portrait(false);
+        }
+        else if (orientation == "1")
+        {
+            defaultGUI.Landscape(defaultGUI.currentMusicState, false);
+        }
+
+        GlobalDebug.Addline("APP2Unity ChangeUI");
+        Debug.Log("APP2Unity ChangeUI");
     }
 
     void CloseRemote(string state)

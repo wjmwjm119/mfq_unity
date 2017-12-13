@@ -4,7 +4,7 @@
 //2017.6.27
 //2017.6.17
 
-Shader "@Moblie_WJM_WFaceCamera"
+Shader "@Moblie_WJM_WFaceCameraLabel"
 {
 	Properties
 	{
@@ -16,6 +16,7 @@ Shader "@Moblie_WJM_WFaceCamera"
 		_scale("Scale",Range(0,2)) = 0.8
 		_PviotOffsetX("Pviot OffsetX",Range(-1,1)) = 0
 		_PviotOffsetY("Pviot OffsetY",Range(-1,1)) = 0
+		_aniImageCount("Ani Image Count",int)=1
 	}
 
 		SubShader
@@ -59,6 +60,7 @@ Shader "@Moblie_WJM_WFaceCamera"
 		float _PviotOffsetX;
 		float _PviotOffsetY;
 		float _scale;
+		float _aniImageCount;
 
 		struct appdata
 		{
@@ -82,6 +84,7 @@ Shader "@Moblie_WJM_WFaceCamera"
 			v2f o = (v2f)0;
 			o.uv1And2.xy = TRANSFORM_TEX(v.texcoord, _MainTex);
 
+
 			float3 eyePos = UnityObjectToViewPos(float4(v.vertex.xyz, 1)).xyz;
 
 
@@ -101,20 +104,18 @@ Shader "@Moblie_WJM_WFaceCamera"
 
 
 
-			float4 vt = v.vertex*lerp(1,-ori.z*0.005, _sizeBlend);
+			float4 vt = v.vertex*lerp(1,-ori.z*5, _sizeBlend);
 		
 			vt.y = vt.z;
-			vt.xy *= lerp(1, 200, _sizeBlend);
+			vt.xy *= lerp(1, 0.2, _sizeBlend);
 			vt.z = ori.z;
 			vt.xy += ori.xy;
 		
 			o.pos = mul(UNITY_MATRIX_P, vt);
 
-#if USING_FOG
-			float fogCoord = length(eyePos.xyz); // radial fog distance
-			UNITY_CALC_FOG_FACTOR_RAW(fogCoord);
-			o.fog = saturate(unityFogFactor);
-#endif
+
+			o.uv1And2.x=1- (o.uv1And2.x*1/_aniImageCount+floor(_Time.y*_aniImageCount % _aniImageCount)* 1 / _aniImageCount);
+
 
 			TRANSFER_VERTEX_TO_FRAGMENT(o);
 

@@ -17,8 +17,10 @@ public class SenceInteractiveInfo : MonoBehaviour
         loft=3,
         独栋=4,
         联排=5,
-        叠拼=6
+        叠拼=6,
+        Point360=7
     }
+
 
     public SceneType sceneType;
    

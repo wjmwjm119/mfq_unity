@@ -532,7 +532,12 @@ public class ExportSenceData : EditorWindow
             senceHierarchy += ",\"sun\":[" + senceH.sun.transform.forward.x+ "," + senceH.sun.transform.forward.y + "," + (-senceH.sun.transform.forward.z) + "]";
             senceHierarchy += ",\"sunIntensity\":[" + senceH.sun.color.r * senceH.sun.intensity + "," + senceH.sun.color.g * senceH.sun.intensity + "," + senceH.sun.color.b * senceH.sun.intensity + "]";
         }
-
+        else
+        {
+            Debug.LogError("SenceHierarchyInfo物体未设置sun!");
+            return;
+        }
+		
         senceHierarchy += ",\"fogNearAndFar\":[" + senceH.fogNearAndFar.x + "," + senceH.fogNearAndFar.y + "]";
         senceHierarchy += ",\"fogColor\":[" + senceH.fogColor.r + "," + senceH.fogColor.g + "," + senceH.fogColor.b + "]";
 

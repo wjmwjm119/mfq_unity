@@ -68,7 +68,6 @@ public class HXGUI : MonoBehaviour
         huXingInfoLabel.DisplayHuXingInfoLabel(currentSelectHuXingType.GetHuXingTypeInfo());
         pmtImagePlayer.netTexture2DGroup = currentSelectHuXingType.netTexture2DGroup;
 
-
         DisplayHuXingFloorScrollMenu();
 
     }
@@ -76,6 +75,7 @@ public class HXGUI : MonoBehaviour
     public void ExitAR_HX()
     {
         GlobalDebug.Addline("ExitAR_HX");
+
         if (hxScene != null)
             hxScene.huXingType.DisplayAllFloorMesh();
 
@@ -90,7 +90,6 @@ public class HXGUI : MonoBehaviour
     /// <param name="inName"></param>
     public void OnlyEnterHXNK(string inName)
     {
-
         GlobalDebug.Addline("Portrait EnterHXNK");
 
         foreach (SenceInteractiveInfo s in sceneInteractiveManger.senceInteractiveInfoGroup)
@@ -149,7 +148,6 @@ public class HXGUI : MonoBehaviour
     /// </summary>
     public void ExitHXNK()
     {
-
         triggerEnterHX.AlphaPlayForward();
 //      triggerEnterFangJian.transform.localPosition = new Vector3(0, 0, 0);
         //triggerFCZ.transform.localPosition = Vector3.zero;
@@ -189,8 +187,6 @@ public class HXGUI : MonoBehaviour
 
     public void EnterHuXing()
     {
-
-
 
         appBridge.Unity2App("unityOpenRoomType", currentSelectHuXingType.huXingID);
         Debug.Log("unityOpenRoomType:" + currentSelectHuXingType.huXingID);
@@ -236,8 +232,6 @@ public class HXGUI : MonoBehaviour
 
     public void ExitHuXing()
     {
-
-
         CameraUniversalCenter.isInMirrorHX = false;
 
         huXingCameraBG.transform.parent = this.transform;
@@ -383,8 +377,8 @@ public class HXGUI : MonoBehaviour
         hxfbScene = s.mainSenceInteractiveInfo;
 
         //先移除SetImageZoomInAndZoomOutBtnFalse这个方法,再添加.保证只添加了一次
-        hxfbScene.touchCtrl.doubleClickEvent.RemoveListener(DoubleClickHXFBBox);
-        hxfbScene.touchCtrl.doubleClickEvent.AddListener(DoubleClickHXFBBox);
+        hxfbScene.touchCtrl.hxfbColliderTriggerEvent.RemoveListener(DoubleClickHXFBBox);
+        hxfbScene.touchCtrl.hxfbColliderTriggerEvent.AddListener(DoubleClickHXFBBox);
 
         string[] hxNameG = new string[hxSceneHuXingTypeFinal.Length];
         string[] displayNameG = new string[hxSceneHuXingTypeFinal.Length];

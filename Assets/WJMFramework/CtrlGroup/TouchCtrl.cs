@@ -4,7 +4,8 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using UnityEngine.Events;
 
-public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandler
+
+public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandler,IPointerClickHandler
 {
 	public bool globalDebug;
 
@@ -32,35 +33,46 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
     Vector2 aClickPosition;
     Vector2 bClickPosition;
 
+    Ray ray;
+    RaycastHit hit;
+
     int count;
     int count2;
 
     float dpiScaleFactor = 1.0f;
 
+    float touchDownStartTime;
+//    float touchClickEndTime;
+
     //用来关闭缩略图用的
     public UnityEvent touchDownEvent;
 
-
-
 //  [System.Serializable]
-    public class DoubleClickEvent : UnityEvent<PointerEventData>
+    public class ColliderTriggerEvent : UnityEvent<PointerEventData>
     {
 
     }
 
-    public DoubleClickEvent doubleClickEvent;
+    public ColliderTriggerEvent hxfbColliderTriggerEvent;
+
+    override protected void Awake()
+    {
+        hxfbColliderTriggerEvent = new ColliderTriggerEvent();
+    }
+
 
     override protected void Start()
 	{
         dpiScaleFactor = 100.0f / Screen.dpi;
         touchDownEvent = new UnityEvent();
-        doubleClickEvent = new DoubleClickEvent();
     }
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
-  //      doubleClickEvent.is
+        if(touchDownEvent!=null)
         touchDownEvent.Invoke();
+
+        touchDownStartTime = Time.time;
 
         if (cameraCenter != null)
         {
@@ -104,7 +116,7 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
 
             if (Mathf.Abs(mTimeA - mTimeB) < 0.3f && Vector2.Distance(aClickPosition, bClickPosition) < 30)
             {
-                doubleClickEvent.Invoke(eventData);
+                hxfbColliderTriggerEvent.Invoke(eventData);
                 cameraCenter.currentCamera.DoubleClick(eventData.position);
 
             }
@@ -113,7 +125,6 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
 
             xConutOffset = 0;
             yConutOffset = 0;
-
             firstPosition = eventData.position;
 
 #endif
@@ -135,7 +146,22 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
         }
     }
 
-	public void OnDrag(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData)
+    {
+/*
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+        ClickPoint360Collider(eventData);
+#endif
+*/
+        if(Time.time-touchDownStartTime<0.3f)
+        {
+            ClickPoint360Collider(eventData);
+        }
+
+    }
+
+
+    public void OnDrag(PointerEventData eventData)
 	{
 
         if (cameraCenter != null)
@@ -216,6 +242,23 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
         //		needScaleCamera.fieldOfView = scaleFactor;
     }
 
+
+    public void ClickPoint360Collider(PointerEventData p)
+    {
+        if (cameraCenter != null)
+        {
+            ray = cameraCenter.currentCamera.GetComponent<Camera>().ScreenPointToRay(p.position);
+
+            if (Physics.Raycast(ray, out hit, 1000))
+            {
+                ColliderTriggerButton c = hit.transform.GetComponent<ColliderTriggerButton>();
+                if (c!= null)
+                {
+                    c.ExeTriggerEvent();
+                }       
+            }
+        }
+    }
 }
 
 

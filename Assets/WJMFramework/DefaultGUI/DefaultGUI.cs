@@ -30,7 +30,8 @@ public class DefaultGUI : MonoBehaviour
 
     AudioCtrl audioCtrl;
 
-    string currentMusicState = "1";
+    [HideInInspector]
+    public  string currentMusicState = "1";
 
     void Start()
     {
@@ -65,7 +66,7 @@ public class DefaultGUI : MonoBehaviour
     */
 
     //全屏
-    public void Landscape(string musicState)
+    public void Landscape(string musicState,bool useOrientation)
     {
         triggerMusic.AlphaPlayForward();
         leftWarning.AlphaPlayBackward();
@@ -82,6 +83,8 @@ public class DefaultGUI : MonoBehaviour
         triggerEnterFangJianPortrait.AlphaPlayBackward();
 
         currentMusicState = musicState;
+
+        if(useOrientation)
         Screen.orientation = ScreenOrientation.LandscapeLeft;
 
         appBridege.Unity2App("unityLandscape");
@@ -117,7 +120,7 @@ public class DefaultGUI : MonoBehaviour
 
 
     //半屏
-    public void Portrait()
+    public void Portrait(bool useOrientation = true)
     {
 
         leftWarning.AlphaPlayForward();
@@ -133,6 +136,7 @@ public class DefaultGUI : MonoBehaviour
         triggerEnterFangJianPortrait.AlphaPlayForward();
         triggerMusic.AlphaPlayBackward();
 
+        if(useOrientation)
         Screen.orientation = ScreenOrientation.Portrait;
 
         appBridege.Unity2App("unityProtrait");
