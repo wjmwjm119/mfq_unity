@@ -111,7 +111,7 @@ public class SceneInteractiveManger : MonoBehaviour
                 //加载主场景
                 Loading loadingScene = loadingManager.AddALoading(3);
                 loadingScene.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[0], LoadSceneMode.Additive), "正在加载");
-                loadingScene.OnLoadedEvent.AddListener(() => { StartCoroutine(LoadSenceInteractiveIE()); });
+                loadingScene.OnLoadedEvent.AddListener(() => {StartCoroutine(LoadSenceInteractiveIE()); });
                 break;
 
             case "1":
@@ -154,13 +154,42 @@ public class SceneInteractiveManger : MonoBehaviour
 
     void LoopAdditiveScene(bool loadImageInEnd=true)
     {
+
+
         currentAddSceneID++;
 
         if (currentAddSceneID < assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath.Length)
         {
+            /*
             Loading loadingScene = loadingManager.AddALoading(4);
             loadingScene.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[currentAddSceneID], LoadSceneMode.Additive), "正在加载");
             loadingScene.OnLoadedEvent.AddListener(() => { LoopAdditiveScene(); });
+            */
+
+            
+                        if (assetBundleManager.serverProjectAssetBundlesInfo.sceneTypeSet != null && assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath.Length == assetBundleManager.serverProjectAssetBundlesInfo.sceneTypeSet.Length)
+                        {
+                            if (assetBundleManager.serverProjectAssetBundlesInfo.sceneTypeSet[currentAddSceneID] == 8)
+                            {
+                                Debug.Log("跳过360场景 "+ assetBundleManager.serverProjectAssetBundlesInfo.sceneAssetBundle[currentAddSceneID]);
+                                //跳过360场景,开始加载下个场景
+                                LoopAdditiveScene();
+                            }
+                            else
+                            {
+                                Loading loadingScene = loadingManager.AddALoading(4);
+                                loadingScene.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[currentAddSceneID], LoadSceneMode.Additive), "正在加载");
+                                loadingScene.OnLoadedEvent.AddListener(() => { LoopAdditiveScene(); });
+                            }
+                        }
+                        else
+                        {
+                            Loading loadingScene = loadingManager.AddALoading(4);
+                            loadingScene.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[currentAddSceneID], LoadSceneMode.Additive), "正在加载");
+                            loadingScene.OnLoadedEvent.AddListener(() => { LoopAdditiveScene(); });
+                        }
+            
+
         }
         else if(currentAddSceneID == assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath.Length)
         {
@@ -199,7 +228,14 @@ public class SceneInteractiveManger : MonoBehaviour
     void GetAddSceneName(Scene s,LoadSceneMode l)
     {
         addSceneName = s.name;
+        if(l==LoadSceneMode.Additive)
+        assetBundleManager.hasAddedSceneName.Add(addSceneName);
     }
+
+
+
+    
+    
 
     //简介,配套,交通
     public void MainBtnAction(int toInt)
@@ -235,7 +271,6 @@ public class SceneInteractiveManger : MonoBehaviour
         
 #endif
 
-
         //        Debug.Log(2222);
         s.sceneName = addSceneName;
 
@@ -260,6 +295,10 @@ public class SceneInteractiveManger : MonoBehaviour
                     //屏蔽29层
                     c.GetComponent<Camera>().cullingMask &= 0x5FFFFFFF;
                 }
+            }
+            else if (s.sceneType == SenceInteractiveInfo.SceneType.Point360)
+            {
+
             }
             else
             {      
@@ -357,7 +396,12 @@ public class SceneInteractiveManger : MonoBehaviour
     public void HiddenScene(SenceInteractiveInfo s)
     {
         //隐藏模型，隐藏ui，隐藏event，关闭默认相机
-        if (s.sceneType != SenceInteractiveInfo.SceneType.大场景)
+        if (s.sceneType == SenceInteractiveInfo.SceneType.loft||
+            s.sceneType == SenceInteractiveInfo.SceneType.叠拼||
+            s.sceneType == SenceInteractiveInfo.SceneType.平层||
+            s.sceneType == SenceInteractiveInfo.SceneType.独栋||
+            s.sceneType == SenceInteractiveInfo.SceneType.联排
+            )
         {
             foreach (Transform t in s.huXingType.hxMeshRoot.GetComponentsInChildren<Transform>())
             {
@@ -375,13 +419,11 @@ public class SceneInteractiveManger : MonoBehaviour
                 //关闭所有相机
                 c.DisableCamera();
             }
-
-
-
         }
 
-        if (s.meshRoot != null)
-            s.meshRoot.gameObject.SetActive(false);
+
+            if (s.meshRoot != null)
+                s.meshRoot.gameObject.SetActive(false);
 
             foreach (Canvas c in s.GetComponentsInChildren<Canvas>(true))
             {
@@ -392,7 +434,7 @@ public class SceneInteractiveManger : MonoBehaviour
             {
                 e.gameObject.SetActive(false);
             }
-
+        
 //        s.cameraUniversalCenter.currentCamera.DisableCamera();
 
     }
@@ -439,12 +481,20 @@ public class SceneInteractiveManger : MonoBehaviour
     public void ChangeInteractiveScene(SenceInteractiveInfo toInteractiveScene,bool disableCurrentSceneMesh)
     {
 
+//        Debug.Log(toInteractiveScene.name);
+//        Debug.Log(currentActiveSenceInteractiveInfo.name);
+
         if (toInteractiveScene == currentActiveSenceInteractiveInfo)
         return;
 
         if (currentActiveSenceInteractiveInfo != null&&disableCurrentSceneMesh)
         {
             if (currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.大场景)
+            {
+                if (currentActiveSenceInteractiveInfo.meshRoot != null)
+                    currentActiveSenceInteractiveInfo.meshRoot.gameObject.SetActive(false);
+            }
+            else if (currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.Point360)
             {
                 if (currentActiveSenceInteractiveInfo.meshRoot != null)
                     currentActiveSenceInteractiveInfo.meshRoot.gameObject.SetActive(false);
@@ -456,7 +506,15 @@ public class SceneInteractiveManger : MonoBehaviour
             }
         }
 
-        globalCameraCenter.ChangeCamera(toInteractiveScene.cameraUniversalCenter.cameras[0], 0.0f);
+
+        if (toInteractiveScene.sceneType == SenceInteractiveInfo.SceneType.Point360)
+        {
+            globalCameraCenter.ChangeCamera(toInteractiveScene.cameraUniversalCenter.cameras[1], 0.0f);
+        }
+        else
+        {
+            globalCameraCenter.ChangeCamera(toInteractiveScene.cameraUniversalCenter.cameras[0], 0.0f);
+        }
 
 
         if (toInteractiveScene.sceneType == SenceInteractiveInfo.SceneType.大场景)
@@ -464,9 +522,13 @@ public class SceneInteractiveManger : MonoBehaviour
             if (toInteractiveScene.meshRoot != null)
                 toInteractiveScene.meshRoot.gameObject.SetActive(true);
             mainSenceInteractiveInfo = toInteractiveScene;
-
-//            defaultGUI.DisplayDefaultGUI();
-
+            //            defaultGUI.DisplayDefaultGUI();
+        }
+        else if (toInteractiveScene.sceneType == SenceInteractiveInfo.SceneType.Point360)
+        {
+            if (toInteractiveScene.meshRoot != null)
+                toInteractiveScene.meshRoot.gameObject.SetActive(true);
+            mainSenceInteractiveInfo = toInteractiveScene;
         }
         else
         {
@@ -506,7 +568,15 @@ public class SceneInteractiveManger : MonoBehaviour
 //            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
             for (int j = 0; j < allChildMeshRenderer[i].sharedMaterials.Length; j++)
             {
-                allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);
+                //                Debug.Log(allChildMeshRenderer[i].name);
+                if (allChildMeshRenderer[i].sharedMaterials[j] != null)
+                {
+                    allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);
+                }
+                else
+                {
+                    Debug.LogError(allChildMeshRenderer[i].name+"丢失材质球");
+                }
             }
         }
     }

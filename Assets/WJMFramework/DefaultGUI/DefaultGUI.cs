@@ -17,7 +17,7 @@ public class DefaultGUI : MonoBehaviour
     public CanveGroupFade triggerShare;
     public CanveGroupFade triggerMusic;
     public CanveGroupFade triggerEnterFangJianPortrait;
-
+    public CanveGroupFade point360PointButton_Trigger;
     public ImageButton musicBtn;
 
     public CanveGroupFade leftWarning;

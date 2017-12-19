@@ -1,0 +1,293 @@
+fileFormatVersion: 2
+guid: 1e4669538bd1a1e428bf36f481ee8d43
+timeCreated: 1509964103
+licenseType: Free
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: 190_wall_00
+    100004: 190_wall_01
+    100006: 190_wall_02
+    100008: 190_wall_03
+    100010: 190_wall_04
+    100012: 190_wall_05
+    100014: 190_wall_06
+    100016: 190_wall_07
+    100018: 190_wall_09
+    100020: 190_wall_10
+    100022: 190_wall_11
+    100024: 190_wall_12
+    100026: 190_wall_13
+    100028: 190_wall_14
+    400000: //RootNode
+    400002: 190_wall_00
+    400004: 190_wall_01
+    400006: 190_wall_02
+    400008: 190_wall_03
+    400010: 190_wall_04
+    400012: 190_wall_05
+    400014: 190_wall_06
+    400016: 190_wall_07
+    400018: 190_wall_09
+    400020: 190_wall_10
+    400022: 190_wall_11
+    400024: 190_wall_12
+    400026: 190_wall_13
+    400028: 190_wall_14
+    2300000: 190_wall_00
+    2300002: 190_wall_01
+    2300004: 190_wall_02
+    2300006: 190_wall_03
+    2300008: 190_wall_04
+    2300010: 190_wall_05
+    2300012: 190_wall_06
+    2300014: 190_wall_07
+    2300016: 190_wall_09
+    2300018: 190_wall_10
+    2300020: 190_wall_11
+    2300022: 190_wall_12
+    2300024: 190_wall_13
+    2300026: 190_wall_14
+    3300000: 190_wall_00
+    3300002: 190_wall_01
+    3300004: 190_wall_02
+    3300006: 190_wall_03
+    3300008: 190_wall_04
+    3300010: 190_wall_05
+    3300012: 190_wall_06
+    3300014: 190_wall_07
+    3300016: 190_wall_09
+    3300018: 190_wall_10
+    3300020: 190_wall_11
+    3300022: 190_wall_12
+    3300024: 190_wall_13
+    3300026: 190_wall_14
+    4300000: 190_wall_05
+    4300002: 190_wall_12
+    4300004: 190_wall_11
+    4300006: 190_wall_10
+    4300008: 190_wall_09
+    4300010: 190_wall_04
+    4300012: 190_wall_14
+    4300014: 190_wall_07
+    4300016: 190_wall_02
+    4300018: 190_wall_06
+    4300020: 190_wall_00
+    4300022: 190_wall_13
+    4300024: 190_wall_01
+    4300026: 190_wall_03
+    9500000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BAISEYA
+    second: {fileID: 2100000, guid: e56275873de198a40b525251b2fae77c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CF_CZ
+    second: {fileID: 2100000, guid: 2d824cf5872c036489b9eb66736e8e5e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CF_CZ1
+    second: {fileID: 2100000, guid: 2d824cf5872c036489b9eb66736e8e5e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HEISE
+    second: {fileID: 2100000, guid: 2e6304b89547edf4398d1905c92127c3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HEISE_WUGUANGJINSHU
+    second: {fileID: 2100000, guid: 2e6304b89547edf4398d1905c92127c3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HUISEWUGUANG
+    second: {fileID: 2100000, guid: c719ddd3c7113ee4eb57b0a63429dcef, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: KT_DLS -DM
+    second: {fileID: 2100000, guid: 407dd3cfa245a654f87513fbc7ec047f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2143560247'
+    second: {fileID: 2100000, guid: 86230cc5314be6547b68c9a4ee738c53, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2143560248'
+    second: {fileID: 2100000, guid: 235d5e4e7fc112846a93ece6e9efbf93, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2143560249'
+    second: {fileID: 2100000, guid: 2e6304b89547edf4398d1905c92127c3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2143560250'
+    second: {fileID: 2100000, guid: c719ddd3c7113ee4eb57b0a63429dcef, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2143560594'
+    second: {fileID: 2100000, guid: d8652b376eaa05a4582d8d46ba4388aa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: QIANMUWEN01
+    second: {fileID: 2100000, guid: 2b03ad0143b765849baec46f1160c850, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TJX
+    second: {fileID: 2100000, guid: 3c4f15ed5b0115d479ebad9a2f049ca5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: XCZXCX
+    second: {fileID: 2100000, guid: bbd2fd01695d0a84198fb91e5a264214, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: XCZXCXCX
+    second: {fileID: 2100000, guid: a57801f46b6feae4b94008135b96152d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bai gui zi
+    second: {fileID: 2100000, guid: 05a6858c119cb4c41a382ac6fd38aaee, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: buxiugang
+    second: {fileID: 2100000, guid: 2a2f9196608b0f44c8c796f0ea12e234, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ciqi
+    second: {fileID: 2100000, guid: 648fd0226c4568b43aca536b7eb8c741, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: fdfgd
+    second: {fileID: 2100000, guid: f46c1f455e6dca649b9d5e9c5bacfc48, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: jinshubaoshou
+    second: {fileID: 2100000, guid: 8c3f2e70f4ce1ea4eb386db198c75596, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: muwen01
+    second: {fileID: 2100000, guid: 2b03ad0143b765849baec46f1160c850, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shcai02chuangtaishiz
+    second: {fileID: 2100000, guid: 9272f9ba39f13ee46ba909d97aef951b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shicai03
+    second: {fileID: 2100000, guid: 19a18664ac0d70f4ca669bc915b56acc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shicai07_DM
+    second: {fileID: 2100000, guid: 2c82fe6d403dbfa43b2e922d2cdecfd1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shicai08
+    second: {fileID: 2100000, guid: a9dda4ea474215c41b0f37f52cc1d092, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wall_OUT
+    second: {fileID: 2100000, guid: dfa057b0febc6c34a8b133e846cbe520, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

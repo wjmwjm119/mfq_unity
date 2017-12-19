@@ -4,13 +4,10 @@ using System.Collections;
 public class CanveGroupFade : MonoBehaviour
 {
 
-
 	public bool defaultState=false;
 
 	public CanvasGroup canvasGroup;
 	public float fadeUseTime=1;
-
-
 
 	void Awake()
 	{
@@ -18,7 +15,6 @@ public class CanveGroupFade : MonoBehaviour
 		canvasGroup.alpha = 0;
 		if(defaultState)
 		canvasGroup.alpha = 1;	
-
 	}
 
 	public void AlphaPlayForward()
@@ -34,7 +30,6 @@ public class CanveGroupFade : MonoBehaviour
         {
             canvasGroup.alpha = 1;
         }
-
 		
 	}
 	
@@ -79,4 +74,6 @@ public class CanveGroupFade : MonoBehaviour
 		
 		
 	}
+
+
 }

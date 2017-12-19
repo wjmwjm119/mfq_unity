@@ -14,9 +14,14 @@ public class RemoteGUI : MonoBehaviour
     public CanveGroupFade bg_Group;
     public CanveGroupFade exitOnlineTalk;
     public CanveGroupFade avatar;
+    public CanveGroupFade vedio_Trriger;
+    public CanveGroupFade vedio_TrrigerFromApp;
     public RawImage avatarICO;
 
     public CanveGroupFade bg_Group_Trriger;
+    public 
+
+
 
     float currentConnectPastTime;
     int currentTimeInt;
@@ -119,6 +124,8 @@ public class RemoteGUI : MonoBehaviour
         bg_Group_Trriger.AlphaPlayBackward();
 
 
+        vedio_Trriger.AlphaPlayForward();
+
         if (!hasHeadIcoLoaded)
         {
             Loading loading = loadingManager.AddALoading(4);
@@ -149,11 +156,13 @@ public class RemoteGUI : MonoBehaviour
         infoLabelGroup[3].text = infoLabelGroup[2].text;
         infoLabelGroup[4].text = "连线中";
         infoLabelGroup[5].text = "连线中";
-        bg_Group.AlphaPlayForward(); 
+        bg_Group.AlphaPlayForward();
+        vedio_Trriger.AlphaPlayBackward();
+
     }
 
-  
-    
+
+
     public void OKCloseOnLineTalk(string invokeFrom)
     {
         if (!remoteManger.lastIsOtherSideOnline)
@@ -177,14 +186,10 @@ public class RemoteGUI : MonoBehaviour
         {
             FinishOnLineTalk("4秒强制退出");
         }
-
     }
-
-
 
     public void FinishOnLineTalk(string invokeFrom)
     {
-
         string logStr = "结束讲盘 InvokeFrom:" + invokeFrom;
         Debug.Log(logStr);
         GlobalDebug.Addline(logStr);
@@ -209,6 +214,37 @@ public class RemoteGUI : MonoBehaviour
             GlobalDebug.Addline(logStr);
             hasFinishExitOnlineTalk = true;
         }
+
+    }
+
+    public void GotoVedioTalk()
+    {
+        string logStr = "进入视频通话";
+        Debug.Log(logStr);
+        GlobalDebug.Addline(logStr);
+        //向对方发送退出讲盘进入视频通话
+        remoteManger.SendCtrlMessage(new RemoteGather.RemoteMessage(250).GetBytesData(), false);
+    }
+
+    public void FinishGotoVediaoTalk()
+    {
+        StartCoroutine(FinishGotoVediaoTalk_IE());
+    }
+
+    IEnumerator FinishGotoVediaoTalk_IE()
+    {
+        yield return new WaitForSeconds(0.3f);
+        remoteManger.DisConnect();
+        yield return new WaitForSeconds(0.2f);
+
+        avatar.AlphaPlayBackward();
+        vedio_Trriger.AlphaPlayBackward();
+
+
+        appBridge.Unity2App("unityCloseRemote", "6");
+        string logStr = "unityCloseRemote 6";
+        Debug.Log(logStr);
+        GlobalDebug.Addline(logStr);
 
     }
 

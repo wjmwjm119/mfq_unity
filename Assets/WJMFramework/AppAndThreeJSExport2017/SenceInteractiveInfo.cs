@@ -21,7 +21,6 @@ public class SenceInteractiveInfo : MonoBehaviour
         Point360=7
     }
 
-
     public SceneType sceneType;
    
     public string sceneName;

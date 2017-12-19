@@ -42,18 +42,18 @@ public class Point360Manager : MonoBehaviour
     {
         public string floorName;
         public string displayName;
-        public float defaultYRot;
+//      public float defaultYRot;
         public ColliderTriggerButton defaultColliderTriggerButton;
         public Transform colliderTriggerRoot;
         public Cubemap[] cubemapGroup;
 
-        public float SetDefaultCubemap()
+        public void SetDefaultCubemap()
         {
             colliderTriggerRoot.gameObject.SetActive(true);
-
+            ColliderTriggerButton.touchRayCastFrom = ColliderTriggerButton.TouchRayCastFrom.Minimap;
             if (defaultColliderTriggerButton!=null)
             defaultColliderTriggerButton.ExeTriggerEvent();
-            return defaultYRot;
+
         }
 
     }
@@ -79,7 +79,6 @@ public class Point360Manager : MonoBehaviour
         if (point360Floors.Length > 0)
         {
             allColliderTriggerButtons = new List<ColliderTriggerButton>();
-
 
             foreach (ColliderTriggerButton c in GetComponentsInChildren<ColliderTriggerButton>())
             {
@@ -157,10 +156,11 @@ public class Point360Manager : MonoBehaviour
 
                     //设置colliderTriggerTrue的按钮事件
                     BaseEventDelegate colliderTriggerTrue = new BaseEventDelegate();
-                    colliderTriggerTrue.parameterTargetSlot = new int[] { 0, 6 };
-                    colliderTriggerTrue.parameterList = new EventParametar[2];
+                    colliderTriggerTrue.parameterTargetSlot = new int[] { 0, 6,2 };
+                    colliderTriggerTrue.parameterList = new EventParametar[3];
                     colliderTriggerTrue.parameterList[0].pObject = point360Floors[i].cubemapGroup[j];
                     colliderTriggerTrue.parameterList[1].pVec3 = new Vector3(point.transform.position.x,point.transform.position.y+baseHeight,point.transform.position.z);
+                    colliderTriggerTrue.parameterList[2].pFloat = 0;
                     colliderTriggerTrue.excuteMethodName = "ChangeCubemap";
                     colliderTriggerTrue.targetMono = this;
                     colliderTriggerTrue.currentEditorChooseFunName = "Point360Manager/ChangeCubemap";
@@ -187,9 +187,9 @@ public class Point360Manager : MonoBehaviour
         {
             if (point360Floors[i].floorName == floorName)
             {
-              float rotY=  point360Floors[i].SetDefaultCubemap();
-                cameraUniversalCenter.currentCamera.Ycount = rotY;
- //             cameraUniversalCenter.currentCamera.SetCameraPositionAndXYZCountAllArgs("","","","", rotY.ToString(),"",0.5f);
+                point360Floors[i].SetDefaultCubemap();
+//              cameraUniversalCenter.currentCamera.Ycount = rotY;
+//              cameraUniversalCenter.currentCamera.SetCameraPositionAndXYZCountAllArgs("","","","", rotY.ToString(),"",0.5f);
             }
             else
             {
@@ -200,7 +200,7 @@ public class Point360Manager : MonoBehaviour
     }
 
 
-    public void ChangeCubemap(Cubemap cubemap,Vector3 viewPos)
+    public void ChangeCubemap(Cubemap cubemap,Vector3 viewPos,float yRot)
     {
         if(!isChangeCubemap)
         {
@@ -210,9 +210,18 @@ public class Point360Manager : MonoBehaviour
             point360Mat.SetTexture("_CubeMap", cubemap);
             lastCubemap = cubemap;
             point360Mat.DOFade(1, 0.7f).OnComplete(ChangeCubemapEnd);
-            cameraUniversalCenter.currentCamera.SetCameraPositionAndXYZCountAllArgs(viewPos.x.ToString(), viewPos.y.ToString(), viewPos.z.ToString(), "", "", "",0.5f);
+            string xRotString = "";
+            string yRotString = "";
+            if (ColliderTriggerButton.touchRayCastFrom == ColliderTriggerButton.TouchRayCastFrom.Minimap)
+            {
+                xRotString = "0";
+                yRotString = yRot.ToString();
+            }
+
+            cameraUniversalCenter.currentCamera.SetCameraPositionAndXYZCountAllArgs(viewPos.x.ToString(), viewPos.y.ToString(), viewPos.z.ToString(), xRotString, yRotString, "",0.5f);
             point360Sphere.transform.DOMove(viewPos, 0.5f);
-        }  
+
+        }
     }
 
     void ChangeCubemapEnd()

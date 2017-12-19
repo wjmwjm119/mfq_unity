@@ -591,7 +591,9 @@ public class RemoteManger : MonoBehaviour
                             case 51:
                             case 52:
                             case 98:
-							case 252:
+                            case 250:
+                            case 251:
+                            case 252:
                             case 253:
                                 RemoteGather.needProcessMessages.Add(rMessage);
                                 break;
@@ -824,8 +826,35 @@ public class RemoteManger : MonoBehaviour
 
                 break;
 
-			//退出讲盘    
-			case 252:
+
+
+            //退出讲盘进入视频通话    
+            case 250:
+                string log250 = "Receive 退出讲盘进入视频通话";
+                Debug.Log(log250);
+                GlobalDebug.Addline(log250);
+                RemoteGather.needProcessMessages.Remove(p);
+
+                SendCtrlMessage(new RemoteGather.RemoteMessage(251).GetBytesData(), true);
+                remoteGUI.FinishGotoVediaoTalk();
+
+                break;
+
+            //退出讲盘进入视频通话Ack
+            case 251:
+                string log251 = "Receive 退出讲盘进入视频通话 Ack";
+                Debug.Log(log251);
+                GlobalDebug.Addline(log251);
+                RemoteGather.needProcessMessages.Remove(p);
+
+                remoteGUI.FinishGotoVediaoTalk();
+                
+                break;
+
+
+
+            //退出讲盘    
+            case 252:
 			string log7 = "Receive 退出讲盘";
 			Debug.Log(log7);
 			GlobalDebug.Addline(log7);

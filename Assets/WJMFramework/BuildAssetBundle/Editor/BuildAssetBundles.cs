@@ -23,6 +23,7 @@ public class BuildAssetBundles : EditorWindow
     public ProjectAssetBundlesInfo projectAssetBundlesInfo;
 
     public List<SceneAsset> needExportScene;
+    public List<SceneTypeSet> needExportSceneType;
     public List<string> needExportScenePath;
     public List<string> sceneChineseName;
 
@@ -31,7 +32,21 @@ public class BuildAssetBundles : EditorWindow
 
     string filePath = "";
     string jsonString="";
-    
+
+    //比SenceInteractiveInfo中的SceneType都加1,为了
+    public enum SceneTypeSet
+    {
+        Null=0,
+        大场景 = 1,
+        外景 = 2,
+        平层 = 3,
+        loft = 4,
+        独栋 =5,
+        联排 = 6,
+        叠拼 = 7,
+        Point360 = 8
+    }
+
     [MenuItem("WJMTooLs/BuildAppAssetBundle")]
 	static void Init()
 	{
@@ -58,13 +73,24 @@ public class BuildAssetBundles : EditorWindow
         if (File.Exists(filePath))
         {
             needExportScenePath = new List<string>();
-
+            needExportSceneType = new List<SceneTypeSet>();
 
             jsonString = File.ReadAllText(filePath);
             projectAssetBundlesInfo = JsonUtility.FromJson<ProjectAssetBundlesInfo>(jsonString);
             addCommonAssetBundle = projectAssetBundlesInfo.addCommonAssetBundle;
-            needExportScenePath.AddRange(projectAssetBundlesInfo.needExportScenePath);
 
+
+            for (int i = 0; i < projectAssetBundlesInfo.sceneTypeSet.Length; i++)
+            {
+                needExportSceneType.Add((SceneTypeSet)projectAssetBundlesInfo.sceneTypeSet[i]);
+            }
+
+//          foreach()
+//          {
+//               needExportSceneType.AddRange(projectAssetBundlesInfo.sceneType);
+//          }
+
+            needExportScenePath.AddRange(projectAssetBundlesInfo.needExportScenePath);
 
             needExportScene = new List<SceneAsset>();
 
@@ -82,7 +108,8 @@ public class BuildAssetBundles : EditorWindow
                 }
 //                AssetImporter assetImporter = AssetImporter.GetAtPath(p);  //得到Asset
             }
-//    AssetDatabase.GetAssetPath(sceneAsset.GetInstanceID())
+
+//          AssetDatabase.GetAssetPath(sceneAsset.GetInstanceID())
         }
         else
         {
@@ -123,6 +150,16 @@ public class BuildAssetBundles : EditorWindow
         GenScenePath();
         projectAssetBundlesInfo.needExportScenePath = needExportScenePath.ToArray();
 
+
+        int[] sceneTypeGroup = new int[needExportSceneType.Count];
+
+
+        for (int i = 0; i < needExportSceneType.Count; i++)
+        {
+            sceneTypeGroup[i] =(int)needExportSceneType[i];
+        }
+
+        projectAssetBundlesInfo.sceneTypeSet = sceneTypeGroup;
 
         jsonString = JsonUtility.ToJson(projectAssetBundlesInfo);
         File.WriteAllText(filePath, jsonString);
@@ -245,9 +282,13 @@ public class BuildAssetBundles : EditorWindow
             SerializedProperty displayProperty = so.FindProperty("needExportScene");
             EditorGUILayout.PropertyField(displayProperty, true); // True means show children
             EditorGUILayout.LabelField("");
-        
 
-        displayProperty = so.FindProperty("addCommonAssetBundle");
+            displayProperty = so.FindProperty("needExportSceneType");
+            EditorGUILayout.PropertyField(displayProperty, true); // True means show children
+            EditorGUILayout.LabelField("");
+
+
+            displayProperty = so.FindProperty("addCommonAssetBundle");
             EditorGUILayout.PropertyField(displayProperty, true); // True means show children
 
             so.ApplyModifiedProperties(); // Remember to apply modified properties
@@ -279,10 +320,11 @@ public class BuildAssetBundles : EditorWindow
             projectAssetBundlesInfo.sceneAssetBundleHash = new string[needExportScene.Count];
             projectAssetBundlesInfo.sceneAssetBundleCRC = new uint[needExportScene.Count];
 
+
+
             AssetDatabase.RemoveUnusedAssetBundleNames();
 
-
-//			AssetBundleManifest abManifest=new AssetBundleManifest();
+            //AssetBundleManifest abManifest=new AssetBundleManifest();
 
             //lzma
             BuildAssetBundleOptions bOption = BuildAssetBundleOptions.None;

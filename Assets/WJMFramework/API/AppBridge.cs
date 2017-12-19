@@ -215,6 +215,22 @@ public class AppBridge : MonoBehaviour
     }
 
 
+    void VedioButton(string state)
+    {
+        GlobalDebug.Addline("APP2Unity VedioButton "+state);
+        Debug.Log("APP2Unity VedioButton "+state);
+
+        if (state == "0")
+        {
+            remoteGUI.vedio_TrrigerFromApp.AlphaPlayBackward();
+        }
+        else if (state=="1")
+        {
+            remoteGUI.vedio_TrrigerFromApp.AlphaPlayForward();
+        }
+
+    }
+
     void Landscape(string musicState)
     {
         GlobalDebug.Addline("APP2Unity Landscape");

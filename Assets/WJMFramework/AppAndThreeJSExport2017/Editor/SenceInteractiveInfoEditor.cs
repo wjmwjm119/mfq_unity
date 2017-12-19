@@ -59,13 +59,13 @@ public class SenceInteractiveInfoEditor : Editor
                     EditorGUILayout.PropertyField(sp, true);
                 }
             }
-            else if (senceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.Point360)
-            {
-                if (propertyID > 15)
-                {
-                    EditorGUILayout.PropertyField(sp, true);
-                }
-            }
+//            else if (senceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.Point360)
+//            {
+//                if (propertyID > 15)
+//                {
+//                    EditorGUILayout.PropertyField(sp, true);
+//                }
+//            }
             else
             {
                 if (propertyID > 14)

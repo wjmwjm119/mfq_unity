@@ -5,8 +5,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class MiniMapUI : Graphic,IPointerClickHandler
+public class MiniMapUI :MonoBehaviour,IPointerClickHandler
 {
+
     public Camera miniMapCamera;
     bool state;
     public float minScale=0.8f;
@@ -36,6 +37,9 @@ public class MiniMapUI : Graphic,IPointerClickHandler
 
     public void OnPointerClick(PointerEventData p)
     {
+
+        RectTransform rectTransform = GetComponent<RectTransform>();
+
         minimapUIActualWdithAndHeight = new Vector2(rectTransform.sizeDelta.x * rectTransform.localScale.x, rectTransform.sizeDelta.y * rectTransform.localScale.y);
         minimapUIRightUpPos = new Vector2(rectTransform.position.x, rectTransform.position.y);
 
@@ -47,7 +51,7 @@ public class MiniMapUI : Graphic,IPointerClickHandler
 //        Debug.Log("缩放值："+scaleXY);
 //        Debug.Log("鼠标点击位置："+p.position);
 //        Debug.Log("左下角实际位置：" + new Vector2(rectTransform.position.x-minimapUIActualWdithAndHeight.x*scaleXY.x, rectTransform.position.y - minimapUIActualWdithAndHeight.y * scaleXY.y));
-        Debug.Log("screenPosInMiniMapCamera:" + screenPosInMiniMapCamera);
+//        Debug.Log("screenPosInMiniMapCamera:" + screenPosInMiniMapCamera);
 
         ray =miniMapCamera.GetComponent<Camera>().ViewportPointToRay(new Vector3(screenPosInMiniMapCamera.x,screenPosInMiniMapCamera.y,0.0f));
 
@@ -55,13 +59,16 @@ public class MiniMapUI : Graphic,IPointerClickHandler
 
         if (Physics.Raycast(ray, out hit, 1000))
         {
+
             Debug.Log(hit.collider.name);
 
             ColliderTriggerButton c = hit.transform.GetComponent<ColliderTriggerButton>();
+            ColliderTriggerButton.touchRayCastFrom = ColliderTriggerButton.TouchRayCastFrom.Minimap;
             if (c != null)
             {
                 c.ExeTriggerEvent();
             }
+
         }
 
 
