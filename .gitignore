@@ -34,7 +34,9 @@
 *.XML
 *.json
 *.psd
-
+*.mp4
+*.avi
+*.mov
 
 # Visual Studio 2015 cache directory
 /.vs/
