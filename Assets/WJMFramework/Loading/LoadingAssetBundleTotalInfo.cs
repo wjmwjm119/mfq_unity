@@ -29,16 +29,17 @@ public class LoadingAssetBundleTotalInfo : MonoBehaviour
     public void CloseTotalInfo()
     {
         canveGroupFade.AlphaPlayBackward();
+        holdRoot.DOScaleX(1, 1).OnComplete(DestroyAllPoint);      
+//      Destroy(allCirclePoint);
+    }
 
-        /*
-        for (int i=0; i < allCirclePoint.Count; i++)
+    void DestroyAllPoint()
+    {
+        for (int i = 0; i < allCirclePoint.Count; i++)
         {
             Destroy(allCirclePoint[i].gameObject);
         }
         allCirclePoint.Clear();
-        */
-//        Destroy(allCirclePoint);
-
     }
 
     void CreatTotalCirclePoint(int totalCirclePoint)
@@ -56,6 +57,10 @@ public class LoadingAssetBundleTotalInfo : MonoBehaviour
         }
         animationID = 0;
         AnimationCircle();
+        if (totalCirclePoint>0)
+        {
+            SetCirclePointOkColor(0);
+        }
     }
 
     void AnimationCircle()
@@ -71,6 +76,8 @@ public class LoadingAssetBundleTotalInfo : MonoBehaviour
 
     public void SetCirclePointOkColor(int id)
     {
+//        Debug.Log(id);
+        if(id< allCirclePoint.Count)
         allCirclePoint[id].GetComponent<Image>().color = okColor;
     }
 

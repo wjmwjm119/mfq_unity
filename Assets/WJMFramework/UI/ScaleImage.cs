@@ -7,8 +7,8 @@ using DG.Tweening;
 public class ScaleImage : RawImage, IPointerDownHandler,IPointerUpHandler, IDragHandler,IPointerClickHandler
 {
 
-    //    public bool gf55;
-    //    public bool globalDebug;
+//  public bool gf55;
+//  public bool globalDebug;
 
     public ImageButton closeImageBtn;
     public RectTransform canvaRect;
@@ -60,7 +60,6 @@ public class ScaleImage : RawImage, IPointerDownHandler,IPointerUpHandler, IDrag
 
         scaleMinMax = new Vector2(minScale, maxScale);
         
-
             //        if (sp != null)
             //        {
             texture = sp;
@@ -103,10 +102,10 @@ public class ScaleImage : RawImage, IPointerDownHandler,IPointerUpHandler, IDrag
     {
 
         bool landscape = Screen.width > Screen.height ? true : false;
-//        Debug.Log(Screen.width);
-//        Debug.Log(Screen.height);
-//        Debug.Log(sprite.texture.height);
-//        Debug.Log(sprite.texture.height);
+//      Debug.Log(Screen.width);
+//      Debug.Log(Screen.height);
+//      Debug.Log(sprite.texture.height);
+//      Debug.Log(sprite.texture.height);
 
         float needScale;
 

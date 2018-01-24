@@ -89,10 +89,17 @@ public class ServerProjectInfo : MonoBehaviour
                   loading.LoadingAnimation,
                  (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => 
                  {
-                     Debug.Log("Cant Get ServerProjectInfo From Server");
                      //网络未连接且
+                     string log = "未能连接服务器";
+                     GlobalDebug.Addline(log);
+                     Debug.Log(log);
+
                      if (hasLocalCached)
                      {
+                         string log2 = "未能连接服务器,但是有缓存";
+                         GlobalDebug.Addline(log2);
+                         Debug.Log(log2);
+
                          loadSceneFromCache = true;
 
                          projectRootInfo = JsonUtility.FromJson<ProjectRootInfo>(File.ReadAllText(pathAndURL.localProjectInfoPath));
@@ -101,32 +108,46 @@ public class ServerProjectInfo : MonoBehaviour
 //                       Debug.Log(File.ReadAllText(pathAndURL.localProjectInfoPath));
                          PrcessProjectInfo(projectRootInfo, true);
                          loading.FinishLoading();
+
                      }
                      else
                      {
-       //                loading.displayInfo=""
+                         string log3 = "未能连接服务器,且没有缓存";
+                         GlobalDebug.Addline(log3);
+                         Debug.Log(log3);
+
                      }
                  },
                  (DownloadHandler t) =>
                  {
-                     loadSceneFromCache = false;
+                     string log4 = "已连上服务器";
+                     GlobalDebug.Addline(log4);
+                     Debug.Log(log4);
 
-                     ProcessProjectInfoText(projectid,t.text);
+                     loadSceneFromCache = false;
+                     ProcessProjectInfoFromServer(projectid,t.text);
                  },
                   null,
                   null
                 );
     }
 
-    void ProcessProjectInfoText(string inProjectid, string infoText)
+    void ProcessProjectInfoFromServer(string inProjectid, string infoText)
     {
+
+
         //GlobalDebug.Clear();
         //GlobalDebug.Addline(t.text);
 
         projectInfoJsonFromServer = infoText;
         projectRootInfo = JsonUtility.FromJson<ProjectRootInfo>(infoText);
         projectRootInfo.data.projectid = inProjectid;
-//        Debug.Log(infoText);
+        //      Debug.Log(infoText);
+
+
+        string log = "处理从服务获取的项目信息";
+        GlobalDebug.Addline(log);
+        Debug.Log(log);
 
         if (projectRootInfo.data.proName == null)
         {
@@ -138,9 +159,7 @@ public class ServerProjectInfo : MonoBehaviour
             return;
         }
 
-
         PrcessProjectInfo(projectRootInfo);
-
     }
 
     public void SaveProjectInfoToLocal()
@@ -148,14 +167,19 @@ public class ServerProjectInfo : MonoBehaviour
         if (!loadSceneFromCache&&projectInfoJsonFromServer != "")
         {
             File.WriteAllText(pathAndURL.localProjectInfoPath, projectInfoJsonFromServer);
-            Debug.Log("缓存当前项目");
-            GlobalDebug.Addline("缓存当前项目");
+			Debug.Log("缓存当前项目ProjectInfo.txt.txt");
+			GlobalDebug.Addline("缓存当前项目ProjectInfo.txt");
         }
 
     }
 
     void PrcessProjectInfo(ProjectRootInfo inProjectRootInfo,bool isLoadFromCache=false)
     {
+
+		string log = "是否加载本地缓存ProjectInfo.txt："+isLoadFromCache;
+        GlobalDebug.Addline(log);
+        Debug.Log(log);
+
         //声明信息
         if (inProjectRootInfo.data.declareSwitch == "1")
         {
@@ -175,7 +199,7 @@ public class ServerProjectInfo : MonoBehaviour
         proInfoTextTable.SetString(inProjectRootInfo.data.proName, inProjectRootInfo.data.proDiscr);
 
 
-
+    
         imageCache.allNetTextrue2D = new List<NetTexture2D>();
 
         defaultGUI.quweiImagePlayer.netTexture2DGroup = new List<NetTexture2D>();
@@ -267,6 +291,8 @@ public class ServerProjectInfo : MonoBehaviour
         else
         {
             onServerProjectInfoLoaded.Invoke(inProjectRootInfo.data.projectid);
+
+//            assetBundleManager.LoadProjcetAssetBundles
         }
 
 
@@ -278,7 +304,7 @@ public class ServerProjectInfo : MonoBehaviour
         //检查ProjectAssetBundlesInfo.txt和ProjectInfo.txt是否本地已有
         if (File.Exists(pathAndURL.localProjectInfoPath) && File.Exists(pathAndURL.localProjectAssetBundlesInfoPath))
         {
-            GlobalDebug.Addline("已有本地缓存");
+			GlobalDebug.Addline("已有本地缓存ProjectInfo.txt和ProjectAssetBundlesInfo.txt");
             return true;
         }
         else

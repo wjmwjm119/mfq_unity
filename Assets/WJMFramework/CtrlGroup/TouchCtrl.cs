@@ -13,7 +13,7 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
 
     bool inTouch = false;
 	bool inZoom=false;
-    Vector2 firstPosition = new Vector2(0, 0);
+    Vector2 firstPosition = new Vector2(0,0);
     Vector2 secondPostion = new Vector2(0,0);
     float disVec2 = 0;
     float disVec2_first = 0;

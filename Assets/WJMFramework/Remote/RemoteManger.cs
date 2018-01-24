@@ -225,6 +225,7 @@ public class RemoteManger : MonoBehaviour
                 else if (isOtherSideOnline && NeedSendScaleImageState())
                 {
                     scaleImageWhenSendMessage = RemoteGather.currentCtrlScaleImage.GetState();
+
                     SendCtrlMessage(new RemoteGather.RemoteMessage(52, RemoteGather.currentCtrlScaleImage.btnNameForRemote, false, null, RemoteGather.currentCtrlScaleImage).GetBytesData());
                 }
             }
@@ -779,7 +780,7 @@ public class RemoteManger : MonoBehaviour
                 Debug.Log(log4);
                 GlobalDebug.Addline(log4, true);
 
-//              Debug.Log(p.btnName);
+                Debug.Log(p.btnName);
 
                 RemoteGather.allScaleImage[p.btnName].SetState(p.scaleImageStates);
                 RemoteGather.needProcessMessages.Remove(p);

@@ -13,6 +13,8 @@ public class XFGUI : MonoBehaviour
     public SceneInteractiveManger sceneInteractiveManger;
 
     public CanveGroupFade xfCanveGroupFade;
+    int currentLouID;
+    int currentUnit;
     public Text buildTextLabel;
     public Text unitTextLabel;
     public Text fangJianTextLabel;
@@ -41,7 +43,8 @@ public class XFGUI : MonoBehaviour
 
     public bool isThumbnailZoomIn;
 
-//    bool hasAddTouchEvent;
+    public Dictionary<int, string> louHaoNameDictionary;
+    public Dictionary<int, string> unitNameDictionary;
 
 
     void Start()
@@ -66,10 +69,18 @@ public class XFGUI : MonoBehaviour
  //     hxfbScene = inHXFBScene;
         currentL = hxfbScene.louPanManager;
 
-        if (sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.loft || sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.平层 || sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.独栋|| sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.叠拼|| sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.联排)
+        if (currentL!=null&&(sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.loft || sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.平层 || sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.独栋|| sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.叠拼|| sceneInteractiveManger.currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.联排))
         {
             xfCanveGroupFade.AlphaPlayForward();
 
+            //从默认主场景中获取楼号map映射
+
+            if (currentL.louHaoNameDictionary!=null)
+               louHaoNameDictionary = currentL.louHaoNameDictionary;
+
+            if (currentL.unitNameDictionary!=null)
+               unitNameDictionary = currentL.unitNameDictionary;
+                
             OpenChooseBuildingMenu();
 
             btnChooseBuild.SetBtnState(true, 0);
@@ -100,7 +111,6 @@ public class XFGUI : MonoBehaviour
     {
         if (currentL != null)
         {
-
             btnChooseUnit.CleanState();
 
             int[] louHaoIntGorup = currentL.GetDistinctLouHao(currentL.selectHXInstance);
@@ -111,6 +121,11 @@ public class XFGUI : MonoBehaviour
             {
                 louHaoStringGorup[i] = louHaoIntGorup[i].ToString();
                 louHaoStringGorupDisplay[i] = louHaoIntGorup[i].ToString() + " #";
+                if (louHaoNameDictionary!=null && louHaoNameDictionary.ContainsKey(louHaoIntGorup[i]))
+                {
+                    louHaoStringGorupDisplay[i] = louHaoNameDictionary[louHaoIntGorup[i]];
+                }
+
             }
 
             btnChooseUnitBase.transform.DOLocalMoveY(-700, 0.3f);
@@ -120,6 +135,9 @@ public class XFGUI : MonoBehaviour
             buildScrollMenu.CreateItemGroup(louHaoStringGorupDisplay, louHaoStringGorup);
         }
     }
+
+
+
 
     public void CloseChooseBuildingMenu()
     {
@@ -131,12 +149,21 @@ public class XFGUI : MonoBehaviour
     public void ChooseBuildingNo(string louID)
     {
         Debug.Log(louID);
-        SetBuildingLayer(buildTextLabel.text, 0);
+        SetBuildingLayer(currentLouID, 0);
         buildTextLabel.text = louID;
-        SetBuildingLayer(louID, 30);
+
+        currentLouID = int.Parse(louID);
+
+        if (louHaoNameDictionary!=null && louHaoNameDictionary.ContainsKey(currentLouID))
+        {
+            buildTextLabel.text = louHaoNameDictionary[currentLouID];
+        }
+
+        SetBuildingLayer(currentLouID, 30);
         btnChooseBuild.CleanState();
 
         btnChooseUnit.SetBtnState(true, 0);
+
         if (unitScrollMenu.GetFirstScrollItem() != null)
         {
             unitScrollMenu.GetFirstScrollItem().GetComponent<ImageButton>().SetBtnState(true, 0);
@@ -144,13 +171,13 @@ public class XFGUI : MonoBehaviour
 
     }
 
-    void SetBuildingLayer(string louID, int layer)
+    void SetBuildingLayer(int inLouID, int layer)
     {
-        int lastBuildID = int.Parse(louID);
+//        int lastBuildID = int.Parse(louID);
 
         foreach (Building b in currentL.allBuilding)
         {
-            if (b.louHaoNo == lastBuildID)
+            if (b.louHaoNo == inLouID)
             {
                 foreach (Transform t in b.modelBuildRoot.GetComponentsInChildren<Transform>())
                 {
@@ -163,7 +190,7 @@ public class XFGUI : MonoBehaviour
     public void OpenChooseUnitMenu()
     {
 
-        int[] unitIntGorup = currentL.GetDistinctUnit(currentL.selectHXInstance, int.Parse(buildTextLabel.text));
+        int[] unitIntGorup = currentL.GetDistinctUnit(currentL.selectHXInstance, currentLouID);
         string[] unitStringGorup = new string[unitIntGorup.Length];
         string[] unitStringGorupDisplay = new string[unitIntGorup.Length];
 
@@ -171,6 +198,12 @@ public class XFGUI : MonoBehaviour
         {
             unitStringGorup[i] = unitIntGorup[i].ToString();
             unitStringGorupDisplay[i] = "unit " + unitIntGorup[i].ToString();
+
+            if (unitNameDictionary != null && unitNameDictionary.ContainsKey(unitIntGorup[i]))
+            {
+                unitStringGorupDisplay[i] = unitNameDictionary[unitIntGorup[i]];
+            }
+
         }
 
         btnChooseUnitBase.transform.DOLocalMoveY(0, 0.3f);
@@ -191,7 +224,15 @@ public class XFGUI : MonoBehaviour
 
     public void ChooseUnit(string unitID)
     {
+        currentUnit = int.Parse(unitID);
         unitTextLabel.text = unitID;
+
+        if (unitNameDictionary != null && unitNameDictionary.ContainsKey(currentUnit))
+        {
+            unitTextLabel.text = unitNameDictionary[currentUnit];
+        }
+
+
         btnChooseUnit.CleanState();
         CreateHXInstanceScrollMenu();
 
@@ -199,7 +240,7 @@ public class XFGUI : MonoBehaviour
 
     void CreateHXInstanceScrollMenu()
     {
-        string[] fangJianStringGorup = currentL.GetFangJianHao(currentL.selectHXInstance, int.Parse(buildTextLabel.text), int.Parse(unitTextLabel.text));
+        string[] fangJianStringGorup = currentL.GetFangJianHao(currentL.selectHXInstance, currentLouID,currentUnit);
         string[] fangJianStringGorupDisplay = new string[fangJianStringGorup.Length];
 
         for (int i = 0; i < fangJianStringGorup.Length; i++)
@@ -222,7 +263,7 @@ public class XFGUI : MonoBehaviour
 
     public void ChooseFangJian(string fangJianInfo)
     {
-        HuXingInstance[] selectHuXingInstance = currentL.SelectSingerInstance(currentL.selectHXInstance, int.Parse(buildTextLabel.text), int.Parse(unitTextLabel.text), fangJianInfo);
+        HuXingInstance[] selectHuXingInstance = currentL.SelectSingerInstance(currentL.selectHXInstance, currentLouID, currentUnit, fangJianInfo);
 //        Debug.Log(222222222);
 
         if (selectHuXingInstance.Length > 0)
@@ -256,7 +297,7 @@ public class XFGUI : MonoBehaviour
 
     public void ChooseFangJianAndRenderSub(SenceInteractiveInfo outDoor, SenceInteractiveInfo hx, string fangJianInfo)
     {
-        HuXingInstance[] selectHuXingInstance = currentL.SelectSingerInstance(currentL.selectHXInstance, int.Parse(buildTextLabel.text), int.Parse(unitTextLabel.text), fangJianInfo);
+        HuXingInstance[] selectHuXingInstance = currentL.SelectSingerInstance(currentL.selectHXInstance,currentLouID, currentUnit, fangJianInfo);
         //    Debug.Log(selectHuXingInstance.Length);
 
         if (selectHuXingInstance.Length > 0)
@@ -280,7 +321,7 @@ public class XFGUI : MonoBehaviour
         if (!isThumbnailZoomIn)
         {
             hxfbScene.cameraUniversalCenter.cameras[0].SetCameraPositionAndXYZCountAllArgs(h.position.x.ToString(), h.position.y.ToString(), h.position.z.ToString(), "25", (h.eulerAngles.y + 180).ToString(), "25", 0.0f);
-            sceneInteractiveManger.RenderSenceThumbnail(hxfbScene, hxfbScene.cameraUniversalCenter.cameras[0]);
+            sceneInteractiveManger.RenderSenceThumbnail(sceneInteractiveManger.thumbnailOutdoor, hxfbScene, hxfbScene.cameraUniversalCenter.cameras[0]);
             selectMat.SetFloat("_alphaSin", 0.0f);
         }
         else

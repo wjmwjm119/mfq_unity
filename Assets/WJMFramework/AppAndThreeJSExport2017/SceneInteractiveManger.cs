@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class SceneInteractiveManger : MonoBehaviour
 {
     public AppBridge appBridge;
-
+//    public ShaderLib shaderLib;
 //    public ARManager arManager;
     public AssetBundleManager assetBundleManager;
     public LoadingManager loadingManager;
@@ -19,7 +19,8 @@ public class SceneInteractiveManger : MonoBehaviour
     public HXGUI hxGUI;
     public ImageCache imageCache;
 
-    public RenderTexture thumbnail;
+    public RenderTexture thumbnailOutdoor;
+    public RenderTexture thumbnailHX;
     public SenceInteractiveInfo mainSenceInteractiveInfo;
     public SenceInteractiveInfo currentActiveSenceInteractiveInfo;
     public List<SenceInteractiveInfo> senceInteractiveInfoGroup;
@@ -109,7 +110,7 @@ public class SceneInteractiveManger : MonoBehaviour
 
             case "0":
                 //加载主场景
-                Loading loadingScene = loadingManager.AddALoading(3);
+                Loading loadingScene = loadingManager.AddALoading(5);
                 loadingScene.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[0], LoadSceneMode.Additive), "正在加载");
                 loadingScene.OnLoadedEvent.AddListener(() => {StartCoroutine(LoadSenceInteractiveIE()); });
                 break;
@@ -132,7 +133,7 @@ public class SceneInteractiveManger : MonoBehaviour
             case "9":
 
                 //加载主场景且打开在线讲
-                Loading loadingScene2 = loadingManager.AddALoading(3);
+                Loading loadingScene2 = loadingManager.AddALoading(5);
                 loadingScene2.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[0], LoadSceneMode.Additive), "正在加载");
                 loadingScene2.OnLoadedEvent.AddListener(() => { StartCoroutine(LoadSenceInteractiveIE(true)); });
 
@@ -145,7 +146,16 @@ public class SceneInteractiveManger : MonoBehaviour
     IEnumerator LoadSenceInteractiveIE(bool isOnlineTalk = false)
     {
         yield return new WaitForSeconds(0.3f);
-        ChangeInteractiveScene(senceInteractiveInfoGroup[0], true);
+
+        if (senceInteractiveInfoGroup[0]!=null)
+        {
+            ChangeInteractiveScene(senceInteractiveInfoGroup[0], true);
+        }
+        else
+        {
+            Debug.LogError("大场景未含SenceInteractiveInfo");
+        }
+
         if (isOnlineTalk)
             remoteManger.StartOnlineTalk();
         LoopAdditiveScene();
@@ -262,16 +272,16 @@ public class SceneInteractiveManger : MonoBehaviour
     public void AddSenceInteractiveInfo(SenceInteractiveInfo s)
     {
 
-#if UNITY_EDITOR
+//        Debug.Log(1111);
+
 
         if (s.meshRoot != null)
         {
             RecoverMatShader(s.meshRoot);
         }
-        
-#endif
 
-        //        Debug.Log(2222);
+
+//                Debug.Log(2222);
         s.sceneName = addSceneName;
 
         if (senceInteractiveInfoGroup == null)
@@ -284,8 +294,11 @@ public class SceneInteractiveManger : MonoBehaviour
             foreach (CameraUniversal c in s.cameraUniversalCenter.cameras)
             {
                 c.InitlCameraInRuntime();
+                RecoverMatShader(c.camBase.transform);
             }
 
+
+//            Debug.Log(3333);
             if (s.sceneType == SenceInteractiveInfo.SceneType.大场景)
             {
                 //设置大场景相机的layer
@@ -382,6 +395,8 @@ public class SceneInteractiveManger : MonoBehaviour
             HiddenScene(s);
 
             senceInteractiveInfoGroup.Add(s);
+
+            Debug.Log(s.sceneName + " SenceType: " + s.sceneType);
         }
     }
 
@@ -439,7 +454,7 @@ public class SceneInteractiveManger : MonoBehaviour
 
     }
 
-    public void RenderSenceThumbnail(SenceInteractiveInfo needRenderScene,CameraUniversal cameraThumbnail, string cameraArgs="")
+    public void RenderSenceThumbnail(RenderTexture renderTexture, SenceInteractiveInfo needRenderScene,CameraUniversal cameraThumbnail, string cameraArgs="")
     {
 
         bool orginDisplayState = false;
@@ -458,7 +473,7 @@ public class SceneInteractiveManger : MonoBehaviour
             }
         }
 
-        cameraThumbnail.GetComponent<Camera>().targetTexture = thumbnail;
+        cameraThumbnail.GetComponent<Camera>().targetTexture = renderTexture;
         cameraThumbnail.EnableCamera();
         if(cameraArgs!="")
         cameraThumbnail.SetCameraPositionAndXYZCount(cameraArgs, 0);
@@ -506,7 +521,6 @@ public class SceneInteractiveManger : MonoBehaviour
             }
         }
 
-
         if (toInteractiveScene.sceneType == SenceInteractiveInfo.SceneType.Point360)
         {
             globalCameraCenter.ChangeCamera(toInteractiveScene.cameraUniversalCenter.cameras[1], 0.0f);
@@ -552,7 +566,6 @@ public class SceneInteractiveManger : MonoBehaviour
         currentActiveSenceInteractiveInfo = toInteractiveScene;
         globalCameraCenter.zbzOffset = toInteractiveScene.cameraUniversalCenter.zbzOffset;
         zbz.cameraUniversalCenter = toInteractiveScene.cameraUniversalCenter;
-
     }
 
 
@@ -562,6 +575,9 @@ public class SceneInteractiveManger : MonoBehaviour
     /// <param name="root"></param>
     static public void RecoverMatShader(Transform root)
     {
+        if (ShaderLib.lib == null)
+            return;
+
         MeshRenderer[] allChildMeshRenderer = root.GetComponentsInChildren<MeshRenderer>(true);
         for (int i = 0; i < allChildMeshRenderer.Length; i++)
         {
@@ -571,7 +587,8 @@ public class SceneInteractiveManger : MonoBehaviour
                 //                Debug.Log(allChildMeshRenderer[i].name);
                 if (allChildMeshRenderer[i].sharedMaterials[j] != null)
                 {
-                    allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);
+                    // allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);
+                    allChildMeshRenderer[i].sharedMaterials[j].shader = ShaderLib.lib[allChildMeshRenderer[i].sharedMaterials[j].shader.name];
                 }
                 else
                 {
@@ -583,13 +600,16 @@ public class SceneInteractiveManger : MonoBehaviour
 
     static public void RecoverMatShaderSkinMesh(Transform root)
     {
+        if (ShaderLib.lib == null)
+            return;
+
         SkinnedMeshRenderer[] allChildMeshRenderer = root.GetComponentsInChildren<SkinnedMeshRenderer>(true);
         for (int i = 0; i < allChildMeshRenderer.Length; i++)
         {
 //            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
             for (int j = 0; j < allChildMeshRenderer[i].sharedMaterials.Length; j++)
             {
-                allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);
+                allChildMeshRenderer[i].sharedMaterials[j].shader = ShaderLib.lib[allChildMeshRenderer[i].sharedMaterials[j].shader.name];
             }
         }
     }

@@ -4,6 +4,7 @@ public class ProjectAssetBundlesInfo
     public string buildTime;
     public bool hiddenDefaultUI;
     public string[] needExportScenePath;
+//    public string[] sceneName;
     public string[] sceneAssetBundle;
     public int[] sceneTypeSet;
     public string[] sceneAssetBundleHash;

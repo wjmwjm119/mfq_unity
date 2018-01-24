@@ -6,7 +6,9 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine.Events;
 using System.IO;
-
+using System;
+using System.Text.RegularExpressions;
+using System.Text;
 
 public class AssetBundleManager : MonoBehaviour
 {
@@ -28,6 +30,7 @@ public class AssetBundleManager : MonoBehaviour
     public List<AssetBundle> currentLoadedSceneAssetBundles;
     public List<string> hasAddedSceneName;
     public SceneInteractiveManger sceneInteractiveManger;
+    public DefaultGUI defaultGUI;
 
 
     public List<string> point360SceneNameGroup;
@@ -37,15 +40,18 @@ public class AssetBundleManager : MonoBehaviour
     int sceneAssetBundlesInfoTotalCount;
     int sceneAssetBundlesInfoHasLoadedCount;
 
-    //加载总数的提示圆点数
+    //AssetBundle加载总数的提示圆点数
     int circlePointCount;
     int circlePointCurrent;
 
+    //默认场景要加载的数
+    public int countSceneOnDefault;
+ // bool hasRecordCountSceneOnDefault;
+
+    public Texture2D imageGet;
 
     public   UnityEvent OnSceneRemoved;
     public   UnityEvent OnSceneAdded;
-
-
 
 
     //test
@@ -54,7 +60,7 @@ public class AssetBundleManager : MonoBehaviour
     //    public InputField asserBundleField;
     //public InputField inputField;
 
-    public Texture2D imageGet;
+
 
     void Awake()
     {
@@ -85,24 +91,42 @@ public class AssetBundleManager : MonoBehaviour
 
         if (checkFile=File.Exists(pathAndURL.localProjectAssetBundlesInfoPath))
         {
+            string log = "有本地ProjectAssetBundlesInfo.txt";
+            GlobalDebug.Addline(log);
+            Debug.Log(log);
+
             string jsonStr = File.ReadAllText(pathAndURL.localProjectAssetBundlesInfoPath);
             localProjectAssetBundlesInfo = JsonUtility.FromJson<ProjectAssetBundlesInfo>(jsonStr);
 
+			Debug.Log (pathAndURL.serverProjectAssetBundlesInfoPath);
+			GlobalDebug.Addline(pathAndURL.serverProjectAssetBundlesInfoPath);
+
+			//"?"+DateTime.Now.ToString() 添加时间防止ios读取http缓存
             netCtrlManager.WebRequest(
-                "同步服务器",
-                pathAndURL.serverProjectAssetBundlesInfoPath,
+                "同步AssetBundle服务器",
+				pathAndURL.serverProjectAssetBundlesInfoPath+"?"+DateTime.Now.ToString(),
                   loading.LoadingAnimation,
                  (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a,string info) => { Debug.Log("ServerProjectAssetBundlesInfo Load Failed!"); },
                  (DownloadHandler t) =>
                  {
+
                      serverProjectAssetBundlesInfo = JsonUtility.FromJson<ProjectAssetBundlesInfo>(t.text);
 
 //                     if (globalDebug)
                      GlobalDebug.ReplaceLine(t.text,15);
+					 Debug.Log(t.text);
+                     
+                     string log2 ="ServerTime:"+serverProjectAssetBundlesInfo.buildTime+" LocalTime:"+ localProjectAssetBundlesInfo.buildTime;
+                     GlobalDebug.Addline(log2);
+                     Debug.Log(log2);
 
                      //判断两个资源的生成时间,如果时间不一样表示资源以过期,要删去旧的资源以便重新下载
                      if (serverProjectAssetBundlesInfo.buildTime != localProjectAssetBundlesInfo.buildTime)
                      {
+                         string log3 = "删除老资源，替换新资源";
+                         GlobalDebug.Addline(log3);
+                         Debug.Log(log3);
+
                          File.WriteAllText(pathAndURL.localProjectAssetBundlesInfoPath, t.text);
                          for (int i = 0; i < serverProjectAssetBundlesInfo.sceneAssetBundle.Length; i++)
                          {
@@ -118,14 +142,21 @@ public class AssetBundleManager : MonoBehaviour
         }
         else
         {
+            string log = "无本地ProjectAssetBundlesInfo.txt";
+            GlobalDebug.Addline(log);
+            Debug.Log(log);
+
             netCtrlManager.WebRequest(
-                "同步服务器",
+                "同步AssetBundle服务器",
                 pathAndURL.serverProjectAssetBundlesInfoPath,
                  loading.LoadingAnimation,
                  (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a,string info) => { Debug.Log("ServerProjectAssetBundlesInfo Load Failed!"); },
                  (DownloadHandler t) =>
                  {
-//                   if (globalDebug)
+                     string log2 = "获取到Server的ProjectAssetBundlesInfo.txt";
+                     GlobalDebug.Addline(log2);
+                     Debug.Log(log2);
+
                      GlobalDebug.ReplaceLine(t.text, 15);
 
                      serverProjectAssetBundlesInfo = JsonUtility.FromJson<ProjectAssetBundlesInfo>(t.text);
@@ -152,6 +183,17 @@ public class AssetBundleManager : MonoBehaviour
 #elif UNITY_ANDROID
         commonAssetBundlesInfo = commonAssetBundlesAndriod;
 #endif
+        countSceneOnDefault = 0;
+        //由sceneType获取常规场景个数
+        if (p.sceneTypeSet != null)
+        {
+            foreach (int i in p.sceneTypeSet)
+            {
+                if (i != 8)
+                    countSceneOnDefault++;
+            }
+        }
+
 
         sceneAssetBundlesInfoTotalCount = p.needExportScenePath.Length;
 
@@ -164,11 +206,10 @@ public class AssetBundleManager : MonoBehaviour
 
     void LoopLoadCommonAssetBundle(int currentID)
     {
-
         if (currentLoadedCommonAssetBundles.FindIndex(x => x.name == commonAssetBundlesInfo[currentID].name) == -1)
         {
             //不清空common资源的版本
-//            Caching.ClearOtherCachedVersions(pathAndURL.commonPath + commonAssetBundlesInfo[currentID].name, Hash128.Parse(commonAssetBundlesInfo[currentID].hash));
+            //            Caching.ClearOtherCachedVersions(pathAndURL.commonPath + commonAssetBundlesInfo[currentID].name, Hash128.Parse(commonAssetBundlesInfo[currentID].hash));
 
             Loading loading = loadingManager.AddALoading(2);
 
@@ -181,28 +222,26 @@ public class AssetBundleManager : MonoBehaviour
                null,
                (DownloadHandlerAssetBundle t) =>
                {
-                   loadingAssetBundleTotalInfo.SetCirclePointOkColor(commonAssetBundlesInfoHasLoadedCount);
-
+                   circlePointCurrent++;
+                   loadingAssetBundleTotalInfo.SetCirclePointOkColor(circlePointCurrent);
+          
                    commonAssetBundlesInfoHasLoadedCount++;
+
                    currentLoadedCommonAssetBundles.Add(t.assetBundle);
 
                    if (commonAssetBundlesInfoHasLoadedCount < commonAssetBundlesInfo.Length)
                    {
-                       LoopLoadCommonAssetBundle(commonAssetBundlesInfoHasLoadedCount);
+                        LoopLoadCommonAssetBundle(commonAssetBundlesInfoHasLoadedCount);
                    }
                    else if (commonAssetBundlesInfoHasLoadedCount == commonAssetBundlesInfo.Length)
                    {
                        Debug.Log("AllCommonAssetbundleLoaded!");
                        GlobalDebug.Addline("AllCommonAssetbundleLoaded!");
-                       LoopLoadSceneAssetBundle(0);
+                       LoopLoadSceneAssetBundle(0,2);
                    }
-
                }
-
               );
         }
-        
-
     }
 
 
@@ -248,11 +287,18 @@ public class AssetBundleManager : MonoBehaviour
         }
         */
 
-    public void LoopLoadSceneAssetBundle(int currentID)
+    public void LoopLoadSceneAssetBundleDefault()
+    {
+        loadingAssetBundleTotalInfo.OpenTotalInfo(sceneAssetBundlesInfoTotalCount);
+        circlePointCurrent =0;
+        LoopLoadSceneAssetBundle(0,5);
+    }
+
+
+    public void LoopLoadSceneAssetBundle(int currentID,int loadingType)
     {
 
-        Loading loading = loadingManager.AddALoading(2);
-
+        Loading loading = loadingManager.AddALoading(loadingType);
         ProjectAssetBundlesInfo p = serverProjectAssetBundlesInfo;
 
         string sceneName = p.needExportScenePath[currentID].Split('.')[0];
@@ -280,33 +326,38 @@ public class AssetBundleManager : MonoBehaviour
              (DownloadHandlerAssetBundle t) =>
              {
                  //改变加载场景数圆点的颜色
-                 loadingAssetBundleTotalInfo.SetCirclePointOkColor(commonAssetBundlesInfo.Length + sceneAssetBundlesInfoHasLoadedCount);
-
-
-//                 if (p.sceneTypeSet != null && p.sceneTypeSet.Length == p.needExportScenePath.Length && p.sceneTypeSet[sceneAssetBundlesInfoHasLoadedCount] == 8)
-//                 {
-                     //定点360不加载
-//                 }
-//                 else
-//                 {
-                     currentLoadedSceneAssetBundles.Add(t.assetBundle);
-                 //                 }
+                 circlePointCurrent++;
+                 loadingAssetBundleTotalInfo.SetCirclePointOkColor(circlePointCurrent);
+                 
+//               if (p.sceneTypeSet != null && p.sceneTypeSet.Length == p.needExportScenePath.Length && p.sceneTypeSet[sceneAssetBundlesInfoHasLoadedCount] == 8)
+//               {
+//定点360不加载
+//               }
+//               else
+//               {
+                 currentLoadedSceneAssetBundles.Add(t.assetBundle);
+//               }
 
                  if (p.sceneTypeSet != null && p.sceneTypeSet.Length == p.needExportScenePath.Length && p.sceneTypeSet[sceneAssetBundlesInfoHasLoadedCount] == 8)
                  {
-                     if (!point360SceneNameGroup.Contains(t.assetBundle.name))
+
+                     string[] spiltStrGroup = p.needExportScenePath[currentID].Split('/');
+                     string[] spiltStrGroup2 = spiltStrGroup[spiltStrGroup.Length - 1].Split('.');
+                     string point360SceneName = spiltStrGroup2[0];
+
+                     if (!point360SceneNameGroup.Contains(point360SceneName))
                      {
-                         point360SceneNameGroup.Add(t.assetBundle.name);
+                         point360SceneNameGroup.Add(point360SceneName);
+                         //如果有Point360,就显示360按钮
+                         defaultGUI.point360PointButton_Trigger.AlphaPlayForward();
                      }
                  }
 
-
                  sceneAssetBundlesInfoHasLoadedCount++;
-
 
                  if (sceneAssetBundlesInfoHasLoadedCount < sceneAssetBundlesInfoTotalCount)
                  {
-                     LoopLoadSceneAssetBundle(sceneAssetBundlesInfoHasLoadedCount);
+                     LoopLoadSceneAssetBundle(sceneAssetBundlesInfoHasLoadedCount, loadingType);
                  }
                  else if (sceneAssetBundlesInfoHasLoadedCount == sceneAssetBundlesInfoTotalCount)
                  {
@@ -316,8 +367,6 @@ public class AssetBundleManager : MonoBehaviour
                      sceneInteractiveManger.OnAllAssetBundleLoaded();
                      sceneAssetBundlesInfoHasLoadedCount = 0;
                  }
-
-
              }
             );
     }
@@ -338,7 +387,6 @@ public class AssetBundleManager : MonoBehaviour
         else
         {
             hasAddedSceneName.Clear();
-
 
             //卸载场景AssetBundle
             foreach (AssetBundle a in currentLoadedSceneAssetBundles)
@@ -369,8 +417,8 @@ public class AssetBundleManager : MonoBehaviour
             OnSceneRemoved.Invoke();
             OnSceneRemoved.RemoveAllListeners();
 
-            //            OnSceneRemoved.Invoke("");
-            //            OnSceneRemoved = new UnityAction<string>("");
+            //OnSceneRemoved.Invoke("");
+            //OnSceneRemoved = new UnityAction<string>("");
         }
     }
 
@@ -390,14 +438,19 @@ public class AssetBundleManager : MonoBehaviour
 
     public void LoadAddSingerScene(string sceneName)
     {
-        Loading loading = loadingManager.AddALoading(2);
+        Loading loading = loadingManager.AddALoading(5);
+
+        loadingAssetBundleTotalInfo.OpenTotalInfo(1);
+        circlePointCurrent = 0;
+
         ProjectAssetBundlesInfo p = serverProjectAssetBundlesInfo;
         int targetID = -1;
 
         for (int i = 0; i < p.sceneAssetBundle.Length; i++)
         {
-            if (sceneName.ToLower() == p.sceneAssetBundle[i])
+            if (GetUTF16(sceneName).ToLower() == p.sceneAssetBundle[i])
             {
+                
                 targetID = i;
             }
         }
@@ -413,10 +466,18 @@ public class AssetBundleManager : MonoBehaviour
              {
                  currentLoadedSceneAssetBundles.Add(t.assetBundle);
 
-                 Loading loadingScene2 = loadingManager.AddALoading(3);
+                 Loading loadingScene2 = loadingManager.AddALoading(5);
+
+                 foreach (Transform tr in loadingScene2.GetComponentsInChildren<Transform>())
+                 {
+                     if (tr.name == "BG")
+                     {
+                         tr.gameObject.SetActive(false);
+                     }
+                 }
+                 loadingAssetBundleTotalInfo.CloseTotalInfo();
                  loadingScene2.LoadingAnimation(SceneManager.LoadSceneAsync(serverProjectAssetBundlesInfo.needExportScenePath[targetID], LoadSceneMode.Additive), "正在加载");
                  loadingScene2.OnLoadedEvent.AddListener(() => { sceneInteractiveManger.ChangeInteractiveScene(sceneInteractiveManger.senceInteractiveInfoGroup[0], true); });
-                 
              }
             );
 
@@ -557,7 +618,7 @@ public class AssetBundleManager : MonoBehaviour
         {
             if (a != null)
             {
-                Debug.Log(a);
+//                Debug.Log(a);
                 a.Unload(true);
             }
         }
@@ -567,7 +628,7 @@ public class AssetBundleManager : MonoBehaviour
         {
             if (a != null)
             {
-                Debug.Log(a);
+//              Debug.Log(a);
                 a.Unload(true);
             }
         }
@@ -612,6 +673,38 @@ public class AssetBundleManager : MonoBehaviour
         public uint CRC;
     }
 
+    public static string GetUTF16(string inStr)
+    {
+
+
+        string outStr = "";
+
+        char[] inStrAllChar = inStr.ToCharArray();
+
+        //      Debug.Log(inStrAllChar.Length);
+
+        for (int i = 0; i < inStrAllChar.Length; i++)
+        {
+            //            Debug.Log(inStrAllChar[i]);
+
+            if (Regex.IsMatch(inStrAllChar[i].ToString(), @"[\u4e00-\u9fa5]"))
+            {
+                byte[] labelTextBytes = Encoding.BigEndianUnicode.GetBytes(inStrAllChar, i, 1);
+
+                //                Debug.Log(labelTextBytes.Length);
+
+                foreach (byte b in labelTextBytes)
+                {
+                    outStr += b.ToString("X2");
+                }
+            }
+            else
+            {
+                outStr += inStrAllChar[i];
+            }
+        }
+        return outStr;
+    }
 
 }
 

@@ -3,7 +3,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
-
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
+using System;
 
 
 public class CameraUniversalCenter : BaseEventCenter
@@ -26,10 +28,21 @@ public class CameraUniversalCenter : BaseEventCenter
     public float currentCameraRot;
 
     //是否在镜像户型
-//    [HideInInspector]
+//  [HideInInspector]
     public static bool isInMirrorHX;
 
     //----------------------------------------------------------------------------
+
+    public UnityEvent OnChangeToMYCamera;
+    public UnityEvent OnChangeToNKCamera;
+
+
+    
+
+
+    //    public UnityEvent OnSceneRemoved;
+
+
 
     void Start()
     {
@@ -45,7 +58,7 @@ public class CameraUniversalCenter : BaseEventCenter
 
 }
 
-void Update()
+    void Update()
     {
         if (currentCamera != null)
         {
@@ -121,6 +134,17 @@ void Update()
 //          RemoteGather.currentCameraUniversal = currentCamera;
 //          Debug.Log(2222);
             RemoteGather.lastSendCameraCameraState = currentCamera.GetCameraState();
+
+            if (currentCamera.name == "CameraNK")
+            {
+                OnChangeToNKCamera.Invoke();
+            }
+            else if(currentCamera.name == "CameraMY")
+            {
+                OnChangeToMYCamera.Invoke();
+            }
+
+
         }
 	}
 
@@ -180,6 +204,17 @@ void Update()
             targetCamera.transform.DOLocalRotateQuaternion(toRo, mTimeUseFly).OnComplete(() => { targetCamera.changingCamera = false; targetCamera.EnableCameraCtrl(); targetCamera.transform.localRotation = new Quaternion(); });
 
             currentCamera = targetCamera;
+
+
+            if (currentCamera.name == "CameraNK")
+            {
+                OnChangeToNKCamera.Invoke();
+            }
+            else if (currentCamera.name == "CameraMY")
+            {
+                OnChangeToMYCamera.Invoke();
+            }
+
         }
     }
 

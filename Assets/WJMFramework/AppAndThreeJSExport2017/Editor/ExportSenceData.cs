@@ -232,7 +232,7 @@ public class ExportSenceData : EditorWindow
 	{
 
         //除去中文名
-        sceneName = GetUTF16(sceneName);
+        sceneName =AssetBundleManager.GetUTF16(sceneName);
 
         string projectFolderPath = GetParentPath(Application.dataPath);
 
@@ -1362,39 +1362,7 @@ public class ExportSenceData : EditorWindow
     }
 
 
-    public static string GetUTF16(string inStr)
-    {
-
-
-        string outStr = "";
-
-        char[] inStrAllChar = inStr.ToCharArray();
-
-//      Debug.Log(inStrAllChar.Length);
-
-        for (int i = 0; i < inStrAllChar.Length; i++)
-        {
-//            Debug.Log(inStrAllChar[i]);
-
-            if (Regex.IsMatch(inStrAllChar[i].ToString(), @"[\u4e00-\u9fa5]"))
-            {
-                byte[] labelTextBytes = Encoding.BigEndianUnicode.GetBytes(inStrAllChar, i, 1);
-
-//                Debug.Log(labelTextBytes.Length);
-
-                foreach (byte b in labelTextBytes)
-                {
-                    outStr += b.ToString("X2");
-                }
-            }
-            else
-            {
-                outStr += inStrAllChar[i];
-            }
-        }
-        return outStr;
-    }
-
+ 
 
 
 }

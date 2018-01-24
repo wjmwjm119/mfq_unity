@@ -310,7 +310,7 @@ public class BuildAssetBundles : EditorWindow
                 sceneAssetBundle[i] = needExportScenePath[i].Split('.')[0];
                 string[] splitStr = sceneAssetBundle[i].Split('/');
                 sceneAssetBundle[i] = splitStr[splitStr.Length - 1];
-                sceneAssetBundle[i] = ExportSenceData.GetUTF16(sceneAssetBundle[i]);
+                sceneAssetBundle[i] = AssetBundleManager.GetUTF16(sceneAssetBundle[i]);
                 sceneAssetBundle[i] = sceneAssetBundle[i].ToLower();
                 AssetImporter assetImporter = AssetImporter.GetAtPath(needExportScenePath[i]);  //得到Asset
                 assetImporter.assetBundleName = sceneAssetBundle[i];    //最终设置assetBundleName

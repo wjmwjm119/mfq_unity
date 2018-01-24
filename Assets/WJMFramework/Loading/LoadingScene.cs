@@ -51,7 +51,6 @@ public class LoadingScene : Loading
             }
         }
 
-
     }
 
     public override void FinishLoading()

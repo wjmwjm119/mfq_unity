@@ -24,13 +24,18 @@ public class LouPanManager : MonoBehaviour
 
     public List<HuXingInstance> selectHXInstance;
 
+    public string fork = "-----------------------";
 
 
+    public int[] oringLouHao;
+    public string[] mapLouHao;
+    public int[] oringUnit;
+    public string[] mapUnit;
 
+    public Dictionary<int, string> louHaoNameDictionary;
+    public Dictionary<int, string> unitNameDictionary;
 
     //  public List<HuXingInstance> selectBuildingInstance;
-
-
     //  public HuXingType()
     //  {
     //        needReplaceString = new string[1];
@@ -46,6 +51,54 @@ public class LouPanManager : MonoBehaviour
                 allBuilding[i].gameObject.SetActive(false);
             }
         }
+
+
+        if (oringLouHao != null)
+        {
+            //生成楼号名映射
+            if (oringLouHao.Length == mapLouHao.Length)
+            {
+                louHaoNameDictionary = new Dictionary<int, string>();
+
+                for (int i = 0; i < oringLouHao.Length; i++)
+                {
+                    if (!louHaoNameDictionary.ContainsKey(oringLouHao[i]))
+                    {
+                        louHaoNameDictionary.Add(oringLouHao[i], mapLouHao[i]);
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("LouPanManager 楼号名映射长度不统一");
+            }
+        }
+
+
+        if (oringUnit != null)
+        {
+
+            //生成单元名映射
+            if (oringUnit.Length == mapUnit.Length)
+            {
+                unitNameDictionary = new Dictionary<int, string>();
+
+                for (int i = 0; i < oringUnit.Length; i++)
+                {
+                    if (!unitNameDictionary.ContainsKey(oringUnit[i]))
+                    {
+                        unitNameDictionary.Add(oringUnit[i], mapUnit[i]);
+                    }
+                }
+
+            }
+            else
+            {
+                Debug.LogError("LouPanManager 单元名映射长度不统一");
+            }
+        }
+        
+
     }
 
 

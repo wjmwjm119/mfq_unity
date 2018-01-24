@@ -192,7 +192,10 @@ public class HXGUI : MonoBehaviour
         Debug.Log("unityOpenRoomType:" + currentSelectHuXingType.huXingID);
         GlobalDebug.Addline("unityOpenRoomType:" + currentSelectHuXingType.huXingID);
 
-        sceneInteractiveManger.RenderSenceThumbnail(hxfbScene, hxfbScene.cameraUniversalCenter.currentCamera, hxfbCameraArgs);
+        sceneInteractiveManger.RenderSenceThumbnail(sceneInteractiveManger.thumbnailOutdoor, hxfbScene, hxfbScene.cameraUniversalCenter.currentCamera, hxfbCameraArgs);
+
+        Debug.Log(hxfbCameraArgs);
+
 
         hxScene = sceneInteractiveManger.GetHuXingTypeInteractiveInfo(currentSelectHuXingType.hxName);
 
@@ -242,7 +245,7 @@ public class HXGUI : MonoBehaviour
             if (hxScene.sceneType != SenceInteractiveInfo.SceneType.大场景)
             hxScene.huXingType.DisplayAllFloorMesh();
       
-            sceneInteractiveManger.RenderSenceThumbnail(hxScene, hxScene.cameraUniversalCenter.cameras[0]);
+            sceneInteractiveManger.RenderSenceThumbnail(sceneInteractiveManger.thumbnailHX,hxScene, hxScene.cameraUniversalCenter.cameras[0]);
             hxScene.huXingType.hxMeshRoot.gameObject.SetActive(false);
             hxfbScene.meshRoot.gameObject.SetActive(true);
 
@@ -319,10 +322,10 @@ public class HXGUI : MonoBehaviour
 
         if (!inPortrait)
         {
+            hxfbMat.SetColor("_Color", new Color(0, 0, 0, 0.0f));
             //得先执行OpenXFMenu,要判断是否镜像户型
             xfGUI.OpenXFMenu();
 //            Debug.Log("2333");
-            hxfbMat.SetColor("_Color", new Color(0, 0, 0, 0.0f));
         }
         else
         {
@@ -330,9 +333,7 @@ public class HXGUI : MonoBehaviour
             {
                 hxScene.websky.gameObject.SetActive(true);
             }
-
 //           appBridge.Unity2App("unityEnterMYInPortraitDone");
-
         }
 
         huXingFloorScrollMenu.SetNonStandFloorBtnVisblity(false);
@@ -352,7 +353,7 @@ public class HXGUI : MonoBehaviour
             hxScene.huXingType.hxMeshRoot.position = hxScene.huXingType.hxNKWorldPos;
             hxScene.huXingType.hxMeshRoot.eulerAngles = new Vector3(0, hxScene.huXingType.rotOffset, 0);
             hxfbMat.SetColor("_Color", new Color(0, 0, 0, 0.8f));
-            sceneInteractiveManger.RenderSenceThumbnail(hxfbScene, hxfbScene.cameraUniversalCenter.currentCamera, hxfbCameraArgs);
+            sceneInteractiveManger.RenderSenceThumbnail(sceneInteractiveManger.thumbnailOutdoor,  hxfbScene, hxfbScene.cameraUniversalCenter.currentCamera, hxfbCameraArgs);
             xfGUI.CloseXFMenu();
         }
         else
@@ -500,11 +501,16 @@ public class HXGUI : MonoBehaviour
                             m.material = hxfbMat;
                         }
                     }
+
+                    if(a.needDisplayRoot.name==hxName)
+                        hxfbCameraArgs = a.cameraStates;
                 }
+
             }
 
             hxfbMat.SetColor("_Color", new Color(0, 0, 0, 0.8f));
-            hxfbCameraArgs = hxfbScene.cameraUniversalCenter.currentCamera.GetCameraStateJson();
+
+//            Debug.Log(hxfbCameraArgs);
         }
         else
         {
@@ -539,7 +545,7 @@ public class HXGUI : MonoBehaviour
        s.huXingType.hxMeshRoot.position = s.huXingType.hxNKWorldPos;
        s.huXingType.hxMeshRoot.eulerAngles = new Vector3(0, s.huXingType.rotOffset, 0);
 
-       sceneInteractiveManger.RenderSenceThumbnail(s, s.cameraUniversalCenter.cameras[0]);
+       sceneInteractiveManger.RenderSenceThumbnail(sceneInteractiveManger.thumbnailHX, s, s.cameraUniversalCenter.cameras[0]);
 
     }
 

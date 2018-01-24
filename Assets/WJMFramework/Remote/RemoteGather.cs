@@ -75,8 +75,8 @@ public static class RemoteGather
             if (!allScaleImage.ContainsKey(iBtn.btnNameForRemote))
             {
                 allScaleImage.Add(iBtn.btnNameForRemote, iBtn);
-//              string log = "GatherScaleImageCount:" + allScaleImage.Count;
-//              Debug.Log(log);
+//              string log = "GatherScaleImageCount:" + allScaleImage.Count+ iBtn.btnNameForRemote;
+//              Debug.LogError(log);
 //              GlobalDebug.Addline(log);
             }
         }

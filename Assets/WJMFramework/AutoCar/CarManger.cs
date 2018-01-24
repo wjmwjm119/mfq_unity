@@ -18,6 +18,11 @@ public class CarManger : MonoBehaviour
 
     void Start()
     {
+        foreach (GameObject g in carPerfabGroup)
+        {
+            SceneInteractiveManger.RecoverMatShader(g.transform);
+        }
+
         if (autoSpawn)
         {
             GenAllLanePath();
@@ -74,6 +79,7 @@ public class CarManger : MonoBehaviour
         carList.Add(car);
         car.GetComponent<AutoCar>().Initl(this,lanePath,startPosID,speedFactor);
 
+       
     }
 
 

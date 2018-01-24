@@ -10,6 +10,7 @@ public class TextTable : MonoBehaviour
     public Text infoText;
     public Text infoTextShadow;
     public RectTransform vLine;
+    public RectTransform bg;
 
     public void SetString(string headString,string infoString)
     {
@@ -18,6 +19,7 @@ public class TextTable : MonoBehaviour
         if (infoString==null|| infoString == "")
         {
             vLine.gameObject.SetActive(false);
+            bg.gameObject.SetActive(false);
         }
         headText.text = headString;
         headTextShadow.text = headString;

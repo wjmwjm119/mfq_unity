@@ -89,7 +89,6 @@ Shader "@Moblie_WJM_360"
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 
 				o.normal = mul(unity_ObjectToWorld, float4(-v.normal, 0));
-//				o.normal = v.normal;
 				o.normal = mul(unity_WorldToObject, float4(-v.normal, 0));
 
 				o.viewDir =_WorldSpaceCameraPos.xyz - o.worldPos;
@@ -124,7 +123,6 @@ Shader "@Moblie_WJM_360"
 			#else
 
 			#endif
-
 
 	  	    final.rgb=diffuseColor.rgb*selfLight.rgb;
   			
