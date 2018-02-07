@@ -11,7 +11,7 @@ public class Object3DInfo:MonoBehaviour
     /// 是否导出此物体下的所有子物体,如果是Instance3DGameObject物体，子物体都将会忽略不导出
     /// </summary>
     public bool isNeedExportChild = true;
-    //    public bool exportNormal = true;
+    //public bool exportNormal = true;
 
     /// <summary>
     /// 如果使用完全贴图就不需要导出UV1
@@ -82,27 +82,23 @@ public class Object3DInfo:MonoBehaviour
     [HideInInspector]
     public string instanceChildPosition;
 
-
-
     Vector3[] allChildPosition;
     Vector3[] allChildRotation;
     Vector3[] allChildScale;
 
     public int objectId;
-    //  如果要使用完全贴图，要把UV2输出到UV通道，原UV抛弃以减少体量。
-    //  public bool sweepUV = false;
-    //  public bool onlyFirstMat = true;
+ // 如果要使用完全贴图，要把UV2输出到UV通道，原UV抛弃以减少体量。
+ // public bool sweepUV = false;
+ // public bool onlyFirstMat = true;
 
     public int lightmapIndex=-1;
     public Vector4 lightmapScaleOffset;
-
 
     public bool hasSpriteTreeMat;
     public bool hasWaterMat;
 
     public int vertexCount;
     public int triFaceCount;
-
 
     public bool RecordInfo(int thisGameObjectID)
     {
@@ -138,8 +134,6 @@ public class Object3DInfo:MonoBehaviour
                     return false;
                 }
 
-
-
                 if (mesh.uv.Length<1)
                     exportUV = false;
 
@@ -151,8 +145,7 @@ public class Object3DInfo:MonoBehaviour
                 {
                     exportUV2 = true;
                 }
-                    
-
+                   
                 lightmapIndex = GetComponent<MeshRenderer>().lightmapIndex;
                 if (lightmapIndex ==65535)
                     lightmapIndex = 1;
@@ -225,8 +218,8 @@ public class Object3DInfo:MonoBehaviour
             allChildPosition[i] = meshFilters[i].transform.localPosition;
             allChildRotation[i] = meshFilters[i].transform.localEulerAngles;
             allChildScale[i] = meshFilters[i].transform.localScale;
-//          combine[i].mesh = meshFilters[i].sharedMesh;
-//          combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+            //combine[i].mesh = meshFilters[i].sharedMesh;
+            //combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
             //meshFilters[i].gameObject.SetActive(false);
             i++;
         }
@@ -256,14 +249,15 @@ public class Object3DInfo:MonoBehaviour
         //负Z进行反转
         positionJson = "\"position\":[" + transform.localPosition.x.ToString() + "," + transform.localPosition.y.ToString() + "," + (-transform.localPosition.z).ToString() + "]";
         rotationJson = "\"rotation\":[" + transform.rotation.eulerAngles.x.ToString() + "," + transform.localEulerAngles.y.ToString() + "," + transform.localEulerAngles.z.ToString() + "]";
-        rotationJson += ",\"rotation2\":[" + transform.rotation.x.ToString() + "," + transform.rotation.y.ToString() + "," + (-transform.rotation.z).ToString() + "," + (-transform.rotation.w).ToString() +"]";
+        rotationJson += ",\"rotation2\":[" + transform.localRotation.x.ToString() + "," + transform.localRotation.y.ToString() + "," + (-transform.localRotation.z).ToString() + "," + (-transform.localRotation.w).ToString() +"]";
         scaleJson = "\"scale\":[" + transform.localScale.x.ToString() + "," + transform.localScale.y.ToString() + "," + transform.localScale.z.ToString() + "]";
 
         if (transform.parent != null)
         {
             //使用名字作为父对象，有重名的可能
             // parentJson = "\"parent\":\"" + transform.parent.name + "\"";
-               parentJson = "\"parentid\":\"" + transform.parent.GetComponent<Object3DInfo>().objectId + "\"";
+            parentJson = "\"parentid\":\"" + transform.parent.GetComponent<Object3DInfo>().objectId + "\"";
+
         }
         else
         {
@@ -312,9 +306,6 @@ public class Object3DInfo:MonoBehaviour
                 meshJson += ",\"light\":\"off\"";
             }
 
-
-
-
             renderOrderJson= "\"renderOrder\":\"" + renderOrder.ToString() + "\"";
 
             materialsJson = "\"materials\":[";
@@ -341,10 +332,19 @@ public class Object3DInfo:MonoBehaviour
 
     }
 
-
     public string StrOptimize(float inFloat, int keepPointCount = 4)
     {
         //       return inFloat.ToString();
+        if (float.IsInfinity(inFloat))
+        {
+            inFloat = 1.0f;
+        }
+
+        if (float.IsNaN(inFloat))
+        {
+            inFloat = 0.0f;
+        }
+
 
         string outStr = (Mathf.Round(inFloat * Mathf.Pow(10, keepPointCount))).ToString();
         string[] strGroup = outStr.Split('.');
@@ -361,6 +361,7 @@ public class Object3DInfo:MonoBehaviour
         return strGroup[0] + "." + strGroup[1];
 
     }
+
 
 }
 

@@ -1,19 +1,25 @@
-﻿//同一个mesh被多个物体使用时，只能是一种情况，或者是多维材质，或者是单一材质，不能用一个mesh又是多维材质又是单一材质
+﻿
+//
+//
+//同一个mesh被多个物体使用时，只能是一种情况，或者是多维材质，或者是单一材质，不能用一个mesh又是多维材质又是单一材质
 //attributes 在shader中使用都必须是float类型，除了index可以是int
 //微信中的扩展名不能用bin，所以先用.json
 //SpriteMesh Instance 物体，只能一个Mesh名对应一组
-
 //有效范围
 //pos用的是int32
 //index用的uint16
 //uv和uv2用的是int16
-
-
 //36196  WEBGL_compressed_texture_etc1
 //35986  WEBGL_compressed_texture_atc
 //35987  Atc
 //34798  Atc interlrp Alpha
+//
+//
 
+
+//
+//
+//
 
 
 using UnityEditor;
@@ -39,7 +45,6 @@ public class ExportSenceData : EditorWindow
 
     bool onlyHierarchyAndInteractiveinfo = false;
 
-//  public float senceUnit = 1;
     public string savePath	= "/exportdata";
 	public string textureFolder="/texture";
 	public string geometryFolder="/geometry";
@@ -47,13 +52,9 @@ public class ExportSenceData : EditorWindow
 	public string tempFolder="/tempTexture";
 
 	string textureFolderFinal="";
-//  string lightMapFolderFinal= "";
     string geometryFolderFinal="";
 	string hierarchyFolderFinal="";
 	string tempTextureFolderFinal="";
-
-//  string exportMeshCount="0";
-//  string exportTexCount="0";
 
     List<byte> allTexHeadInfo;
     List<byte> eachTexDataInfo;
@@ -160,7 +161,7 @@ public class ExportSenceData : EditorWindow
                 //BuildAsset时忽略这个物体，这个物体只用在导出web资源，运行时不需要
                 senceHierarchyInfo.gameObject.hideFlags = HideFlags.DontSaveInBuild;
 
-                useCompress = true;
+                useCompress = true ;
 
                 //收集场景中所有需要导出的资源
                 senceHierarchyInfo.PrepareThreeJsSceneData();
@@ -202,11 +203,6 @@ public class ExportSenceData : EditorWindow
             }
         }
     }
-
-//  void OnEnable()
-//  {
-//      CreateOutPutFold();
-//  }
 
     string GetParentPath(string inPath)
     {
@@ -318,10 +314,10 @@ public class ExportSenceData : EditorWindow
                 exportSaveTex.Apply();
                 var bytes = exportSaveTex.EncodeToJPG(95);
                 File.WriteAllBytes(textureFolderFinal + "/" + loadTex.name+"_"+j + ".jpg", bytes);
+
             }
         }
     }
-
 
     void BackUpAndScaleAndFormatAndSizeAndCopyTexture(List<Texture> inTexGroup,int maxSize,bool isLightmap=false)
     {
@@ -364,7 +360,6 @@ public class ExportSenceData : EditorWindow
                 File.WriteAllBytes(textureFolderFinal + "/" + loadTex.name + ".jpg", bytes);
             }
         }
-
     }
 
     /// <summary>
@@ -374,6 +369,7 @@ public class ExportSenceData : EditorWindow
     /// <param name="folder"></param>
     /// <param name="exportFile"></param>
     /// <returns></returns>
+
     string  CopyTextureToFolder(int textureID, string folder,bool exportFile)
     {
       string path=AssetDatabase.GetAssetPath(textureID);
@@ -384,9 +380,9 @@ public class ExportSenceData : EditorWindow
          Debug.Log("Copy " + path + " To " + folder + "/" + path.Split('/')[path.Split('/').Length - 1]);
 
       }
+
         return folder + "/" + path.Split('/')[path.Split('/').Length - 1];
     }
-
 
     void CreateSenceHierarchyJsonFile(SenceHierarchyInfo senceH)
     {
@@ -494,12 +490,22 @@ public class ExportSenceData : EditorWindow
                 senceHierarchy += ",\"uv\": {\"itemSize\": 2,\"type\": \"Float32Array\",";
                 senceHierarchy += "\"array\": [" + senceH.allGameObject3DMesh[i].uvBufferPos[0] + "," + senceH.allGameObject3DMesh[i].uvBufferPos[1] + "]}";
             }
+            else
+            {
+                Debug.LogError(senceH.allGameObject3DMesh[i].mesh.name+"没有UV1");
+            }
+
 
             if (senceH.allGameObject3DMesh[i].exportUV2)
             {
                 senceHierarchy += ",\"uv2\": {\"itemSize\": 2,\"type\": \"Float32Array\",";
                 senceHierarchy += "\"array\": [" + senceH.allGameObject3DMesh[i].uv2BufferPos[0] + "," + senceH.allGameObject3DMesh[i].uv2BufferPos[1] + "]}";
             }
+            else
+            {
+                Debug.Log(senceH.allGameObject3DMesh[i].mesh.name + "没有UV2");
+            }
+
 
             if (senceH.allGameObject3DMesh[i].worldPosAndScalePos[1] > 0)
             {
@@ -963,6 +969,7 @@ public class ExportSenceData : EditorWindow
 //          finalBinary.AddRange(BuQuanByte(finalBinary.Count + LastBinCount, 2));
             binaryHold = FloatArrayToInt8Arrar(normalList.ToArray());
             obj3d.normalBufferPos = new int[] { finalBinary.Count + LastBinCount, binaryHold.Length / 1 };
+
             if (obj3d.normalBufferPos[1] == 0)
             {
                 Debug.LogError(obj3d.mesh.name + " DontHave Normal");
@@ -982,6 +989,9 @@ public class ExportSenceData : EditorWindow
             finalBinary.AddRange(BuQuanByte(finalBinary.Count + LastBinCount, 2));
             binaryHold = GetInt16ArrayBuffer(FloatArrayToInt16Array(uvList.ToArray()));
             obj3d.uvBufferPos = new int[] { finalBinary.Count + LastBinCount, binaryHold.Length / 2 };
+
+//            Debug.LogError(uv.Length);
+
             if (obj3d.uvBufferPos[1] == 0)
             {
                 Debug.LogError(obj3d.mesh.name + "DontHave UV");
@@ -1009,6 +1019,9 @@ public class ExportSenceData : EditorWindow
             finalBinary.AddRange(BuQuanByte(finalBinary.Count + LastBinCount, 2));
             binaryHold = GetInt16ArrayBuffer(FloatArrayToInt16Array(uv2List.ToArray()));
             obj3d.uv2BufferPos = new int[] { finalBinary.Count + LastBinCount, binaryHold.Length / 2 };
+
+//            Debug.LogError(obj3d.uvBufferPos[1]);
+
             if (obj3d.uv2BufferPos[1] == 0)
             {
                 Debug.LogError(obj3d.mesh.name + " DontHave UV2");
@@ -1166,7 +1179,6 @@ public class ExportSenceData : EditorWindow
         return result;
     }
 
-
     public Int16[] FloatArrayToInt16ArrayUV(float[] floatArray)
     {
         Int16[] result = new Int16[floatArray.Length];
@@ -1197,7 +1209,6 @@ public class ExportSenceData : EditorWindow
         return result;
     }
 
-
     //保证normal值小于1
     public byte[] FloatArrayToInt8Arrar(float[] floatArray)
     {
@@ -1224,11 +1235,10 @@ public class ExportSenceData : EditorWindow
         return (UInt16)Mathf.Round(inFloat * Mathf.Pow(10, keepPointCount));
     }
 
-
     string ColorToString(Color inColor)
     {
         //to LinearSpace
-        //        Color t = new Color(Mathf.Pow(inColor.r, 2.2f), Mathf.Pow(inColor.g, 2.2f), Mathf.Pow(inColor.b, 2.2f), Mathf.Pow(inColor.a, 1.0f));
+        //Color t = new Color(Mathf.Pow(inColor.r, 2.2f), Mathf.Pow(inColor.g, 2.2f), Mathf.Pow(inColor.b, 2.2f), Mathf.Pow(inColor.a, 1.0f));
         Color t = inColor;
 
         return "[" + t.r + "," + t.g + "," + t.b + "," + t.a + "]";
@@ -1286,7 +1296,6 @@ public class ExportSenceData : EditorWindow
         }
         return result.ToArray();
     }
-
 
     public byte[] GetInt8ArrayBuffer(Int16[] inIntArray)
         {
@@ -1360,9 +1369,6 @@ public class ExportSenceData : EditorWindow
 //        Debug.Log(outStr);
         return outStr;    
     }
-
-
- 
 
 
 }

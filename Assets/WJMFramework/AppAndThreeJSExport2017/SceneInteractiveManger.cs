@@ -41,6 +41,8 @@ public class SceneInteractiveManger : MonoBehaviour
 
     int currentAddSceneID;
 
+    public CameraUniversal currentThumbnailCamera;
+
     void Start()
     {
         finishLoadAssetBundle = false;
@@ -575,6 +577,9 @@ public class SceneInteractiveManger : MonoBehaviour
     /// <param name="root"></param>
     static public void RecoverMatShader(Transform root)
     {
+
+//        Debug.Log(root.name);
+            
         if (ShaderLib.lib == null)
             return;
 
@@ -584,11 +589,19 @@ public class SceneInteractiveManger : MonoBehaviour
 //            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
             for (int j = 0; j < allChildMeshRenderer[i].sharedMaterials.Length; j++)
             {
-                //                Debug.Log(allChildMeshRenderer[i].name);
+//             Debug.Log(allChildMeshRenderer[i].name);
                 if (allChildMeshRenderer[i].sharedMaterials[j] != null)
                 {
                     // allChildMeshRenderer[i].sharedMaterials[j].shader = Shader.Find(allChildMeshRenderer[i].sharedMaterials[j].shader.name);
-                    allChildMeshRenderer[i].sharedMaterials[j].shader = ShaderLib.lib[allChildMeshRenderer[i].sharedMaterials[j].shader.name];
+                    if (ShaderLib.lib.ContainsKey(allChildMeshRenderer[i].sharedMaterials[j].shader.name))
+                    {
+                        allChildMeshRenderer[i].sharedMaterials[j].shader = ShaderLib.lib[allChildMeshRenderer[i].sharedMaterials[j].shader.name];
+                    }
+//                    else
+//                    {
+//                        Debug.LogError("Shader设置错误："+ allChildMeshRenderer[i].sharedMaterials[j].name+"  "+ allChildMeshRenderer[i].sharedMaterials[j].shader.name);
+//                    }
+
                 }
                 else
                 {

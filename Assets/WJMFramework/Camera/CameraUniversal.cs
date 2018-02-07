@@ -357,7 +357,7 @@ public  void TouchDown(Vector2 pos)
         }
     }
 
-    float ModiferYCount(float currentYcount,float toYcount)
+    public float ModiferYCount(float currentYcount,float toYcount)
     {
 
 //      Debug.Log(currentYcount);
@@ -398,6 +398,9 @@ public  void TouchDown(Vector2 pos)
 
         return outYcount;
     }
+
+
+
 
     public void CameraPathAutoPlay()
     {
@@ -656,6 +659,15 @@ public  void TouchDown(Vector2 pos)
     {
        LookAtPoint(t.position,redTrueBlurFalse?t.right:t.forward, endEnableCtrl);
     }
+
+    public void RotateToVector(Vector3 lookForward)
+    {
+        lookForward = Vector3.Normalize(lookForward);
+
+        float mYconut = 180 + Mathf.Rad2Deg * Mathf.Atan2(lookForward.x, lookForward.z);
+        Ycount = ModiferYCount(Ycount, mYconut);
+    }
+
 
     public void LookAtPoint(Vector3 lookAtPosition, Vector3 lookForward,bool endEnableCtrl=true)//一个相机目标点的位置，和目标点朝前的向量
     {

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 
 
@@ -71,7 +72,7 @@ public class HuXingType
         public Transform fczMesh;
         public CameraUniversal cameraUniversal;
         public string myCameraPosAndXYZcount;
-        public Transform[] pointForMove;
+        public Transform[] pointForMove2;
 
         [HideInInspector]
         public Texture PMT;
@@ -86,6 +87,8 @@ public class HuXingType
         public InteractiveAction interactiveAction;
 
     }
+
+    public floor currentAtFloor;
 
 
 
@@ -139,18 +142,13 @@ public class HuXingType
 
 
 
-public void SetHuXingTypeInfo()
+    public void SetHuXingTypeInfo()
     {
         //        GetHuXingType();
     }
 
     public string GetHuXingTypeInfo()
     {
-
-
-        
-
-
 
         string[] introductionGroup = introduction.Replace("；",";").Split(';');
         string introductionFinal = "";
@@ -195,17 +193,47 @@ public void SetHuXingTypeInfo()
         return allDisplayName;
     }
 
-    public void EnterHuXingFloor(CameraUniversalCenter camCenter, string floorName)
+    public void EnterHuXingFloor(CameraUniversalCenter camCenter, string floorName,CanveGroupFade triggerFastMoveSM, ScrollMenu fastMoveSM)
     {
 
         DisplayAllFloorMesh();
+
+        currentAtFloor.floorName = "";
+
 
         foreach (floor f in allFloor)
         {
             if (f.floorName == floorName)
             {
+                currentAtFloor = f;
+
                 isMYing = true;
                 camCenter.ChangeCamera(f.cameraUniversal,0.5f);
+
+                if (f.pointForMove2!=null&&f.pointForMove2.Length > 0)
+                {
+                    fastMoveSM.GetComponent<RectTransform>().DOAnchorPosY(60, 1);
+                    triggerFastMoveSM.AlphaPlayForward();
+
+                    string[] displayGroup = new string[f.pointForMove2.Length];
+                    string[] paraGroup = new string[f.pointForMove2.Length];
+
+                    for (int i = 0; i < f.pointForMove2.Length; i++)
+                    {
+                        displayGroup[i] = f.pointForMove2[i].name;
+                        paraGroup[i] = i.ToString();
+                    }
+
+                    fastMoveSM.CreateItemGroup(displayGroup, paraGroup);
+
+                }
+                else
+                {
+                    fastMoveSM.GetComponent<RectTransform>().DOAnchorPosY(60, 1);
+                    triggerFastMoveSM.AlphaPlayBackward();
+                }
+
+
             }
         }
 
@@ -215,6 +243,10 @@ public void SetHuXingTypeInfo()
     {
         isMYing = false;
         camCenter.ChangeCamera(camCenter.cameras[0]);
+
+//        fastMoveSM.GetComponent<RectTransform>().DOAnchorPosY(60, 1);
+//        trrigerFastMoveSM.AlphaPlayBackward();
+
     }
 
     public void HiddenAllFloorMesh()

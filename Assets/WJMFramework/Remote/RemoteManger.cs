@@ -50,6 +50,10 @@ public class RemoteManger : MonoBehaviour
 
 
 
+
+
+
+
     void Start()
     {
         isEnterRoom = false;
@@ -88,6 +92,13 @@ public class RemoteManger : MonoBehaviour
             {
                 RemoteGather.currentCameraUniversal = sceneInteractiveManger.currentActiveSenceInteractiveInfo.cameraUniversalCenter.currentCamera;
             }
+
+            if (sceneInteractiveManger.currentThumbnailCamera != null)
+            {
+                RemoteGather.currentCameraUniversal = sceneInteractiveManger.currentThumbnailCamera;
+            }
+
+
 
             //等待Ack
             if (waitingAck)

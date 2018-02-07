@@ -11,6 +11,7 @@ public class XFGUI : MonoBehaviour
     public Material selectMat;
     public Transform selectMeshProxy;
     public SceneInteractiveManger sceneInteractiveManger;
+    public CameraUniversalCenter globalCameraUniversalCenter;
 
     public CanveGroupFade xfCanveGroupFade;
     int currentLouID;
@@ -137,8 +138,6 @@ public class XFGUI : MonoBehaviour
     }
 
 
-
-
     public void CloseChooseBuildingMenu()
     {
         btnChooseUnitBase.transform.DOLocalMoveY(0, 0.3f);
@@ -203,13 +202,11 @@ public class XFGUI : MonoBehaviour
             {
                 unitStringGorupDisplay[i] = unitNameDictionary[unitIntGorup[i]];
             }
-
         }
 
         btnChooseUnitBase.transform.DOLocalMoveY(0, 0.3f);
         unitScrollMenuBase.DOAnchorPos(new Vector2(0, 0), 0.3f);
         hxInstanceScrollMenuBase.DOAnchorPos(new Vector2(0, -700), 0.3f);
-
         unitScrollMenu.CreateItemGroup(unitStringGorupDisplay, unitStringGorup);
 
 
@@ -231,8 +228,6 @@ public class XFGUI : MonoBehaviour
         {
             unitTextLabel.text = unitNameDictionary[currentUnit];
         }
-
-
         btnChooseUnit.CleanState();
         CreateHXInstanceScrollMenu();
 
@@ -290,8 +285,6 @@ public class XFGUI : MonoBehaviour
                 hxScene.transform.localScale = new Vector3(1, 1, 1);
             }
             RenderXFThumbnail(selectHuXingInstance[0], isThumbnailZoomIn);
-
-
         }
     }
 
@@ -313,7 +306,7 @@ public class XFGUI : MonoBehaviour
         selectMeshProxy.position = h.position;
         selectMeshProxy.eulerAngles = h.eulerAngles;
         selectMeshProxy.localScale = h.scale;
-    //    hxScene.huXingType.hxMeshRoot.transform.position = h.position;
+        //hxScene.huXingType.hxMeshRoot.transform.position = h.position;
         hxScene.huXingType.hxMeshRoot.transform.DOMove(h.position, 0.3f);
         hxScene.huXingType.hxMeshRoot.transform.eulerAngles =new Vector3( h.eulerAngles.x,h.eulerAngles.y+h.yRotOffset,h.eulerAngles.z);
         //currentSelectSenceInteractiveInfo.huXingType.hxMeshRoot.transform.localScale = h.scale;
@@ -329,9 +322,6 @@ public class XFGUI : MonoBehaviour
             hxfbScene.cameraUniversalCenter.cameras[0].SetCameraPositionAndXYZCountAllArgs(h.position.x.ToString(), h.position.y.ToString(), h.position.z.ToString(), "25", (h.eulerAngles.y + 180).ToString(), "", 0);
             selectMat.SetFloat("_alphaSin", 0.8f);
         }
-
-
-
 
     }
 
@@ -358,14 +348,15 @@ public class XFGUI : MonoBehaviour
             thumbnailTouchCtrl.raycastTarget = true;
             thumbnailTouchCtrl.cameraCenter = hxfbScene.cameraUniversalCenter;
             imageZoomInAndZoomOut.ZoomIn();
+
+            sceneInteractiveManger.currentThumbnailCamera = hxfbScene.cameraUniversalCenter.currentCamera;
+
         }
    
     }
 
     public void EndCtrlXFThumbnail()
     {
-
-
         if (isThumbnailZoomIn)
         {
             isThumbnailZoomIn = false;
@@ -376,6 +367,7 @@ public class XFGUI : MonoBehaviour
             thumbnailTouchCtrl.raycastTarget = false;
             thumbnailTouchCtrl.cameraCenter = null;
             imageZoomInAndZoomOut.ZoomOut();
+            sceneInteractiveManger.currentThumbnailCamera = null;
         }
     }
 

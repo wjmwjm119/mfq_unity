@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class HXGUI : MonoBehaviour
 {
@@ -24,15 +25,18 @@ public class HXGUI : MonoBehaviour
     public CanveGroupFade triggerVR;
     public CanveGroupFade triggerFCZ;
     public CanveGroupFade triggerMusicBtn;
+    public CanveGroupFade triggerFastMoveSM;
 
     public ScrollMenu huXingScrollMenu;
     public ScrollMenu huXingFloorScrollMenu;
+    public ScrollMenu huXingFastMoveScrollMenu;
 
     public Transform huXingCameraBG;
 
     public HuXingType currentSelectHuXingType;
 
-    //所有的户型最终信息都会整合到这
+//所有的户型最终信息都会整合到这
+
     public HuXingType[] hxSceneHuXingTypeFinal;
 
     Ray ray;
@@ -83,9 +87,8 @@ public class HXGUI : MonoBehaviour
         huXingInfoLabel.HiddenHuXingInfoLabel();
     }
 
-
     /// <summary>
-    /// 竖屏进入户型,只有鸟瞰,没有漫游
+    /// 竖屏进入户型
     /// </summary>
     /// <param name="inName"></param>
     public void OnlyEnterHXNK(string inName)
@@ -98,7 +101,6 @@ public class HXGUI : MonoBehaviour
             {
                 if (s.huXingType.hxMeshRoot != null)
                 {
-
                     appBridge.Unity2App("unityOpenRoomType", currentSelectHuXingType.huXingID);
                     Debug.Log("unityOpenRoomType:" + currentSelectHuXingType.huXingID);
                     GlobalDebug.Addline("unityOpenRoomType:" + currentSelectHuXingType.huXingID);
@@ -107,17 +109,23 @@ public class HXGUI : MonoBehaviour
 
                     for (int i = 0; i < hxSceneHuXingTypeFinal.Length; i++)
                     {
-                        if (hxSceneHuXingTypeFinal[i].hxName == s.huXingType.hxName)
-                        {
-                            currentSelectHuXingType = hxSceneHuXingTypeFinal[i];
-                        }
+                      if (hxSceneHuXingTypeFinal[i].hxName == s.huXingType.hxName)
+                      {
+                        currentSelectHuXingType = hxSceneHuXingTypeFinal[i];
+                      }
+                    }
+
+                    if (hxScene.meshRoot != null)
+                    {
+                        hxScene.meshRoot.transform.position = new Vector3(0, 500, 0);
+                        hxScene.cameraUniversalCenter.transform.position = new Vector3(0, 500, 0);
                     }
 
                     sceneInteractiveManger.ChangeInteractiveScene(hxScene, true);
 
-                    //                  triggerVR.AlphaPlayBackward();
-                    //                  triggerEnterFangJian.AlphaPlayBackward();
-//                    triggerFCZ.transform.localPosition = new Vector3(0, 100, 0);
+//                  triggerVR.AlphaPlayBackward();
+//                  triggerEnterFangJian.AlphaPlayBackward();
+//                  triggerFCZ.transform.localPosition = new Vector3(0, 100, 0);
                     triggerFCZ.AlphaPlayForward();
 //                  triggerEnterFangJian.transform.localPosition = new Vector3(-500, 0, 0);
                     triggerEnterHX.AlphaPlayBackward();
@@ -163,6 +171,13 @@ public class HXGUI : MonoBehaviour
             hxScene.huXingType.hxMeshRoot.gameObject.SetActive(false);
         }
 
+        if (hxScene.meshRoot != null)
+        {
+            hxScene.meshRoot.transform.position = new Vector3(0, 0, 0);
+            hxScene.cameraUniversalCenter.transform.position = new Vector3(0, 0, 0);
+        }
+
+
         HiddenHuXingFloorScrollMenu();
 
         if (sceneInteractiveManger.mainSenceInteractiveInfo != null)
@@ -195,7 +210,6 @@ public class HXGUI : MonoBehaviour
         sceneInteractiveManger.RenderSenceThumbnail(sceneInteractiveManger.thumbnailOutdoor, hxfbScene, hxfbScene.cameraUniversalCenter.currentCamera, hxfbCameraArgs);
 
         Debug.Log(hxfbCameraArgs);
-
 
         hxScene = sceneInteractiveManger.GetHuXingTypeInteractiveInfo(currentSelectHuXingType.hxName);
 
@@ -337,7 +351,9 @@ public class HXGUI : MonoBehaviour
         }
 
         huXingFloorScrollMenu.SetNonStandFloorBtnVisblity(false);
-        currentSelectHuXingType.EnterHuXingFloor(sceneInteractiveManger.currentActiveSenceInteractiveInfo.cameraUniversalCenter, currentSelectHuXingType.GetDefaultMYFloorName());
+        currentSelectHuXingType.EnterHuXingFloor(sceneInteractiveManger.currentActiveSenceInteractiveInfo.cameraUniversalCenter, currentSelectHuXingType.GetDefaultMYFloorName(), triggerFastMoveSM,huXingFastMoveScrollMenu);
+
+
 
     }
 
@@ -367,7 +383,8 @@ public class HXGUI : MonoBehaviour
 
         currentSelectHuXingType.ExitHuXingFloor(hxScene.cameraUniversalCenter);
 
-
+        huXingFastMoveScrollMenu.GetComponent<RectTransform>().DOAnchorPosY(60, 1);
+        triggerFastMoveSM.AlphaPlayBackward();
 
     }
 
@@ -424,9 +441,9 @@ public class HXGUI : MonoBehaviour
     public void ChooseHuXingType(string hxName)
     {
 
-//        triggerShare.AlphaPlayBackward();
+//      triggerShare.AlphaPlayBackward();
 
-//        Debug.Log(hxfbScene);
+//      Debug.Log(hxfbScene);
 
         //显示户型信息，获取到当前选择的户型
         currentSelectHuXingType = new HuXingType();
@@ -524,13 +541,32 @@ public class HXGUI : MonoBehaviour
 
     }
 
-
     public void ReChooseHuXingType(string hxName)
     {
         huXingInfoLabel.HiddenHuXingInfoLabel();
         //为空
         hxfbScene.ProcessHXFBAction("");
     }
+
+    public void ChooseFastMovePosition(string moveToPointID)
+    {
+        Vector3 fastToPosition = currentSelectHuXingType.currentAtFloor.pointForMove2[int.Parse(moveToPointID)].localPosition;
+        Vector3 fastToForward = -currentSelectHuXingType.currentAtFloor.pointForMove2[int.Parse(moveToPointID)].forward;
+
+        hxScene.cameraUniversalCenter.currentCamera.SetCameraPositionAndXYZCountAllArgs(
+            fastToPosition.x.ToString(),
+            fastToPosition.y.ToString(),
+            fastToPosition.z.ToString(),
+            "",
+            "",
+            ""
+            );
+
+        hxScene.cameraUniversalCenter.currentCamera.RotateToVector(fastToForward);
+
+   
+    }
+
 
     void RenderHuXingThumbnail( string hxName)
     {

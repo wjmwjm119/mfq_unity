@@ -162,8 +162,6 @@ public class SenceInteractiveInfo : MonoBehaviour
 
     }
 
-
-
     public void RecordInfo()
     {
         senceInteractiveInfoJson = "{";
@@ -180,7 +178,6 @@ public class SenceInteractiveInfo : MonoBehaviour
             Debug.LogWarning(log);
             Debug.LogError(log);
         }
-
 
             senceInteractiveInfoJson += ",";
             senceInteractiveInfoJson += "\"homeInAct\":";
@@ -241,13 +238,13 @@ public class SenceInteractiveInfo : MonoBehaviour
             huXingType.RecordEachFloorInteractiveAction();
 
             senceInteractiveInfoJson += ",";
+            senceInteractiveInfoJson += "\"defaultMYFloorName\":\""+huXingType.defaultMYFloorName;
+            senceInteractiveInfoJson += "\",";
             senceInteractiveInfoJson += "\"floorGroup\":[";
 
             for (int i = 0; i < huXingType.allFloor.Length; i++)
             {
-
-
-        //                senceInteractiveInfoJson += "{";
+        //              senceInteractiveInfoJson += "{";
                         if (huXingType.allFloor[i].interactiveAction.needDisplayRoot != null)
                         {
         //                 senceInteractiveInfoJson += f3d_FloorGroup[i].needDisplayRoot.name + "\":";
