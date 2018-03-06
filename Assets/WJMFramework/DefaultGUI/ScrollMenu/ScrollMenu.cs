@@ -1,7 +1,5 @@
 ﻿//ScrollMenu生成Item及添加Event到Item; 点击Item会调用ItemBtnExeTrue; ItemBtnExeTrue会调用trueEvent; tureEvent处理具体逻辑
 
-
-
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -47,7 +45,6 @@ public class ScrollMenu : MonoBehaviour
 
     //用来保存非标准层的楼层,如外墙体,屋顶
     List<ScrollItem> nonStandFloor;
-
 
     public int GetallScrollItemLength()
     {

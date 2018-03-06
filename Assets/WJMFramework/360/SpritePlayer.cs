@@ -15,7 +15,7 @@ public class SpritePlayer : Image, IPointerDownHandler, IPointerUpHandler, IDrag
     public bool play = false;
     public int waitPerTime = 2;
     public float playSpeed = 1;
-//    public Image image;
+//  public Image image;
 
     int currentNo;
 

@@ -93,7 +93,7 @@ public class CombinedMesh
             {
                 Color tempCol = new Color(worldPosAndScale.x, worldPosAndScale.y, worldPosAndScale.z, worldPosAndScale.w);
                 colorList.Add(tempCol);
-//                Debug.Log(tempCol);
+//              Debug.Log(tempCol);
             }
             
             int[] singerMeshIndices= allChildMeshFilter[i].sharedMesh.GetIndices(0);
@@ -104,7 +104,7 @@ public class CombinedMesh
             }
 
             indices.AddRange(singerMeshIndices);
-
+            
 
         }
     }

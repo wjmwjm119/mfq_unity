@@ -166,8 +166,6 @@ public class SceneInteractiveManger : MonoBehaviour
 
     void LoopAdditiveScene(bool loadImageInEnd=true)
     {
-
-
         currentAddSceneID++;
 
         if (currentAddSceneID < assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath.Length)
@@ -177,8 +175,6 @@ public class SceneInteractiveManger : MonoBehaviour
             loadingScene.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[currentAddSceneID], LoadSceneMode.Additive), "正在加载");
             loadingScene.OnLoadedEvent.AddListener(() => { LoopAdditiveScene(); });
             */
-
-            
                         if (assetBundleManager.serverProjectAssetBundlesInfo.sceneTypeSet != null && assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath.Length == assetBundleManager.serverProjectAssetBundlesInfo.sceneTypeSet.Length)
                         {
                             if (assetBundleManager.serverProjectAssetBundlesInfo.sceneTypeSet[currentAddSceneID] == 8)
@@ -274,16 +270,23 @@ public class SceneInteractiveManger : MonoBehaviour
     public void AddSenceInteractiveInfo(SenceInteractiveInfo s)
     {
 
-//        Debug.Log(1111);
-
+//      Debug.Log(1111);
 
         if (s.meshRoot != null)
         {
+            //查找websky，因为由些老的项目websky没有正确设置
+            if (s.websky == null)
+            {
+                Transform t = s.meshRoot.Find("websky");
+                if (t != null)
+                    s.websky = t;
+            }
+
             RecoverMatShader(s.meshRoot);
         }
 
+        // Debug.Log(2222);
 
-//                Debug.Log(2222);
         s.sceneName = addSceneName;
 
         if (senceInteractiveInfoGroup == null)
@@ -298,9 +301,8 @@ public class SceneInteractiveManger : MonoBehaviour
                 c.InitlCameraInRuntime();
                 RecoverMatShader(c.camBase.transform);
             }
-
-
-//            Debug.Log(3333);
+        
+//          Debug.Log(3333);
             if (s.sceneType == SenceInteractiveInfo.SceneType.大场景)
             {
                 //设置大场景相机的layer
