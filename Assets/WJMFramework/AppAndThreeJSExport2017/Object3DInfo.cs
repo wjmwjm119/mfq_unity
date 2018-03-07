@@ -166,6 +166,13 @@ public class Object3DInfo:MonoBehaviour
             }
         }
 
+        Object3DModifer oModifer = GetComponent<Object3DModifer>();
+        if (oModifer != null)
+        {
+            renderOrder = oModifer.renderOrder;
+        }
+
+
         GenGameObjectJsonString();
 
         return true;
