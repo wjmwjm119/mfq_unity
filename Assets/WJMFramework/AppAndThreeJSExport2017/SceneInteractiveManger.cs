@@ -8,8 +8,8 @@ using UnityEngine.UI;
 public class SceneInteractiveManger : MonoBehaviour
 {
     public AppBridge appBridge;
-//    public ShaderLib shaderLib;
-//    public ARManager arManager;
+//  public ShaderLib shaderLib;
+//  public ARManager arManager;
     public AssetBundleManager assetBundleManager;
     public LoadingManager loadingManager;
     public RemoteManger remoteManger;
@@ -35,7 +35,7 @@ public class SceneInteractiveManger : MonoBehaviour
         ar = 2
     }
 
-//    public static LoadAtState loadAtState = LoadAtState.normal;
+//  public static LoadAtState loadAtState = LoadAtState.normal;
 
     public string addSceneName;
 
@@ -129,6 +129,7 @@ public class SceneInteractiveManger : MonoBehaviour
                 //不加载主场景,只加载户型,以供AR扫描,跳过第一个主场景
                 currentAddSceneID = 0;
                 LoopAdditiveScene(true);
+
                 //              arManager.OpenARCamrea();
                 break;
 
@@ -138,6 +139,8 @@ public class SceneInteractiveManger : MonoBehaviour
                 Loading loadingScene2 = loadingManager.AddALoading(5);
                 loadingScene2.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[0], LoadSceneMode.Additive), "正在加载");
                 loadingScene2.OnLoadedEvent.AddListener(() => { StartCoroutine(LoadSenceInteractiveIE(true)); });
+                appBridge.serverProjectInfo.Trigger_ToPanoramaBtn.AlphaPlayBackward();
+
 
                 break;
 
@@ -241,10 +244,6 @@ public class SceneInteractiveManger : MonoBehaviour
     }
 
 
-
-    
-    
-
     //简介,配套,交通
     public void MainBtnAction(int toInt)
     {
@@ -346,6 +345,8 @@ public class SceneInteractiveManger : MonoBehaviour
                         hFinal.rotOffset = s.huXingType.rotOffset;
                         hFinal.nkCameraPosAndXYZcount = s.huXingType.nkCameraPosAndXYZcount;
                         hFinal.defaultMYFloorName = s.huXingType.defaultMYFloorName;
+                        hFinal.hxAudioClip = s.huXingType.hxAudioClip;
+                        hFinal.cartoonType = s.huXingType.cartoonType;
 
 /*
                         if (s.huXingType.allFloor.Length != hFinal.allFloor.Length)

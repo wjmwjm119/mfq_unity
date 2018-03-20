@@ -15,6 +15,7 @@ public class ServerProjectInfo : MonoBehaviour
     public LoadingManager loadingManager;
     public AssetBundleManager assetBundleManager;
     public SceneInteractiveManger sceneInteractiveManger;
+    public CanveGroupFade Trigger_ToPanoramaBtn;
 
     public DefaultGUI defaultGUI;
     public HXGUI hxGUI;
@@ -24,6 +25,9 @@ public class ServerProjectInfo : MonoBehaviour
     public TextTable proInfoTextTable;
     public Text warningLabel;
     public Text warningLabel2;
+
+
+
 
     public string projectInfoJsonFromServer;
 
@@ -135,7 +139,6 @@ public class ServerProjectInfo : MonoBehaviour
     void ProcessProjectInfoFromServer(string inProjectid, string infoText)
     {
 
-
         //GlobalDebug.Clear();
         //GlobalDebug.Addline(t.text);
 
@@ -148,6 +151,8 @@ public class ServerProjectInfo : MonoBehaviour
         string log = "处理从服务获取的项目信息";
         GlobalDebug.Addline(log);
         Debug.Log(log);
+
+
 
         if (projectRootInfo.data.proName == null)
         {
@@ -175,6 +180,11 @@ public class ServerProjectInfo : MonoBehaviour
 
     void PrcessProjectInfo(ProjectRootInfo inProjectRootInfo,bool isLoadFromCache=false)
     {
+        //判断是否有外部全景图链接
+        if (projectRootInfo.data.panoramaSwitch.isShow==1)
+        {
+            Trigger_ToPanoramaBtn.AlphaPlayForward();
+        }
 
 		string log = "是否加载本地缓存ProjectInfo.txt："+isLoadFromCache;
         GlobalDebug.Addline(log);
@@ -337,8 +347,18 @@ public class ProjectInfo
     public string declareContent;
     public QwImage[] qwInfo;
     public HXInfo[] hxInfo;
+    public PanoramaSwitch panoramaSwitch;
 
 }
+
+
+[System.Serializable]
+public class PanoramaSwitch
+{
+    public int isShow;
+    public string link;
+}
+
 
 [System.Serializable]
 public class QwImage

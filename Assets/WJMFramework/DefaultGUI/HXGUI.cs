@@ -26,6 +26,10 @@ public class HXGUI : MonoBehaviour
     public CanveGroupFade triggerFCZ;
     public CanveGroupFade triggerMusicBtn;
     public CanveGroupFade triggerFastMoveSM;
+    public CanveGroupFade triggerCartoonAni;
+
+    public CartoonPlayer cartoonPlayer;
+    public ImageButton cartoonPauseBtn;
 
     public ScrollMenu huXingScrollMenu;
     public ScrollMenu huXingFloorScrollMenu;
@@ -241,6 +245,22 @@ public class HXGUI : MonoBehaviour
 
         xfGUI.SetHXSceneAndHXFBScene(hxScene, hxfbScene);
 
+
+        if (hxScene.huXingType.hxAudioClip != null)
+        {
+            triggerCartoonAni.AlphaPlayForward();
+            cartoonPlayer.OpenCartoonPeopleUseAudioFile(hxScene.huXingType.hxAudioClip, hxScene.huXingType.cartoonType);
+
+            if (hxScene.huXingType.hasPlayed)
+            {
+                cartoonPauseBtn.SetBtnState(true, 0);
+            }
+
+            hxScene.huXingType.hasPlayed = true;
+
+        }
+            
+
         appBridge.Unity2App("unityOpenRoomTypeDone");
         Debug.Log("unityOpenRoomTypeDone");
         GlobalDebug.Addline("unityOpenRoomTypeDone");
@@ -284,6 +304,13 @@ public class HXGUI : MonoBehaviour
         HiddenHuXingFloorScrollMenu();
 
         DisplayHXFBBox(currentSelectHuXingType.hxName);
+
+        if (hxScene.huXingType.hxAudioClip != null)
+        {
+            triggerCartoonAni.AlphaPlayBackward();
+            cartoonPlayer.CloseCaratoonPeople();
+        }
+
 
         appBridge.Unity2App("unityBackRoomTypeDone");
         Debug.Log("unityBackRoomTypeDone");

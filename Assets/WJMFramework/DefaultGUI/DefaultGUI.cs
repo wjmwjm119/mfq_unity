@@ -192,5 +192,8 @@ public class DefaultGUI : MonoBehaviour
 
     }
 
-
+    public void ToPanorama()
+    {
+        appBridege.Unity2App("unityToPanorama", appBridege.serverProjectInfo.projectRootInfo.data.panoramaSwitch.link);
+    }
 }

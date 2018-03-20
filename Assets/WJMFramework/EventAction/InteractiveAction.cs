@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
 
 [System.Serializable]
 public class InteractiveAction
@@ -12,4 +14,6 @@ public class InteractiveAction
     public Transform pzMesh;
     //----------
 
+    public UnityEvent trueEvent;
+    public UnityEvent falseEvent;
 }

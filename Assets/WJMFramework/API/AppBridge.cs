@@ -6,9 +6,9 @@ using System;
 using System.Runtime.InteropServices;
 using DG.Tweening;
 
+
 public class AppBridge : MonoBehaviour
 {
-
     public Unload unload;
     public ServerProjectInfo serverProjectInfo;
     public DefaultGUI defaultGUI;
@@ -52,20 +52,18 @@ public class AppBridge : MonoBehaviour
     private static extern void unityOpenRoomTypeDone();// 进入户型完毕
     [DllImport("__Internal")]
     private static extern void unityBackRoomTypeDone();// 户型返回完毕
-
     [DllImport("__Internal")]
     private static extern void unitySetMusic(string musicState);//音乐开关
+    [DllImport("__Internal")]
+    private static extern void unityToPanorama(string url);//切到外部全景图模式
 
- //    [DllImport("__Internal")]
- //    private static extern void unityEnterMYInPortraitDone();//竖屏进入户型漫游
-
+ //[DllImport("__Internal")]
+ //private static extern void unityEnterMYInPortraitDone();//竖屏进入户型漫游
  //unityOpenRoomType(string roomID)    进入户型
 
-
 #endif
 
 #endif
-    
 
     //Unity调用外部代码
     public void Unity2App(string methodName, params object[] args)
@@ -77,11 +75,11 @@ public class AppBridge : MonoBehaviour
             AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
             jo.Call(methodName, args);
-        }
-        catch (Exception e)
-        {
+         }
+         catch (Exception e)
+         {
             Debug.Log(e.ToString());
-        }
+         }
 #endif
 
 #if true
@@ -127,6 +125,10 @@ public class AppBridge : MonoBehaviour
                     unitySetMusic((string)args[0]);
                     break;
 
+                case "unityToPanorama":
+                    unityToPanorama((string)args[0]);
+                    break;
+
                 default:
                     GlobalDebug.Addline("未定义的方法："+ methodName);
                     break;
@@ -136,11 +138,70 @@ public class AppBridge : MonoBehaviour
 
     }
 
-    
     public void Load_Test()
     {
         Load(JsonUtility.ToJson(appProjectInfo));   
 //      Load(serverProjectInfo.projectInfoJsonFromServer);
+    }
+
+    static string EncodeDateKEY(int year, int month, int day)
+    {
+        int modiferMouth = 0;
+        string valueKey = "";
+        char[] addCodeChar = new char[] { 't', 'k', '9', '1', 'z', 'y', 'u', '1' };
+
+        if (month == 10)
+        {
+            modiferMouth = 7;
+        }
+        else
+        {
+            modiferMouth = month;
+        }
+
+        valueKey = (modiferMouth * day).ToString();//生成一个由月和日相乘的数，取末尾一位数，加到日前面
+        valueKey = valueKey.Substring(valueKey.Length - 1);//在实际日期前多补一位     如   52013,5,13
+
+        valueKey += year.ToString() + ":" + month.ToString() + ":" + day.ToString();
+
+        char[] valueKeyChars = valueKey.ToCharArray();
+
+        int firtCharAscii = (int)valueKeyChars[0];
+
+        for (int i = 0; i < valueKeyChars.Length; i++)
+        {
+            if (i == 0)
+            {
+                valueKeyChars[i] = (char)((int)valueKeyChars[i] + 30);
+            }
+            else
+            {
+                if (i < addCodeChar.Length)
+                {
+                    valueKeyChars[i] = (char)((int)valueKeyChars[i] + 17 + (((7 + firtCharAscii) * i) + (int)addCodeChar[i]) % 15);
+                }
+                else
+                {
+                    valueKeyChars[i] = (char)((int)valueKeyChars[i] + 17 + ((7 + firtCharAscii) * i) % 15);
+                }
+            }
+        }
+        return new string(valueKeyChars);
+    }
+
+    //添加验证环节（IOS版SDK使用）
+    void LoadUnity(string info)
+    {
+        appProjectInfo = JsonUtility.FromJson<AppProjectInfo>(info);
+
+        if (EncodeDateKEY(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) == appProjectInfo.checkKey)
+        {
+            Load(info);
+        }
+        else
+        {
+            Debug.Log("CheckKey 校验不一致!");
+        }
     }
 
     //以下函数为,外部调用Unity函数
@@ -213,7 +274,6 @@ public class AppBridge : MonoBehaviour
         Debug.Log("APP2Unity Unload");
         unload.LoadUnloadScene();
     }
-
 
     void VedioButton(string state)
     {
@@ -317,7 +377,6 @@ public class AppBridge : MonoBehaviour
 
     }
 
-
     void OpenRoomType(string roomName)
     {
         GlobalDebug.Addline("APP2Unity OpenRoomType " + roomName);
@@ -341,7 +400,6 @@ public class AppBridge : MonoBehaviour
         //执行back操作,
         backAction.Back();
     }
-
 
     void SetSatatusBar(string state)
     {
@@ -368,7 +426,6 @@ public class AppBridge : MonoBehaviour
 
     }
 
-
     void SetNavigationBar(string state)
     {
 
@@ -387,8 +444,6 @@ public class AppBridge : MonoBehaviour
 #endif
 
     }
-
-
 
     public void SetSatatusBar2(string state)
     {
@@ -410,8 +465,6 @@ public class AppBridge : MonoBehaviour
         CloseRoomType();
     }
 
-
-
     [System.Serializable]
     public class AppProjectInfo
     {
@@ -419,17 +472,19 @@ public class AppBridge : MonoBehaviour
         public string sceneLoadMode;
         public string projectName;
         public string dataServer;
-//        public string mobileNetworkDownload;
+//      public string mobileNetworkDownload;
         public string userID;
         public string remoteUserID;
         public string remoteUserHeadUrl;
         public string userType;
-//        public string isRemote;
+//      ublic string isRemote;
         public string remoteServer;
-//        public string portraitWidth;
-//        public string portraitHeight;
-//        public string debug;
+        //        public string portraitWidth;
+        //        public string portraitHeight;
+        //        public string debug;
+        public string checkKey;
     }
+
 
     //App2Unity
     //Load(string info)
@@ -456,6 +511,6 @@ public class AppBridge : MonoBehaviour
     //unityLandscape()    横屏时的回调,确认ok
     //unityUnloadDone()   卸载已加载项目并清空内存后的回调,清除当前scene后
     //unityLoadDone() 加载项目完毕后的回调,Load(string info)的OK
-
+    //unityToPanorama(string url)切换到外部全景图模式
 
 }

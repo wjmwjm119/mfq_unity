@@ -44,11 +44,20 @@ public class SenceInteractiveInfo : MonoBehaviour
     public Material hxfbMat;
 
     Transform lastNeedDisplayRoot;
-
+    InteractiveAction lastInteractiveAction;
 
 
     public void ProcessInteractiveAction( InteractiveAction i)
     {
+        if (lastInteractiveAction != null)
+        {
+            if (lastInteractiveAction.falseEvent != null)
+            {
+                lastInteractiveAction.falseEvent.Invoke();
+            }
+        }
+
+
         if (lastNeedDisplayRoot != null)
         {
             lastNeedDisplayRoot.gameObject.SetActive(false);
@@ -66,6 +75,15 @@ public class SenceInteractiveInfo : MonoBehaviour
             i.needDisplayRoot.gameObject.SetActive(true);
             lastNeedDisplayRoot = i.needDisplayRoot;
         }
+
+        if (i.trueEvent != null)
+        {
+            i.trueEvent.Invoke();
+        }
+
+        lastInteractiveAction = i;
+
+
     }
 
     //简介,配套,交通
