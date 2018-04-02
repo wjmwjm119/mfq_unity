@@ -3,19 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 using UnityEngine.Events;
 
 public class CartoonPlayer : MonoBehaviour
 {
     public int fps = 15;
     public Image cartoonImage;
-    public ImageButton cartoonPauseBtn;
+//  public ImageButton cartoonPauseBtn;
     public Text text;
     public Image waveLine;
     
     public AudioClip micAudioClip;
-
 
     float[] fileAudioSamples;
     public AudioClip fileAudioClip;
@@ -28,12 +26,13 @@ public class CartoonPlayer : MonoBehaviour
 
     public delegate void OnComplete(string str);
 
+
     string micDeviceName;
     float micStartTime;
     float[] micWaveSamples;
 
     Coroutine playCartoonAniCoroutine;
-    public CanveGroupFade triggerCartoonAni;
+//    public CanveGroupFade triggerCartoonAni;
 
     int currentSliceID;
 
@@ -43,6 +42,11 @@ public class CartoonPlayer : MonoBehaviour
     bool averageVolumeTrriger;
     bool isSpeak;
     bool isSpeakLast;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public UnityEvent hasStopWhenPause;
 
     void Update()
     {
@@ -80,7 +84,7 @@ public class CartoonPlayer : MonoBehaviour
 
         if (fileAudioClip != null&& audioSource.isPlaying)
         {
-            if (audioSource.time < fileAudioClip.length -0.11f)
+            if (audioSource.time < fileAudioClip.length - 0.11f)
             {
                 fileAudioClip.GetData(fileAudioSamples, (int)(audioSource.time * fileAudioClip.frequency) + fileAudioSamples.Length);
 
@@ -97,12 +101,8 @@ public class CartoonPlayer : MonoBehaviour
                     }
                 }
             }
-/*
-            else
-            {
-                fileAudioClip.GetData(fileAudioSamples, (int)(audioSource.time * fileAudioClip.frequency));
-            }
-*/
+
+
         }
 
         //由音强来判断是否要播放音乐
@@ -141,21 +141,20 @@ public class CartoonPlayer : MonoBehaviour
 
             if (isSpeak)
             {
-                PlayCartoonAni("a0" + UnityEngine.Random.Range(1, 8).ToString(),0);
+                PlayCartoonAni("a0" + UnityEngine.Random.Range(1, 9).ToString(),0);
             }
             else
             {
-                PlayCartoonAni("a09",0);
+                PlayCartoonAni("n01",0);
             }
         }
     }
 
 
     /// <summary>
-    /// 
+    /// 打开卡通角色，使用本机麦克风
     /// </summary>
-    /// <param name="cartoonType"></param>
-    /// <param name="waveTypeUse"></param>
+    /// <param name="cartoonType">卡通角色类型</param>
     public void OpenCartoonPeopleUseUnityMic(int cartoonType = 0)
     {
         SetCartoonSex(cartoonType);
@@ -175,56 +174,73 @@ public class CartoonPlayer : MonoBehaviour
             currentSliceID = 0;
         }
 
-        PlayCartoonAni("a09",0);
+        PlayCartoonAni("n01",0);
 
-        cartoonImage.DOFade(1, 0.2f);
+        cartoonImage.color = new Color(1f, 1f, 1f, 1f);
 
     }
 
 
+
+
+    public void OpenCartoonPeopleUseAudioFile(AudioClip a)
+    {
+        OpenCartoonPeopleUseAudioFile(a, 0);
+    }
+    /// <summary>
+    /// 打开卡通角色，使用已有的音频文件
+    /// </summary>
+    /// <param name="a">所要使用的音频文件</param>
+    /// <param name="cartoonType">卡通角色类型</param>
     public void OpenCartoonPeopleUseAudioFile(AudioClip a, int cartoonType = 0)
     {
+
         fileAudioSamples = new float[((int)(a.frequency*0.1f))];
 
         SetCartoonSex(cartoonType);
         fileAudioClip = a;
         audioSource.clip = fileAudioClip;
         audioSource.loop = false;
-//     audioSource.time = 75;
+ //       audioSource.time = 53f;
         audioSource.Play();
 
-        PlayCartoonAni("a09", 0);
-        cartoonImage.DOFade(1, 0.2f);
+        PlayCartoonAni("n01", 0);
+        cartoonImage.color = new Color(1f, 1f, 1f, 1f);
 
     }
-
+    /// <summary>
+    /// 音频文件播放暂停
+    /// </summary>
     public void Pause()
     {
         if (audioSource.isPlaying)
         {
             audioSource.Pause();
             averageVolume = 0;
-            PlayCartoonAni("a09", 0);
+            PlayCartoonAni("n01", 0);
         }
         else
         {
-            cartoonPauseBtn.SetBtnState(false, 0);
+            hasStopWhenPause.Invoke();   
         }
-
     }
 
+    /// <summary>
+    /// 音频文件播放恢复
+    /// </summary>
     public void Resume()
     {
         audioSource.Play();
-
     }
 
 
-
+    /// <summary>
+    /// 关闭卡通人物
+    /// </summary>
     public void CloseCaratoonPeople()
     {
-        cartoonImage.DOFade(0, 0.2f);
-        if(audioSource!=null&&audioSource.isPlaying)
+        cartoonImage.color = new Color(1f, 1f, 1f,0f);
+        if (audioSource!=null&&audioSource.isPlaying)
         {
             audioSource.Stop();
         }
@@ -261,18 +277,18 @@ public class CartoonPlayer : MonoBehaviour
     public void PlayCartoonAni(string cartoonAniClip,float delayTime)
     {
         //默认眨眼动作
-        if (cartoonAniClip == "a09")
+        if (cartoonAniClip.Substring(0,1) =="n")
         {
-            PlayCartoonAni(cartoonAniClip, delayTime,(string arg) => { Debug.Log(arg + " OnComplete"); PlayCartoonAni("a09", UnityEngine.Random.Range(3f, 6f)); }, cartoonAniClip);
+            PlayCartoonAni(cartoonAniClip, delayTime,(string arg) => { Debug.Log(arg + " OnComplete"); PlayCartoonAni("n0" + UnityEngine.Random.Range(1, 3).ToString(), UnityEngine.Random.Range(3f, 6f)); }, cartoonAniClip);
         }
         else
         {
-            PlayCartoonAni(cartoonAniClip, 0,(string arg) => { Debug.Log(arg + " OnComplete"); if(isSpeak) PlayCartoonAni("a0" + UnityEngine.Random.Range(1, 8).ToString(), 0); }, cartoonAniClip);
+            PlayCartoonAni(cartoonAniClip, 0,(string arg) => { Debug.Log(arg + " OnComplete"); if(isSpeak) PlayCartoonAni("a0" + UnityEngine.Random.Range(1, 9).ToString(), 0); }, cartoonAniClip);
         }
 
     }
 
-    public void PlayCartoonAni(string cartoonAniClip,float delayTime, OnComplete onComplete,string arg)
+    void PlayCartoonAni(string cartoonAniClip,float delayTime, OnComplete onComplete,string arg)
     {
         if (playCartoonAniCoroutine != null)
         {

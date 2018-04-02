@@ -245,7 +245,8 @@ public class HXGUI : MonoBehaviour
 
         xfGUI.SetHXSceneAndHXFBScene(hxScene, hxfbScene);
 
-
+        //音频角色动画
+/*
         if (hxScene.huXingType.hxAudioClip != null)
         {
             triggerCartoonAni.AlphaPlayForward();
@@ -259,7 +260,7 @@ public class HXGUI : MonoBehaviour
             hxScene.huXingType.hasPlayed = true;
 
         }
-            
+  */          
 
         appBridge.Unity2App("unityOpenRoomTypeDone");
         Debug.Log("unityOpenRoomTypeDone");
@@ -305,12 +306,13 @@ public class HXGUI : MonoBehaviour
 
         DisplayHXFBBox(currentSelectHuXingType.hxName);
 
+/*
         if (hxScene.huXingType.hxAudioClip != null)
         {
             triggerCartoonAni.AlphaPlayBackward();
             cartoonPlayer.CloseCaratoonPeople();
         }
-
+*/
 
         appBridge.Unity2App("unityBackRoomTypeDone");
         Debug.Log("unityBackRoomTypeDone");

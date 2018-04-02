@@ -41,14 +41,10 @@ public class HuXingType
     public string defaultMYFloorName = "1F";
     public floor[] allFloor;
 
-
+/*
     public AudioClip hxAudioClip;
     public int cartoonType;
-    /// <summary>
-    /// 是否已经播放过音频了，如果已播放过就不自动播放
-    /// </summary>
-    public bool hasPlayed;
-
+ */
     public bool isMYing = false;
 
 

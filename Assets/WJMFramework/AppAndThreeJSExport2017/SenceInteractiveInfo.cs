@@ -8,7 +8,6 @@ using System.Text;
 //场景交互的信息
 public class SenceInteractiveInfo : MonoBehaviour
 {
-
     public enum SceneType
     {
         大场景=0,
@@ -56,7 +55,6 @@ public class SenceInteractiveInfo : MonoBehaviour
                 lastInteractiveAction.falseEvent.Invoke();
             }
         }
-
 
         if (lastNeedDisplayRoot != null)
         {

@@ -19,6 +19,9 @@ public class SceneInteractiveManger : MonoBehaviour
     public HXGUI hxGUI;
     public ImageCache imageCache;
 
+ //   public CanveGroupFade cartoonPlayerFade;
+ //   public CartoonPlayer cartoonPlayer;
+
     public RenderTexture thumbnailOutdoor;
     public RenderTexture thumbnailHX;
     public SenceInteractiveInfo mainSenceInteractiveInfo;
@@ -215,8 +218,23 @@ public class SceneInteractiveManger : MonoBehaviour
 
             Debug.Log("unityLoadDone");
             GlobalDebug.Addline("unityLoadDone");
+
+//            TempPlayCartoon();
+
+
         }
     }
+    /*
+    public void TempPlayCartoon()
+    {
+        TempCartoonArgs t = currentActiveSenceInteractiveInfo.GetComponent<TempCartoonArgs>();
+        if (t != null)
+        {
+            cartoonPlayerFade.AlphaPlayForward();
+            cartoonPlayer.OpenCartoonPeopleUseAudioFile(t.hxAudioClip, 0);
+        }
+    }
+    */
 
     /*
     public void AdditiveScene(int id)
@@ -345,8 +363,8 @@ public class SceneInteractiveManger : MonoBehaviour
                         hFinal.rotOffset = s.huXingType.rotOffset;
                         hFinal.nkCameraPosAndXYZcount = s.huXingType.nkCameraPosAndXYZcount;
                         hFinal.defaultMYFloorName = s.huXingType.defaultMYFloorName;
-                        hFinal.hxAudioClip = s.huXingType.hxAudioClip;
-                        hFinal.cartoonType = s.huXingType.cartoonType;
+//                        hFinal.hxAudioClip = s.huXingType.hxAudioClip;
+//                        hFinal.cartoonType = s.huXingType.cartoonType;
 
 /*
                         if (s.huXingType.allFloor.Length != hFinal.allFloor.Length)
@@ -513,6 +531,7 @@ public class SceneInteractiveManger : MonoBehaviour
             {
                 if (currentActiveSenceInteractiveInfo.meshRoot != null)
                     currentActiveSenceInteractiveInfo.meshRoot.gameObject.SetActive(false);
+
             }
             else if (currentActiveSenceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.Point360)
             {
