@@ -59,13 +59,11 @@ public class ServerProjectInfo : MonoBehaviour
     public void LoadServerProjectInfo(string rojectInfoServerURL, string assetBundleURL, string projectid, string sceneLoadMode, bool loadLocalScene = false)
     {
 //      defaultGUI.DisplayDefaultGUI();
-
         pathAndURL.assetBundleServerUrl = assetBundleURL;
         pathAndURL.projectInfoServerUrl = rojectInfoServerURL;
 
         appBridge.appProjectInfo.sceneLoadMode = sceneLoadMode;
         
-
         onServerProjectInfoLoaded = new OnServerProjectInfoLoaded();
 
         if (loadLocalScene)
@@ -84,9 +82,7 @@ public class ServerProjectInfo : MonoBehaviour
 
     public void GetProjectInfoFromServer(string projectid)
     {
-
         Loading loading = loadingManager.AddALoading(0);
-
         netCtrlManager.WebRequest(
                 "获取项目信息",
                 pathAndURL.serverProjectInfoFinalUrl,
@@ -147,12 +143,9 @@ public class ServerProjectInfo : MonoBehaviour
         projectRootInfo.data.projectid = inProjectid;
         //      Debug.Log(infoText);
 
-
         string log = "处理从服务获取的项目信息";
         GlobalDebug.Addline(log);
         Debug.Log(log);
-
-
 
         if (projectRootInfo.data.proName == null)
         {

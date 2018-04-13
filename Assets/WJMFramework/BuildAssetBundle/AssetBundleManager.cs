@@ -67,6 +67,7 @@ public class AssetBundleManager : MonoBehaviour
 //      DontDestroyOnLoad(this);
 //      Caching.ClearCache();
         Caching.compressionEnabled = false;
+
         currentLoadedCommonAssetBundles = new List<AssetBundle>();
         currentLoadedSceneAssetBundles = new List<AssetBundle>();
         hasAddedSceneName = new List<string>();
@@ -209,7 +210,7 @@ public class AssetBundleManager : MonoBehaviour
         if (currentLoadedCommonAssetBundles.FindIndex(x => x.name == commonAssetBundlesInfo[currentID].name) == -1)
         {
             //不清空common资源的版本
-            //            Caching.ClearOtherCachedVersions(pathAndURL.commonPath + commonAssetBundlesInfo[currentID].name, Hash128.Parse(commonAssetBundlesInfo[currentID].hash));
+            //Caching.ClearOtherCachedVersions(pathAndURL.commonPath + commonAssetBundlesInfo[currentID].name, Hash128.Parse(commonAssetBundlesInfo[currentID].hash));
 
             Loading loading = loadingManager.AddALoading(2);
 
@@ -297,7 +298,6 @@ public class AssetBundleManager : MonoBehaviour
 
     public void LoopLoadSceneAssetBundle(int currentID,int loadingType)
     {
-
         Loading loading = loadingManager.AddALoading(loadingType);
         ProjectAssetBundlesInfo p = serverProjectAssetBundlesInfo;
 

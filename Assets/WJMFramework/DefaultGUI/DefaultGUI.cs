@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class DefaultGUI : MonoBehaviour
 {
     public AppBridge appBridege;
+    public SceneInteractiveManger sceneInteractiveManger;
     public CanveGroupFade defaultGUIRoot;
     public CanveGroupFade mainBtnGroup;
     public ImagePlayer2 quweiImagePlayer;
@@ -68,6 +69,10 @@ public class DefaultGUI : MonoBehaviour
     //全屏
     public void Landscape(string musicState,bool useOrientation)
     {
+        isLandscape = true;
+        CartoonPlayer.hasInit = true;
+        sceneInteractiveManger.PlayCartoonAni();
+
         triggerMusic.AlphaPlayForward();
         leftWarning.AlphaPlayBackward();
         rightWarning.AlphaPlayForward();
@@ -122,6 +127,9 @@ public class DefaultGUI : MonoBehaviour
     //半屏
     public void Portrait(bool useOrientation = true)
     {
+        isLandscape = false;
+        CartoonPlayer.hasInit = false;
+        sceneInteractiveManger.CloseCartoonAni();
 
         leftWarning.AlphaPlayForward();
         rightWarning.AlphaPlayBackward();
@@ -144,8 +152,6 @@ public class DefaultGUI : MonoBehaviour
         GlobalDebug.Addline("unityProtrait");
 
     }
-
-
 
 
 

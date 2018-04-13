@@ -28,6 +28,8 @@ public class SceneInteractiveManger : MonoBehaviour
     public SenceInteractiveInfo currentActiveSenceInteractiveInfo;
     public List<SenceInteractiveInfo> senceInteractiveInfoGroup;
 
+    public CartoonPlayer cartoonPlayer;
+
     public bool finishLoadAssetBundle;
     bool lastFinishLoadAssetBundle;
 
@@ -112,7 +114,7 @@ public class SceneInteractiveManger : MonoBehaviour
 
         switch (appBridge.appProjectInfo.sceneLoadMode)
         {
-
+            
             case "0":
                 //加载主场景
                 Loading loadingScene = loadingManager.AddALoading(5);
@@ -122,10 +124,17 @@ public class SceneInteractiveManger : MonoBehaviour
 
             case "1":
                 //不加载主场景,只加载户型,跳过第一个主场景
-//                defaultGUI.triggerMusic.AlphaPlayBackward();
+//             defaultGUI.triggerMusic.AlphaPlayBackward();
                 currentAddSceneID = 0;
                 LoopAdditiveScene(true);
                 //arManager.OpenARCamrea();
+                break;
+
+            case "2":
+                //加载主场景，并且激活
+                Loading loadingScene3 = loadingManager.AddALoading(5);
+                loadingScene3.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[0], LoadSceneMode.Additive), "正在加载");
+                loadingScene3.OnLoadedEvent.AddListener(() => { StartCoroutine(LoadSenceInteractiveIE()); });
                 break;
 
             case "8":
@@ -133,7 +142,7 @@ public class SceneInteractiveManger : MonoBehaviour
                 currentAddSceneID = 0;
                 LoopAdditiveScene(true);
 
-                //              arManager.OpenARCamrea();
+                //arManager.OpenARCamrea();
                 break;
 
             case "9":
@@ -213,28 +222,20 @@ public class SceneInteractiveManger : MonoBehaviour
             if(loadImageInEnd)
             imageCache.LoopLoadAndCacheImageFromServer();
 
+            if (appBridge.appProjectInfo.sceneLoadMode =="2")
+            {
+                defaultGUI.mainBtnGroup.GetComponent<ButtonGroup>().imageButtonGroup[4].SetBtnState(true, 0);
+            }
+
             appBridge.Unity2App("unityLoadDone");
             appBridge.Unity2App("unityReady");
 
             Debug.Log("unityLoadDone");
             GlobalDebug.Addline("unityLoadDone");
 
-//            TempPlayCartoon();
-
-
         }
     }
-    /*
-    public void TempPlayCartoon()
-    {
-        TempCartoonArgs t = currentActiveSenceInteractiveInfo.GetComponent<TempCartoonArgs>();
-        if (t != null)
-        {
-            cartoonPlayerFade.AlphaPlayForward();
-            cartoonPlayer.OpenCartoonPeopleUseAudioFile(t.hxAudioClip, 0);
-        }
-    }
-    */
+
 
     /*
     public void AdditiveScene(int id)
@@ -341,7 +342,6 @@ public class SceneInteractiveManger : MonoBehaviour
                 {
                     if (s.huXingType.hxName == hFinal.hxName)
                     {
-
                         if (hFinal.displayName == "")
                         {
                             if (s.huXingType.displayName == "")
@@ -519,8 +519,8 @@ public class SceneInteractiveManger : MonoBehaviour
     public void ChangeInteractiveScene(SenceInteractiveInfo toInteractiveScene,bool disableCurrentSceneMesh)
     {
 
-//        Debug.Log(toInteractiveScene.name);
-//        Debug.Log(currentActiveSenceInteractiveInfo.name);
+//     Debug.Log(toInteractiveScene.name);
+//     Debug.Log(currentActiveSenceInteractiveInfo.name);
 
         if (toInteractiveScene == currentActiveSenceInteractiveInfo)
         return;
@@ -553,7 +553,6 @@ public class SceneInteractiveManger : MonoBehaviour
         {
             globalCameraCenter.ChangeCamera(toInteractiveScene.cameraUniversalCenter.cameras[0], 0.0f);
         }
-
 
         if (toInteractiveScene.sceneType == SenceInteractiveInfo.SceneType.大场景)
         {
@@ -590,6 +589,44 @@ public class SceneInteractiveManger : MonoBehaviour
         currentActiveSenceInteractiveInfo = toInteractiveScene;
         globalCameraCenter.zbzOffset = toInteractiveScene.cameraUniversalCenter.zbzOffset;
         zbz.cameraUniversalCenter = toInteractiveScene.cameraUniversalCenter;
+
+ //    loadingManager.load
+        if(CartoonPlayer.hasInit)
+        PlayCartoonAni();
+
+    }
+
+
+    public void PlayCartoonAni()
+    {
+        if (currentActiveSenceInteractiveInfo != null)
+        {
+            CartoonPlayArgs cartoonArgs = currentActiveSenceInteractiveInfo.GetComponent<CartoonPlayArgs>();
+            if (DefaultGUI.isLandscape && cartoonArgs != null && cartoonArgs.hxAudioClip != null)
+            {
+                //如果已经播放，默认是不播放的
+                if (!cartoonArgs.hasPlayed)
+                {
+                    cartoonPlayer.OpenCartoonPeopleUseAudioFile(cartoonArgs.hxAudioClip, cartoonArgs.cartoonType);
+                    cartoonArgs.hasPlayed = true;
+                }
+                else
+                {
+                    cartoonPlayer.OpenCartoonPeopleUseAudioFile(cartoonArgs.hxAudioClip, cartoonArgs.cartoonType);
+                    cartoonPlayer.Pause();
+                }
+            }
+            else
+            {
+                cartoonPlayer.CloseCaratoonPeople();
+            }
+        }
+    }
+
+    public void CloseCartoonAni()
+    {
+        if(cartoonPlayer!=null)
+        cartoonPlayer.CloseCaratoonPeople();
     }
 
 
