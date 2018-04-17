@@ -1,1 +1,0 @@
-{"buildTime":"2018,4,17,11,50,44","hiddenDefaultUI":false,"needExportScenePath":[],"sceneAssetBundle":[],"sceneTypeSet":[],"sceneAssetBundleHash":[],"sceneAssetBundleCRC":[],"addCommonAssetBundle":["basesource"]}

@@ -114,7 +114,7 @@ public class SceneInteractiveManger : MonoBehaviour
         Debug.Log("OnAllAssetBundleLoaded");
 
         switch (appBridge.appProjectInfo.sceneLoadMode)
-        {        
+		{
             case "0":
                 //加载主场景
                 Loading loadingScene = loadingManager.AddALoading(5);
