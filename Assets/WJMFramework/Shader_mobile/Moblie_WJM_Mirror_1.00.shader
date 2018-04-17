@@ -43,7 +43,7 @@ Shader "@Moblie_WJM_Mirror"
 			#pragma target 3.0 
 			#pragma fragment fragBase
 			#pragma multi_compile_fwdbase 
-			#define UNITY_PASS_FORWARDBASE		
+//			#define UNITY_PASS_FORWARDBASE		
 #pragma multi_compile_fog
 #define USING_FOG (defined(FOG_LINEAR) || defined(FOG_EXP) || defined(FOG_EXP2))
 			#include "HLSLSupport.cginc"

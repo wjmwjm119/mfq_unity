@@ -1,0 +1,197 @@
+fileFormatVersion: 2
+guid: 01d9216fec9f18a4d87d1d6b8fbd6f3e
+timeCreated: 1515652497
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: in_dx01
+    100004: in_dx02
+    100006: in_xp
+    100008: out_dx
+    100010: out_xp
+    100012: pl
+    100014: road
+    100016: water
+    400000: //RootNode
+    400002: in_dx01
+    400004: in_dx02
+    400006: in_xp
+    400008: out_dx
+    400010: out_xp
+    400012: pl
+    400014: road
+    400016: water
+    2300000: in_dx01
+    2300002: in_dx02
+    2300004: in_xp
+    2300006: out_dx
+    2300008: out_xp
+    2300010: pl
+    2300012: road
+    2300014: water
+    3300000: in_dx01
+    3300002: in_dx02
+    3300004: in_xp
+    3300006: out_dx
+    3300008: out_xp
+    3300010: pl
+    3300012: road
+    3300014: water
+    4300000: in_xp
+    4300002: water
+    4300004: out_xp
+    4300006: road
+    4300008: in_dx02
+    4300010: pl
+    4300012: in_dx01
+    4300014: out_dx
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BOX_mat
+    second: {fileID: 2100000, guid: b5be57a2ee338bf459dba050f29da26d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bs_huojia_mat
+    second: {fileID: 2100000, guid: d50126e03ba961c48bae93185c6ff5d2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Stone_Brushed_Khaki_23_mat
+    second: {fileID: 2100000, guid: 484a95141ae33c5409696f11faa67652, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: corner_mat
+    second: {fileID: 2100000, guid: 604add3a832d36844a94a4095ecf82f3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: dgjzb05079_mat
+    second: {fileID: 2100000, guid: dbee1462e970d6242abb636b2fc72b85, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: four_mat
+    second: {fileID: 2100000, guid: 0b1e85b124e4e604d80c0554a4b24942, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: grass1_mat
+    second: {fileID: 2100000, guid: 7a184f2727cf9774fa36cf48eac73298, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: my_caop_013_mat
+    second: {fileID: 2100000, guid: d70330c25248ab5419753b00b3af3b3e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shui_mat
+    second: {fileID: 2100000, guid: a5d34c75585fa714093e470fa41b09af, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: two_mat
+    second: {fileID: 2100000, guid: 578b3138a2ed4574cbc21773bb283ecc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ww_box
+    second: {fileID: 2100000, guid: d809b69ebeb9baa4c913594a1f3743c4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wwdx_mat
+    second: {fileID: 2100000, guid: 78b30ca49c0e2f245b044da29477e5e2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: xiaopindengzi_mat
+    second: {fileID: 2100000, guid: da5a42d9d98ca0c42b3edb1088898a83, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: xj-zq_26_mat
+    second: {fileID: 2100000, guid: 6d5f44c7c1e69694e97ed013833ea0b6, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

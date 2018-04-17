@@ -35,6 +35,7 @@ public class SenceInteractiveInfo : MonoBehaviour
     public InteractiveAction f3d_Intro;
     public InteractiveAction f3d_Supports;
     public InteractiveAction f3d_Traffic;
+    public InteractiveAction f3d_HXFB;
 
     public InteractiveAction[] f3d_HXFBGroup;
     public HuXingType huXingType;
@@ -94,19 +95,34 @@ public class SenceInteractiveInfo : MonoBehaviour
                 break;
 
             case 1:
+                if (!f3d_Area.disableDefaultAction)//是否有禁用默认操作
+                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(0);
                 ProcessInteractiveAction(f3d_Area);
                 break;
 
             case 2:
+                if (!f3d_Intro.disableDefaultAction)
+                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(1);
                 ProcessInteractiveAction(f3d_Intro);
+
                 break;
 
             case 3:
+                if (!f3d_Supports.disableDefaultAction)
+                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(2);
                 ProcessInteractiveAction(f3d_Supports);
                 break;
 
             case 4:
+                if (!f3d_Traffic.disableDefaultAction)
+                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(3);
                 ProcessInteractiveAction(f3d_Traffic);
+                break;
+
+            case 5:
+                if (!f3d_HXFB.disableDefaultAction)
+                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(4);
+                ProcessInteractiveAction(f3d_HXFB);
                 break;
         }    
     }
@@ -154,25 +170,35 @@ public class SenceInteractiveInfo : MonoBehaviour
     //鸟瞰	   Framework3d.NK();
     //人视	   Framework3d.MY();
 
-
     SceneInteractiveManger sceneInteractiveManger;
 
     [HideInInspector]
     public string senceInteractiveInfoJson;
 
+     void Awake()
+    {
+        //drawMeshObject是由材质编辑器生成的，如果不删除这个物体会造成ios版本崩溃
+        GameObject drawMeshObject = GameObject.Find("drawMeshObject");
+        if (drawMeshObject != null)
+        {
+            drawMeshObject.SetActive(false);
+            Destroy(drawMeshObject);
+        }
+    }
+
     void Start()
     {
-       //以下目前版本2017.2.0b4会崩溃
-       // GameObject g = GameObject.Find("GlobalManager");
+        //以下目前版本2017.2.0b4会崩溃
+        // GameObject g = GameObject.Find("GlobalManager");
         if (sceneInteractiveManger == null)
         {
             GameObject g = GameObject.Find("GlobalManager");
-            if (g!=null)
-            sceneInteractiveManger =g.GetComponent<SceneInteractiveManger>();
+            if (g != null)
+                sceneInteractiveManger = g.GetComponent<SceneInteractiveManger>();
 
             if (sceneInteractiveManger != null)
             {
-                sceneInteractiveManger.AddSenceInteractiveInfo(this);   
+                sceneInteractiveManger.AddSenceInteractiveInfo(this); 
             }
         }
 
@@ -214,7 +240,10 @@ public class SenceInteractiveInfo : MonoBehaviour
             senceInteractiveInfoJson += ",";
             senceInteractiveInfoJson += "\"supportsInAct\":";
             senceInteractiveInfoJson += RecordInteractiveActionInfo(f3d_Supports);
-        
+
+            senceInteractiveInfoJson += ",";
+            senceInteractiveInfoJson += "\"hxfbInAct\":";
+            senceInteractiveInfoJson += RecordInteractiveActionInfo(f3d_HXFB);
 
         if (f3d_HXFBGroup.Length > 0)
         {

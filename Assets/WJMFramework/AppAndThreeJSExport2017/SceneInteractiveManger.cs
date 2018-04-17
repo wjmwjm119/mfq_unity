@@ -8,8 +8,9 @@ using UnityEngine.UI;
 public class SceneInteractiveManger : MonoBehaviour
 {
     public AppBridge appBridge;
-//  public ShaderLib shaderLib;
-//  public ARManager arManager;
+    //  public ShaderLib shaderLib;
+    //  public ARManager arManager;
+    public EventProxyGroup mainBtnEventProxyGroup;
     public AssetBundleManager assetBundleManager;
     public LoadingManager loadingManager;
     public RemoteManger remoteManger;
@@ -27,6 +28,8 @@ public class SceneInteractiveManger : MonoBehaviour
     public SenceInteractiveInfo mainSenceInteractiveInfo;
     public SenceInteractiveInfo currentActiveSenceInteractiveInfo;
     public List<SenceInteractiveInfo> senceInteractiveInfoGroup;
+
+    public CartoonPlayer cartoonPlayer;
 
     public bool finishLoadAssetBundle;
     bool lastFinishLoadAssetBundle;
@@ -111,21 +114,27 @@ public class SceneInteractiveManger : MonoBehaviour
         Debug.Log("OnAllAssetBundleLoaded");
 
         switch (appBridge.appProjectInfo.sceneLoadMode)
-        {
-
+        {        
             case "0":
                 //加载主场景
                 Loading loadingScene = loadingManager.AddALoading(5);
                 loadingScene.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[0], LoadSceneMode.Additive), "正在加载");
-                loadingScene.OnLoadedEvent.AddListener(() => {StartCoroutine(LoadSenceInteractiveIE()); });
+                loadingScene.OnLoadedEvent.AddListener(() =>{StartCoroutine(LoadSenceInteractiveIE());});
                 break;
 
             case "1":
                 //不加载主场景,只加载户型,跳过第一个主场景
-//                defaultGUI.triggerMusic.AlphaPlayBackward();
+//             defaultGUI.triggerMusic.AlphaPlayBackward();
                 currentAddSceneID = 0;
                 LoopAdditiveScene(true);
                 //arManager.OpenARCamrea();
+                break;
+
+            case "2":
+                //加载主场景，并且激活
+                Loading loadingScene3 = loadingManager.AddALoading(5);
+                loadingScene3.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[0], LoadSceneMode.Additive), "正在加载");
+                loadingScene3.OnLoadedEvent.AddListener(() => { StartCoroutine(LoadSenceInteractiveIE()); });
                 break;
 
             case "8":
@@ -133,7 +142,7 @@ public class SceneInteractiveManger : MonoBehaviour
                 currentAddSceneID = 0;
                 LoopAdditiveScene(true);
 
-                //              arManager.OpenARCamrea();
+                //arManager.OpenARCamrea();
                 break;
 
             case "9":
@@ -148,6 +157,12 @@ public class SceneInteractiveManger : MonoBehaviour
                 break;
 
         }
+    }
+
+
+    void ReplaceShader()
+    {
+
     }
 
 
@@ -213,28 +228,20 @@ public class SceneInteractiveManger : MonoBehaviour
             if(loadImageInEnd)
             imageCache.LoopLoadAndCacheImageFromServer();
 
+            if (appBridge.appProjectInfo.sceneLoadMode =="2")
+            {
+                defaultGUI.mainBtnGroup.GetComponent<ButtonGroup>().imageButtonGroup[4].SetBtnState(true, 0);
+            }
+
             appBridge.Unity2App("unityLoadDone");
             appBridge.Unity2App("unityReady");
 
             Debug.Log("unityLoadDone");
             GlobalDebug.Addline("unityLoadDone");
 
-//            TempPlayCartoon();
-
-
         }
     }
-    /*
-    public void TempPlayCartoon()
-    {
-        TempCartoonArgs t = currentActiveSenceInteractiveInfo.GetComponent<TempCartoonArgs>();
-        if (t != null)
-        {
-            cartoonPlayerFade.AlphaPlayForward();
-            cartoonPlayer.OpenCartoonPeopleUseAudioFile(t.hxAudioClip, 0);
-        }
-    }
-    */
+
 
     /*
     public void AdditiveScene(int id)
@@ -286,9 +293,6 @@ public class SceneInteractiveManger : MonoBehaviour
 
     public void AddSenceInteractiveInfo(SenceInteractiveInfo s)
     {
-
-//      Debug.Log(1111);
-
         if (s.meshRoot != null)
         {
             //查找websky，因为由些老的项目websky没有正确设置
@@ -302,7 +306,6 @@ public class SceneInteractiveManger : MonoBehaviour
             RecoverMatShader(s.meshRoot);
         }
 
-        // Debug.Log(2222);
 
         s.sceneName = addSceneName;
 
@@ -322,6 +325,35 @@ public class SceneInteractiveManger : MonoBehaviour
 //          Debug.Log(3333);
             if (s.sceneType == SenceInteractiveInfo.SceneType.大场景)
             {
+                if (s.f3d_Area.replaceDefaultBtnName != "")
+                {
+                    mainBtnEventProxyGroup.baseButtonGroup[0].label.text = s.f3d_Area.replaceDefaultBtnName;
+                    mainBtnEventProxyGroup.baseButtonGroup[0].shadowLabel.text = s.f3d_Area.replaceDefaultBtnName;
+                }
+
+                 if (s.f3d_Intro.replaceDefaultBtnName != "")
+                {
+                    mainBtnEventProxyGroup.baseButtonGroup[1].label.text = s.f3d_Intro.replaceDefaultBtnName;
+                    mainBtnEventProxyGroup.baseButtonGroup[1].shadowLabel.text = s.f3d_Intro.replaceDefaultBtnName;
+                }
+
+                if (s.f3d_Supports.replaceDefaultBtnName != "")
+                {
+                    mainBtnEventProxyGroup.baseButtonGroup[2].label.text = s.f3d_Supports.replaceDefaultBtnName;
+                    mainBtnEventProxyGroup.baseButtonGroup[2].shadowLabel.text = s.f3d_Supports.replaceDefaultBtnName;
+                }
+
+                if (s.f3d_Traffic.replaceDefaultBtnName != "")
+                {
+                    mainBtnEventProxyGroup.baseButtonGroup[3].label.text = s.f3d_Traffic.replaceDefaultBtnName;
+                    mainBtnEventProxyGroup.baseButtonGroup[3].shadowLabel.text = s.f3d_Traffic.replaceDefaultBtnName;
+                }
+
+                if (s.f3d_HXFB.replaceDefaultBtnName != "")
+                {
+                    mainBtnEventProxyGroup.baseButtonGroup[4].label.text = s.f3d_HXFB.replaceDefaultBtnName;
+                    mainBtnEventProxyGroup.baseButtonGroup[4].shadowLabel.text = s.f3d_HXFB.replaceDefaultBtnName;
+                }
                 //设置大场景相机的layer
                 foreach (CameraUniversal c in s.cameraUniversalCenter.cameras)
                 {
@@ -341,7 +373,6 @@ public class SceneInteractiveManger : MonoBehaviour
                 {
                     if (s.huXingType.hxName == hFinal.hxName)
                     {
-
                         if (hFinal.displayName == "")
                         {
                             if (s.huXingType.displayName == "")
@@ -519,8 +550,8 @@ public class SceneInteractiveManger : MonoBehaviour
     public void ChangeInteractiveScene(SenceInteractiveInfo toInteractiveScene,bool disableCurrentSceneMesh)
     {
 
-//        Debug.Log(toInteractiveScene.name);
-//        Debug.Log(currentActiveSenceInteractiveInfo.name);
+//     Debug.Log(toInteractiveScene.name);
+//     Debug.Log(currentActiveSenceInteractiveInfo.name);
 
         if (toInteractiveScene == currentActiveSenceInteractiveInfo)
         return;
@@ -553,7 +584,6 @@ public class SceneInteractiveManger : MonoBehaviour
         {
             globalCameraCenter.ChangeCamera(toInteractiveScene.cameraUniversalCenter.cameras[0], 0.0f);
         }
-
 
         if (toInteractiveScene.sceneType == SenceInteractiveInfo.SceneType.大场景)
         {
@@ -590,6 +620,44 @@ public class SceneInteractiveManger : MonoBehaviour
         currentActiveSenceInteractiveInfo = toInteractiveScene;
         globalCameraCenter.zbzOffset = toInteractiveScene.cameraUniversalCenter.zbzOffset;
         zbz.cameraUniversalCenter = toInteractiveScene.cameraUniversalCenter;
+
+ //    loadingManager.load
+        if(CartoonPlayer.hasInit)
+        PlayCartoonAni();
+
+    }
+
+
+    public void PlayCartoonAni()
+    {
+        if (currentActiveSenceInteractiveInfo != null)
+        {
+            CartoonPlayArgs cartoonArgs = currentActiveSenceInteractiveInfo.GetComponent<CartoonPlayArgs>();
+            if (DefaultGUI.isLandscape && cartoonArgs != null && cartoonArgs.hxAudioClip != null)
+            {
+                //如果已经播放，默认是不播放的
+                if (!cartoonArgs.hasPlayed)
+                {
+                    cartoonPlayer.OpenCartoonPeopleUseAudioFile(cartoonArgs.hxAudioClip, cartoonArgs.cartoonType);
+                    cartoonArgs.hasPlayed = true;
+                }
+                else
+                {
+                    cartoonPlayer.OpenCartoonPeopleUseAudioFile(cartoonArgs.hxAudioClip, cartoonArgs.cartoonType);
+                    cartoonPlayer.Pause();
+                }
+            }
+            else
+            {
+                cartoonPlayer.CloseCaratoonPeople();
+            }
+        }
+    }
+
+    public void CloseCartoonAni()
+    {
+        if(cartoonPlayer!=null)
+        cartoonPlayer.CloseCaratoonPeople();
     }
 
 
@@ -599,15 +667,15 @@ public class SceneInteractiveManger : MonoBehaviour
     /// <param name="root"></param>
     static public void RecoverMatShader(Transform root)
     {
-
-//        Debug.Log(root.name);
-            
+//     Debug.Log(root.name);
+   
         if (ShaderLib.lib == null)
             return;
 
         MeshRenderer[] allChildMeshRenderer = root.GetComponentsInChildren<MeshRenderer>(true);
         for (int i = 0; i < allChildMeshRenderer.Length; i++)
         {
+
 //            Material[] tempMatGroup = new Material[allChildMeshRenderer[i].sharedMaterials.Length];
             for (int j = 0; j < allChildMeshRenderer[i].sharedMaterials.Length; j++)
             {

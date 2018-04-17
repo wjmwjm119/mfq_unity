@@ -1,7 +1,5 @@
 fileFormatVersion: 2
 guid: 128bbecdc45f07d4b88122d6b2b09357
-timeCreated: 1485896087
-licenseType: Store
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
@@ -24,6 +22,7 @@ ModelImporter:
     3300000: SparklyBlue
     3300002: //RootNode
     4300000: SparklyBlue
+    2186277476908879412: ImportLogs
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -32,7 +31,6 @@ ModelImporter:
     second: {fileID: 2100000, guid: 32d37ec3cb9e8b7448d5142fbda5babe, type: 2}
   materials:
     importMaterials: 1
-    autoMapExternalMaterials: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 0
@@ -49,6 +47,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -73,6 +72,8 @@ ModelImporter:
     optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88

@@ -47,9 +47,16 @@ public class SenceHierarchyInfo : MonoBehaviour
 
     public int renderVertexCount;
     public int renderTriFaceCount;
-/// <summary>
-/// 收集需要导出的物体
-/// </summary>
+
+    Texture2D mainTex;
+    Texture2D lightMap;
+    Cubemap cubeMap;
+    Texture2D normalMap;
+
+
+    /// <summary>
+    /// 收集需要导出的物体
+    /// </summary>
     void GetSceneAllGameObject()
     {
         sceneAllGameObject = new List<GameObject>();
@@ -327,31 +334,30 @@ public class SenceHierarchyInfo : MonoBehaviour
         for (int j = 0; j < allMaterials.Count; j++)
         {
 
-            Texture mainTex=new Texture();
-            Texture lightMap=new Texture();
-            Texture cubeMap = new Texture();
-            Texture normalMap = new Texture();
-
+//             mainTex=new Texture2D(16,16);
+//             lightMap = new Texture2D(16, 16);
+//             cubeMap = new Cubemap(0,TextureFormat.ARGB32,false);
+//             normalMap = new Texture2D(16, 16);
 
 
             if (allMaterials[j].GetTexture("_MainTex") != null)
              {
-                mainTex=allMaterials[j].GetTexture("_MainTex");
+                mainTex=(Texture2D)allMaterials[j].GetTexture("_MainTex");
              }
 
              if (allMaterials[j].HasProperty("_LightMap")&&allMaterials[j].GetTexture("_LightMap") != null)
              {
-                 lightMap = allMaterials[j].GetTexture("_LightMap");
+                 lightMap = (Texture2D)allMaterials[j].GetTexture("_LightMap");
              }
 
             if (allMaterials[j].HasProperty("_CubeMap") && allMaterials[j].GetTexture("_CubeMap") != null)
             {
-                cubeMap = allMaterials[j].GetTexture("_CubeMap");
+                cubeMap = (Cubemap)allMaterials[j].GetTexture("_CubeMap");
             }
 
             if (allMaterials[j].HasProperty("_BumpMap") && allMaterials[j].GetTexture("_BumpMap") != null)
             {
-                normalMap = allMaterials[j].GetTexture("_BumpMap");
+                normalMap =(Texture2D) allMaterials[j].GetTexture("_BumpMap");
             }
 
             if (mainTex != null && !allCustomTexture.Contains(mainTex))
@@ -386,10 +392,10 @@ public class SenceHierarchyInfo : MonoBehaviour
                  }
              }
 
-            if (cubeMap != null && !allCubeMapTexture.Contains((Cubemap)cubeMap))
+            if (cubeMap != null && !allCubeMapTexture.Contains(cubeMap))
             {
-                allCubeMapTexture.Add((Cubemap)cubeMap);
-                allGameObject3DCubeTexture.Add(new Object3DCubeTexture((Cubemap)cubeMap, allMaterials[j].name + "@_CubeMap"));
+                allCubeMapTexture.Add(cubeMap);
+                allGameObject3DCubeTexture.Add(new Object3DCubeTexture(cubeMap, allMaterials[j].name + "@_CubeMap"));
             }
             else if (cubeMap != null)
             {

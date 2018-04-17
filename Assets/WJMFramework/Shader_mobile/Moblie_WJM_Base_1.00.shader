@@ -33,7 +33,7 @@ Shader "@Moblie_WJM_Base"
 			#pragma target 3.0 
 			#pragma fragment fragBase
 			#pragma multi_compile_fwdbase 
-			#define UNITY_PASS_FORWARDBASE	
+//			#define UNITY_PASS_FORWARDBASE	
 			#pragma multi_compile_fog
 			#define USING_FOG (defined(FOG_LINEAR) || defined(FOG_EXP) || defined(FOG_EXP2))
 
@@ -171,7 +171,7 @@ Shader "@Moblie_WJM_Base"
 			ZWrite On ZTest LEqual
 
 			CGPROGRAM
-#pragma target 2.0
+#pragma target 3.0
 
 #pragma shader_feature _ _ALPHATEST_ON _ALPHABLEND_ON 
 #pragma shader_feature _METALLICGLOSSMAP

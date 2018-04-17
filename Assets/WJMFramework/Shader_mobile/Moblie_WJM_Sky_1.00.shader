@@ -32,10 +32,10 @@ Shader "@Moblie_WJM_Sky"
 
 			CGPROGRAM
 			#pragma vertex vertBase				
-			#pragma target 2.0 
+			#pragma target 3.0 
 			#pragma fragment fragBase
 			#pragma multi_compile_fwdbase 
-			#define UNITY_PASS_FORWARDBASE		
+//			#define UNITY_PASS_FORWARDBASE		
 
 			#include "HLSLSupport.cginc"
 			#include "UnityShaderVariables.cginc"

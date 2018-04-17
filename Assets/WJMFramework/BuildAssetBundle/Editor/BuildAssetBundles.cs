@@ -104,7 +104,7 @@ public class BuildAssetBundles : EditorWindow
                 }
                 else
                 {
-                    needExportScene.Add(new SceneAsset());
+//                 needExportScene.Add(new sc);
                 }
 //                AssetImporter assetImporter = AssetImporter.GetAtPath(p);  //得到Asset
             }

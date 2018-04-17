@@ -24,6 +24,9 @@ public class CartoonPlayer : MonoBehaviour
 
     CartoonAniClip[] currentClipGroup;
 
+
+    
+
     public delegate void OnComplete(string str);
 
 
@@ -47,6 +50,11 @@ public class CartoonPlayer : MonoBehaviour
     /// 
     /// </summary>
     public UnityEvent hasStopWhenPause;
+
+    public UnityEvent OnOpen;
+    public UnityEvent OnClose;
+
+    public static bool hasInit;
 
     void Update()
     {
@@ -157,6 +165,8 @@ public class CartoonPlayer : MonoBehaviour
     /// <param name="cartoonType">卡通角色类型</param>
     public void OpenCartoonPeopleUseUnityMic(int cartoonType = 0)
     {
+        OnOpen.Invoke();
+
         SetCartoonSex(cartoonType);
 
         text.text = "Find\n";
@@ -194,6 +204,7 @@ public class CartoonPlayer : MonoBehaviour
     /// <param name="cartoonType">卡通角色类型</param>
     public void OpenCartoonPeopleUseAudioFile(AudioClip a, int cartoonType = 0)
     {
+        OnOpen.Invoke();
 
         fileAudioSamples = new float[((int)(a.frequency*0.1f))];
 
@@ -201,7 +212,7 @@ public class CartoonPlayer : MonoBehaviour
         fileAudioClip = a;
         audioSource.clip = fileAudioClip;
         audioSource.loop = false;
- //       audioSource.time = 53f;
+ //    audioSource.time = 53f;
         audioSource.Play();
 
         PlayCartoonAni("n01", 0);
@@ -239,6 +250,8 @@ public class CartoonPlayer : MonoBehaviour
     /// </summary>
     public void CloseCaratoonPeople()
     {
+        OnClose.Invoke();
+
         cartoonImage.color = new Color(1f, 1f, 1f,0f);
         if (audioSource!=null&&audioSource.isPlaying)
         {
@@ -248,10 +261,9 @@ public class CartoonPlayer : MonoBehaviour
         if (playCartoonAniCoroutine != null)
         {
             StopCoroutine(playCartoonAniCoroutine);
-//            Debug.Log("Stop Coroutine");
+//         Debug.Log("Stop Coroutine");
         }
     }
-
 
 
 
@@ -274,7 +286,7 @@ public class CartoonPlayer : MonoBehaviour
 
     }
 
-    public void PlayCartoonAni(string cartoonAniClip,float delayTime)
+     public void PlayCartoonAni(string cartoonAniClip,float delayTime)
     {
         //默认眨眼动作
         if (cartoonAniClip.Substring(0,1) =="n")

@@ -66,7 +66,7 @@ public class PathAndURL : MonoBehaviour
 
 #if UNITY_IPHONE || UNITY_IOS
         projectPath= projectID+"/IOS/";
-        commonPath="common2/IOS/";
+        commonPath="common3/IOS/";
         serverProjectInfoFinalUrl = projectInfoServerUrl + projectInfoAddUrl+ projectID;
         imageFinalUrl = projectInfoServerUrl + imageAddUrl;   
         
@@ -74,7 +74,7 @@ public class PathAndURL : MonoBehaviour
         serverCommonAssetBundlePath= assetBundleServerUrl + assetBundleAddUrl + commonPath;
 #elif UNITY_ANDROID
         projectPath = projectID + "/Andriod/";
-        commonPath = "common2/Andriod/";
+        commonPath = "common3/Andriod/";
         serverProjectInfoFinalUrl = projectInfoServerUrl + projectInfoAddUrl+ projectID;
         imageFinalUrl = projectInfoServerUrl + imageAddUrl;
 

@@ -34,7 +34,7 @@ Shader "@Moblie_WJM_SpriteTree"
 #pragma target 3.0 
 #pragma fragment fragBase
 #pragma multi_compile_fwdbase 
-#define UNITY_PASS_FORWARDBASE		
+//#define UNITY_PASS_FORWARDBASE		
 #pragma multi_compile_fog
 #define USING_FOG (defined(FOG_LINEAR) || defined(FOG_EXP) || defined(FOG_EXP2))
 
@@ -294,7 +294,7 @@ Shader "@Moblie_WJM_SpriteTree"
 		CGPROGRAM
 #pragma vertex vert
 #pragma fragment frag
-#pragma target 2.0
+#pragma target 3.0
 #pragma multi_compile_shadowcaster
 #pragma multi_compile_instancing // allow instanced shadow pass for most of the shaders
 #include "UnityCG.cginc"

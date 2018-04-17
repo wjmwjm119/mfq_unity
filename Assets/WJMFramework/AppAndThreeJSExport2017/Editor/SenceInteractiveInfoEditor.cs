@@ -48,13 +48,15 @@ public class SenceInteractiveInfoEditor : Editor
         EditorGUILayout.PropertyField(sp, true);
         propertyID++;
 
+
+
         while (sp.NextVisible(false))
         {
             propertyID++;
 
             if (senceInteractiveInfo.sceneType == SenceInteractiveInfo.SceneType.大场景)
             {
-                if (propertyID < 15)
+                if (propertyID < 16)
                 {
                     EditorGUILayout.PropertyField(sp, true);
                 }
