@@ -24,10 +24,16 @@ public class AppBridge : MonoBehaviour
 
 //  public BackAction backAction;
 
-    public void ExitLandscape()
+    public void Exit()
     {
         defaultGUI.Portrait();
         Unity2App("unityProtrait");
+        Unity2App("unityExit");
+    }
+
+    public void CanceLoad()
+    {
+        Unity2App("unityCancelLoad");
     }
 
 
@@ -56,6 +62,11 @@ public class AppBridge : MonoBehaviour
     private static extern void unitySetMusic(string musicState);//音乐开关
     [DllImport("__Internal")]
     private static extern void unityToPanorama(string url);//切到外部全景图模式
+    [DllImport("__Internal")]
+    private static extern void unityCancelLoad();//取消加载
+    [DllImport("__Internal")]
+    private static extern void unityExit();//退出
+    
 
  //[DllImport("__Internal")]
  //private static extern void unityEnterMYInPortraitDone();//竖屏进入户型漫游
@@ -127,6 +138,14 @@ public class AppBridge : MonoBehaviour
 
                 case "unityToPanorama":
                     unityToPanorama((string)args[0]);
+                    break;
+
+                case "unityCancelLoad":
+                    unityCancelLoad();
+                    break;
+
+                case "unityExit":
+                    unityExit();
                     break;
 
                 default:
@@ -445,6 +464,11 @@ public class AppBridge : MonoBehaviour
 
     }
 
+    void DisplayCancelBtn()
+    {
+        defaultGUI.triggerCancelBtn.AlphaPlayForward();
+    }
+
     public void SetSatatusBar2(string state)
     {
         SetSatatusBar(state);
@@ -484,7 +508,6 @@ public class AppBridge : MonoBehaviour
         //        public string debug;
         public string checkKey;
     }
-
 
     //App2Unity
     //Load(string info)
