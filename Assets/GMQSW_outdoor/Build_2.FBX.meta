@@ -1,0 +1,182 @@
+fileFormatVersion: 2
+guid: db8452cb3c592294a88e5320428878e4
+timeCreated: 1515652507
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Lou_body
+    100004: Lou_lg_nei
+    100006: Lou_lg_wai
+    400000: //RootNode
+    400002: Lou_body
+    400004: Lou_lg_nei
+    400006: Lou_lg_wai
+    2300000: Lou_body
+    2300002: Lou_lg_nei
+    2300004: Lou_lg_wai
+    3300000: Lou_body
+    3300002: Lou_lg_nei
+    3300004: Lou_lg_wai
+    4300000: Lou_lg_wai
+    4300002: Lou_body
+    4300004: Lou_lg_nei
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: louban_mat
+    second: {fileID: 2100000, guid: 503033aa3ec8ba04087525beeb997ccd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: qsw_ck02_mat
+    second: {fileID: 2100000, guid: 475a98b7e2c711a4785d2470bb36c27b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: qsw_lg03_mat
+    second: {fileID: 2100000, guid: dcc1eb42be7da464d814f5999024c021, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: qsw_lg04_mat
+    second: {fileID: 2100000, guid: 03f681437ac8cd24e9708a64ef5c48b1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: qsw_lg05_mat
+    second: {fileID: 2100000, guid: fefebcf233dfd864e99370874e864e02, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-ck-013_mat
+    second: {fileID: 2100000, guid: b99ebd7c7342c484fabcd75ba39f02aa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-ck-018_mat
+    second: {fileID: 2100000, guid: dab1298607361c847bc6c2f6860bad9e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-lg-007_mat
+    second: {fileID: 2100000, guid: 408d4c2e2d33c1749b958e7654f4d131, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-lg-010_mat
+    second: {fileID: 2100000, guid: f43e01a76b8414a41aa317e9a80b2c3e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-qt-35_mat
+    second: {fileID: 2100000, guid: 1ad81d43d7a525a41a79ef26871cb9d1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-qt-36_mat
+    second: {fileID: 2100000, guid: 349263ca0163d554781342576417d2d1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-qt-37_mat
+    second: {fileID: 2100000, guid: 5269ff4612bcd014b82b918c079127d3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-qt-39_mat
+    second: {fileID: 2100000, guid: 4697fde56912d7d4393d9f5fff92a572, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-qt-40_mat
+    second: {fileID: 2100000, guid: f6930a026ab35a4489117393c2c5e4f4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-qt-41_mat
+    second: {fileID: 2100000, guid: 494814e6a7020ab40a9bf8e8e6fe1a96, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: syqsw-qt-56_mat
+    second: {fileID: 2100000, guid: fa55ba563042b4f4b895f3c0dc65c32a, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

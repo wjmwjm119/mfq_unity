@@ -9,7 +9,7 @@ public class SceneInteractiveManger : MonoBehaviour
 {
     public AppBridge appBridge;
     //  public ShaderLib shaderLib;
-    //  public ARManager arManager;
+    public ARManager arManager;
     public EventProxyGroup mainBtnEventProxyGroup;
     public AssetBundleManager assetBundleManager;
     public LoadingManager loadingManager;
@@ -127,7 +127,7 @@ public class SceneInteractiveManger : MonoBehaviour
 //             defaultGUI.triggerMusic.AlphaPlayBackward();
                 currentAddSceneID = 0;
                 LoopAdditiveScene(true);
-                //arManager.OpenARCamrea();
+//                arManager.OpenARCamrea();
                 break;
 
             case "2":
@@ -142,7 +142,7 @@ public class SceneInteractiveManger : MonoBehaviour
                 currentAddSceneID = 0;
                 LoopAdditiveScene(true);
 
-                //arManager.OpenARCamrea();
+                arManager.OpenARCamrea();
                 break;
 
             case "9":

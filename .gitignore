@@ -13,7 +13,10 @@
 /Assets/Resources/
 /Assets/WJMFramework/Editor/
 /Assets/WJMFramework/EventButton/
+/Assets/WJMFramework/AR/
 /Assets/MYTest/
+
+
 
 *.unity
 *.exr
