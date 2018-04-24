@@ -112,6 +112,8 @@ public class SceneInteractiveManger : MonoBehaviour
         GlobalDebug.Addline("OnAllAssetBundleLoaded");
         Debug.Log("OnAllAssetBundleLoaded");
 
+        defaultGUI.triggerCancelBtn.AlphaPlayBackward();
+
         switch (appBridge.appProjectInfo.sceneLoadMode)
         {
             

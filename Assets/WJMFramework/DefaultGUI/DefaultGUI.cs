@@ -19,6 +19,7 @@ public class DefaultGUI : MonoBehaviour
     public CanveGroupFade triggerMusic;
     public CanveGroupFade triggerEnterFangJianPortrait;
     public CanveGroupFade point360PointButton_Trigger;
+    public CanveGroupFade triggerCancelBtn;
     public ImageButton musicBtn;
 
     public CanveGroupFade leftWarning;
@@ -120,7 +121,6 @@ public class DefaultGUI : MonoBehaviour
         }
 
             
-
     }
 
 
