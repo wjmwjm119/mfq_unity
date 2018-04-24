@@ -13,7 +13,10 @@
 /Assets/Resources/
 /Assets/WJMFramework/Editor/
 /Assets/WJMFramework/EventButton/
+/Assets/WJMFramework/AR/
 /Assets/MYTest/
+
+
 
 *.unity
 *.exr
@@ -34,6 +37,7 @@
 *.XML
 *.json
 *.psd
+*.mp3
 *.mp4
 *.avi
 *.mov
