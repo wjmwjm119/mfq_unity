@@ -24,23 +24,20 @@ public class CartoonPlayer : MonoBehaviour
 
     CartoonAniClip[] currentClipGroup;
 
-
-    
-
     public delegate void OnComplete(string str);
-
 
     string micDeviceName;
     float micStartTime;
     float[] micWaveSamples;
 
     Coroutine playCartoonAniCoroutine;
-//    public CanveGroupFade triggerCartoonAni;
+// public CanveGroupFade triggerCartoonAni;
 
     int currentSliceID;
 
     public float averageVolume;
     float maxVolume;
+    int currentStartPos;
 
     bool averageVolumeTrriger;
     bool isSpeak;
@@ -49,6 +46,7 @@ public class CartoonPlayer : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
+    [HideInInspector]
     public UnityEvent hasStopWhenPause;
 
     public UnityEvent OnOpen;
@@ -90,11 +88,12 @@ public class CartoonPlayer : MonoBehaviour
         }
 
 
-        if (fileAudioClip != null&& audioSource.isPlaying)
+        if (fileAudioClip != null && audioSource.isPlaying)
         {
             if (audioSource.time < fileAudioClip.length - 0.11f)
             {
-                fileAudioClip.GetData(fileAudioSamples, (int)(audioSource.time * fileAudioClip.frequency) + fileAudioSamples.Length);
+                currentStartPos = (int)(audioSource.time * fileAudioClip.frequency);
+                fileAudioClip.GetData(fileAudioSamples, currentStartPos);
 
                 averageVolume = 0;
                 maxVolume = 0;
@@ -108,14 +107,14 @@ public class CartoonPlayer : MonoBehaviour
                         maxVolume = inValue;
                     }
                 }
-            }
 
+            }
 
         }
 
-        //由音强来判断是否要播放音乐
 
-//     averageVolume = 20;
+//  由音强来判断是否要播放音乐
+//  averageVolume = 20;
 
         waveLine.rectTransform.localScale = new Vector3(1, averageVolume * 0.005f, 1);
 
@@ -154,10 +153,10 @@ public class CartoonPlayer : MonoBehaviour
             else
             {
                 PlayCartoonAni("n01",0);
+
             }
         }
     }
-
 
     /// <summary>
     /// 打开卡通角色，使用本机麦克风
@@ -191,10 +190,9 @@ public class CartoonPlayer : MonoBehaviour
     }
 
 
-
-
     public void OpenCartoonPeopleUseAudioFile(AudioClip a)
     {
+        if(a!=null)
         OpenCartoonPeopleUseAudioFile(a, 0);
     }
     /// <summary>
@@ -217,7 +215,6 @@ public class CartoonPlayer : MonoBehaviour
 
         PlayCartoonAni("n01", 0);
         cartoonImage.color = new Color(1f, 1f, 1f, 1f);
-
     }
     /// <summary>
     /// 音频文件播放暂停
@@ -291,13 +288,13 @@ public class CartoonPlayer : MonoBehaviour
         //默认眨眼动作
         if (cartoonAniClip.Substring(0,1) =="n")
         {
-            PlayCartoonAni(cartoonAniClip, delayTime,(string arg) => { Debug.Log(arg + " OnComplete"); PlayCartoonAni("n0" + UnityEngine.Random.Range(1, 3).ToString(), UnityEngine.Random.Range(3f, 6f)); }, cartoonAniClip);
+            PlayCartoonAni(cartoonAniClip, delayTime,(string arg) => {Debug.Log(arg + " OnComplete"); PlayCartoonAni("n0" + UnityEngine.Random.Range(1, 3).ToString(), UnityEngine.Random.Range(3f, 6f)); }, cartoonAniClip);
         }
         else
         {
-            PlayCartoonAni(cartoonAniClip, 0,(string arg) => { Debug.Log(arg + " OnComplete"); if(isSpeak) PlayCartoonAni("a0" + UnityEngine.Random.Range(1, 9).ToString(), 0); }, cartoonAniClip);
+            PlayCartoonAni(cartoonAniClip, 0,(string arg) => { Debug.Log(arg + " OnComplete"); if (isSpeak) { PlayCartoonAni("a0" + UnityEngine.Random.Range(1, 9).ToString(), 0); } }, cartoonAniClip);
         }
-
+        
     }
 
     void PlayCartoonAni(string cartoonAniClip,float delayTime, OnComplete onComplete,string arg)
@@ -305,7 +302,7 @@ public class CartoonPlayer : MonoBehaviour
         if (playCartoonAniCoroutine != null)
         {
             StopCoroutine(playCartoonAniCoroutine);
-            Debug.Log("Stop Coroutine");
+//            Debug.Log("Stop Coroutine");
         }
 
 //     currentPlayAniClip = null;
@@ -341,6 +338,13 @@ public class CartoonPlayer : MonoBehaviour
         if (onComplete != null)
              onComplete.Invoke(arg);
     }
+
+/*
+    public void PlayTTSAudio(TTS_ActionSequence t)
+    {
+        OpenCartoonPeopleUseAudioFile(t.voiceAudioClipGroup[2]);
+    }
+*/
 
 }
 

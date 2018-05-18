@@ -19,21 +19,28 @@ public class LoadingAssetBundleAnimation : Loading
 
     bool oneTimeStart = true;
     bool oneTimePercent = true;
+    /*
+        string[] tipsGorup =
+        {
+            "发起讲盘前，音量开大更清晰",
+            "点击\"全屏\"更多VR体验哦",
+            "户型可以通过微信,分享给亲朋好友哦",
+            "双指同时上下滑动,可以抬头低头看",
+            "户型漫游时,摁住屏幕的下面1/5处,可以倒退",
+            "在VR体验时,准星代替您的手指",
+            "在线讲盘是不消耗流量的",
+            "每名用户都有一个专属顾问",
+            "浏览楼盘评论吧，人民的眼睛是雪亮的！",
+            "双指张开并拢，可以缩放楼盘户型。",
+            "户型漫游时,摁住屏幕的上半部分前进"
+        };
+    */
 
     string[] tipsGorup =
     {
-        "发起讲盘前，音量开大更清晰",
-        "点击\"全屏\"更多VR体验哦",
-        "户型可以通过微信,分享给亲朋好友哦",
-        "双指同时上下滑动,可以抬头低头看",
-        "户型漫游时,摁住屏幕的下面1/5处,可以倒退",
-        "在VR体验时,准星代替您的手指",
-        "在线讲盘是不消耗流量的",
-        "每名用户都有一个专属顾问",
-        "浏览楼盘评论吧，人民的眼睛是雪亮的！",
-        "双指张开并拢，可以缩放楼盘户型。",
-        "户型漫游时,摁住屏幕的上半部分前进"
+        "正在升级系统，请稍后"
     };
+
 
 
     public override void LoadingAnimation(NetCtrlManager.RequestHandler r, AsyncOperation inAsy,string info)

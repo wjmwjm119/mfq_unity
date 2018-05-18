@@ -1,6 +1,7 @@
 ﻿// Upgrade NOTE: replaced tex2D unity_Lightmap with UNITY_SAMPLE_TEX2D
 // Upgrade NOTE: replaced tex2D unity_Lightmap with UNITY_SAMPLE_TEX2D
 
+//不使用，保留此shader是为了兼容早期项目，请使用SpriteTreeLeaf
 //2017.6.27
 //2017.6.17
 

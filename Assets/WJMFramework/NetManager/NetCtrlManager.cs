@@ -99,8 +99,13 @@ public class NetCtrlManager : MonoBehaviour
         bool isNeedProcess;
 
         //在LoadAsssetBundle时inUrl链接会拼入用^拆分cache路径,用&拆分连接参数
-        public RequestHandler(string inHelpInfo,NetCtrlManager net, string inUrl, WebQuestDelegate p = null, WebQuestDelegate eFalse = null, WebQuestDelegateText eText = null, WebQuestDelegateTexture eTexture = null, WebQuestDelegateAssetBundle eAssetBundle = null)
+        public RequestHandler(string inHelpInfo, NetCtrlManager net, string inUrl, WebQuestDelegate p = null, WebQuestDelegate eFalse = null, WebQuestDelegateText eText = null, WebQuestDelegateTexture eTexture = null, WebQuestDelegateAssetBundle eAssetBundle = null)
         {
+            if (inUrl == "")
+            { 
+            Debug.LogError("输入的URL为空！");
+            return;
+            }
             name = inHelpInfo;
             netCtrlManager = net;
             helpInfo = inHelpInfo;
@@ -314,8 +319,11 @@ public class NetCtrlManager : MonoBehaviour
 
         public void Abort()
         {
-            request.Abort();
-            request.Dispose();
+            if (request != null)
+            {
+                request.Abort();
+                request.Dispose();
+            }
         }
 
 

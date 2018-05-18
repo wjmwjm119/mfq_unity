@@ -51,7 +51,7 @@ public class PathAndURL : MonoBehaviour
     public string localProjectAssetBundlesInfoPath = "";
     public string serverProjectAssetBundlesInfoPath = "";
     public string localImageCachePath = "";
-
+    public string localHXinfoCachePath = "";
 
     void Awake()
     {
@@ -93,6 +93,7 @@ public class PathAndURL : MonoBehaviour
         localProjectInfoPath=Application.persistentDataPath+"/"+ projectID.ToString() + "/ProjectInfo.txt";
         localProjectAssetBundlesInfoPath = Application.persistentDataPath + "/" + projectID.ToString() + "/ProjectAssetBundlesInfo.txt";
         localImageCachePath = Application.persistentDataPath + "/" + projectID.ToString() + "/imageCache";
+        localHXinfoCachePath = Application.persistentDataPath + "/HXinfoCache";
         serverProjectAssetBundlesInfoPath = serverAssetBundlePath + "ProjectAssetBundlesInfo.txt";
 
 

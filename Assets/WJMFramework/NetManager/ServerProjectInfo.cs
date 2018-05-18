@@ -26,9 +26,6 @@ public class ServerProjectInfo : MonoBehaviour
     public Text warningLabel;
     public Text warningLabel2;
 
-
-
-
     public string projectInfoJsonFromServer;
 
     OnServerProjectInfoLoaded onServerProjectInfoLoaded;
@@ -42,9 +39,9 @@ public class ServerProjectInfo : MonoBehaviour
 
     }
 
-    public void LoadServerProjectInfo_Test(string rojectInfoServerURL, string assetBundleURL, InputField projectid, string sceneLoadMode)
+    public void LoadServerProjectInfo_Test(string projectInfoServerURL, string assetBundleURL, InputField projectid, string sceneLoadMode)
     {
-        LoadServerProjectInfo(rojectInfoServerURL, assetBundleURL, projectid.text, sceneLoadMode);
+        LoadServerProjectInfo(projectInfoServerURL, assetBundleURL, projectid.text, sceneLoadMode);
     }
 
     //  public List<string> needLoadImageNameFromServerl;
@@ -56,27 +53,42 @@ public class ServerProjectInfo : MonoBehaviour
     /// <param name="projectid"></param>
     /// <param name="loadLocalScene"></param>
 
-    public void LoadServerProjectInfo(string rojectInfoServerURL, string assetBundleURL, string projectid, string sceneLoadMode, bool loadLocalScene = false)
+    public void LoadServerProjectInfo(string projectInfoServerURL, string assetBundleURL, string projectid, string sceneLoadMode)
     {
 //      defaultGUI.DisplayDefaultGUI();
         pathAndURL.assetBundleServerUrl = assetBundleURL;
-        pathAndURL.projectInfoServerUrl = rojectInfoServerURL;
+        pathAndURL.projectInfoServerUrl = projectInfoServerURL;
+        pathAndURL.SetProjectPath(projectid);
 
         appBridge.appProjectInfo.sceneLoadMode = sceneLoadMode;
-        
-        onServerProjectInfoLoaded = new OnServerProjectInfoLoaded();
 
-        if (loadLocalScene)
+        //Ar模式
+        if (sceneLoadMode == "8")
         {
-            sceneInteractiveManger.StartLoadLocalScene();
+            
+            assetBundleManager.LoopLoadCommonAssetBundleForAR();
+
         }
         else
         {
             hasLocalCached = CheckHasLocalCached(projectid);
+
+            onServerProjectInfoLoaded = new OnServerProjectInfoLoaded();
             onServerProjectInfoLoaded.AddListener(assetBundleManager.LoadProjcetAssetBundles);
-            pathAndURL.SetProjectPath(projectid);
+
             GetProjectInfoFromServer(projectid);
         }
+
+
+
+        //       if (loadLocalScene)
+        //        {
+        //            sceneInteractiveManger.StartLoadLocalScene();
+        //        }
+        //        else
+        //        {
+
+        //       }
 
     }
 
@@ -105,7 +117,7 @@ public class ServerProjectInfo : MonoBehaviour
                          projectRootInfo = JsonUtility.FromJson<ProjectRootInfo>(File.ReadAllText(pathAndURL.localProjectInfoPath));
                          projectRootInfo.data.projectid = projectid;
 
-//                       Debug.Log(File.ReadAllText(pathAndURL.localProjectInfoPath));
+//                      Debug.Log(File.ReadAllText(pathAndURL.localProjectInfoPath));
                          PrcessProjectInfo(projectRootInfo, true);
                          loading.FinishLoading();
 
@@ -370,6 +382,33 @@ public class HXInfo
     public string area;
     public string discr;
     public FloorData[] floorData;
+
+
+    public string projectID;
+    public string hxAssetBundleName;
+    public string hxSenePath;
+    public string hash;
+    public uint crc;
+    //hxAssetBundleName加载后对应的SenceInteractiveInfo
+    public SenceInteractiveInfo senceInteractiveInfo;
+
+    public string GetHXInfoStr()
+    {
+        string[] introductionGroup = discr.Replace("；", ";").Split(';');
+        string introductionFinal = "";
+
+        for (int i = 0; i < introductionGroup.Length; i++)
+        {
+            introductionFinal += introductionGroup[i];
+            if (i != introductionGroup.Length - 1)
+            introductionFinal += "\n";
+        }
+        //Debug.Log(introductionFinal);
+
+        string str = modeName.ToString() + "户型^" + modeFormat + "^约" + area.ToString() + "㎡^" + introductionFinal;
+        return str;
+    }
+
 }
 
 

@@ -12,29 +12,30 @@ using System.Text;
 
 public class AssetBundleManager : MonoBehaviour
 {
-//  public bool globalDebug;
+    //  public bool globalDebug;
     public CommonAssetBundleInfo[] commonAssetBundlesIOS;
     public CommonAssetBundleInfo[] commonAssetBundlesAndriod;
     CommonAssetBundleInfo[] commonAssetBundlesInfo;
 
-//  public ImageCache imageCache;
+    //  public ImageCache imageCache;
     public PathAndURL pathAndURL;
     public NetCtrlManager netCtrlManager;
     public LoadingManager loadingManager;
     public LoadingAssetBundleTotalInfo loadingAssetBundleTotalInfo;
+
+    public HXInfoCache hxInfoCache;
 
     public ProjectAssetBundlesInfo localProjectAssetBundlesInfo;
     public ProjectAssetBundlesInfo serverProjectAssetBundlesInfo;
 
     public List<AssetBundle> currentLoadedCommonAssetBundles;
     public List<AssetBundle> currentLoadedSceneAssetBundles;
+
     public List<string> hasAddedSceneName;
     public SceneInteractiveManger sceneInteractiveManger;
     public DefaultGUI defaultGUI;
 
-
     public List<string> point360SceneNameGroup;
-
 
     int commonAssetBundlesInfoHasLoadedCount;
     int sceneAssetBundlesInfoTotalCount;
@@ -46,13 +47,12 @@ public class AssetBundleManager : MonoBehaviour
 
     //默认场景要加载的数
     public int countSceneOnDefault;
- // bool hasRecordCountSceneOnDefault;
+    // bool hasRecordCountSceneOnDefault;
 
     public Texture2D imageGet;
 
-    public   UnityEvent OnSceneRemoved;
-    public   UnityEvent OnSceneAdded;
-
+    public UnityEvent OnSceneRemoved;
+    public UnityEvent OnSceneAdded;
 
     //test
     //    public InputField projectIDField;
@@ -61,11 +61,10 @@ public class AssetBundleManager : MonoBehaviour
     //public InputField inputField;
 
 
-
     void Awake()
     {
-//    DontDestroyOnLoad(this);
-//    Caching.ClearCache();
+        //    DontDestroyOnLoad(this);
+//        Caching.ClearCache();
         Caching.compressionEnabled = false;
 
         currentLoadedCommonAssetBundles = new List<AssetBundle>();
@@ -73,24 +72,28 @@ public class AssetBundleManager : MonoBehaviour
         hasAddedSceneName = new List<string>();
         commonAssetBundlesInfoHasLoadedCount = 0;
         sceneAssetBundlesInfoHasLoadedCount = 0;
-        circlePointCount=0;
-        circlePointCurrent=0;
+        circlePointCount = 0;
+        circlePointCurrent = 0;
         OnSceneRemoved = new UnityEvent();
-        //        OnSceneAdded = new UnityEvent();
+        //OnSceneAdded = new UnityEvent();
         point360SceneNameGroup = new List<string>();
-    }
 
+    }
 
     public void LoadProjcetAssetBundles(string inProjectID)
     {
-//      Debug.Log("PersistentDataPath: "+Application.persistentDataPath);
-//      SetProjectPath(inProjectID);
+        LoadProjcetAssetBundlesCache(inProjectID, null, null);
+    }
+    //如果OnCached非空,只会缓存AssetBundles，且调用OnCached
+    public void LoadProjcetAssetBundlesCache(string inProjectID, UnityAction<ProjectAssetBundlesInfo, string,string> OnCached = null, string hxAssetBundleName = null)
+    {
+        //Debug.Log("PersistentDataPath: "+Application.persistentDataPath);
 
         Loading loading = loadingManager.AddALoading(0);
 
         bool checkFile = false;
 
-        if (checkFile=File.Exists(pathAndURL.localProjectAssetBundlesInfoPath))
+        if (checkFile = File.Exists(pathAndURL.localProjectAssetBundlesInfoPath))
         {
             string log = "有本地ProjectAssetBundlesInfo.txt";
             GlobalDebug.Addline(log);
@@ -99,25 +102,25 @@ public class AssetBundleManager : MonoBehaviour
             string jsonStr = File.ReadAllText(pathAndURL.localProjectAssetBundlesInfoPath);
             localProjectAssetBundlesInfo = JsonUtility.FromJson<ProjectAssetBundlesInfo>(jsonStr);
 
-			Debug.Log (pathAndURL.serverProjectAssetBundlesInfoPath);
-			GlobalDebug.Addline(pathAndURL.serverProjectAssetBundlesInfoPath);
+            Debug.Log(pathAndURL.serverProjectAssetBundlesInfoPath);
+            GlobalDebug.Addline(pathAndURL.serverProjectAssetBundlesInfoPath);
 
-			//"?"+DateTime.Now.ToString() 添加时间防止ios读取http缓存
+            Debug.Log(netCtrlManager);
+
+            //"?"+DateTime.Now.ToString() 添加时间防止ios读取http缓存
             netCtrlManager.WebRequest(
                 "同步AssetBundle服务器",
-				pathAndURL.serverProjectAssetBundlesInfoPath+"?"+DateTime.Now.ToString(),
+                pathAndURL.serverProjectAssetBundlesInfoPath + "?" + DateTime.Now.ToString(),
                   loading.LoadingAnimation,
-                 (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a,string info) => { Debug.Log("ServerProjectAssetBundlesInfo Load Failed!"); },
+                 (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => { Debug.Log("ServerProjectAssetBundlesInfo Load Failed!"); },
                  (DownloadHandler t) =>
                  {
-
                      serverProjectAssetBundlesInfo = JsonUtility.FromJson<ProjectAssetBundlesInfo>(t.text);
+                     //                  if (globalDebug)
+                     GlobalDebug.ReplaceLine(t.text, 15);
+                     Debug.Log(t.text);
 
-//                     if (globalDebug)
-                     GlobalDebug.ReplaceLine(t.text,15);
-					 Debug.Log(t.text);
-                     
-                     string log2 ="ServerTime:"+serverProjectAssetBundlesInfo.buildTime+" LocalTime:"+ localProjectAssetBundlesInfo.buildTime;
+                     string log2 = "ServerTime:" + serverProjectAssetBundlesInfo.buildTime + " LocalTime:" + localProjectAssetBundlesInfo.buildTime;
                      GlobalDebug.Addline(log2);
                      Debug.Log(log2);
 
@@ -135,7 +138,15 @@ public class AssetBundleManager : MonoBehaviour
                          }
                      }
 
-                     StartLoadAssetBundle(serverProjectAssetBundlesInfo);
+                     if (OnCached != null)
+                     {
+                         OnCached.Invoke(serverProjectAssetBundlesInfo, inProjectID, hxAssetBundleName);
+                     }
+                     else
+                     {
+                         StartLoadAssetBundle(serverProjectAssetBundlesInfo);
+                     }
+
                  },
                   null,
                   null
@@ -151,7 +162,7 @@ public class AssetBundleManager : MonoBehaviour
                 "同步AssetBundle服务器",
                 pathAndURL.serverProjectAssetBundlesInfoPath,
                  loading.LoadingAnimation,
-                 (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a,string info) => { Debug.Log("ServerProjectAssetBundlesInfo Load Failed!"); },
+                 (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => { Debug.Log("ServerProjectAssetBundlesInfo Load Failed!"); },
                  (DownloadHandler t) =>
                  {
                      string log2 = "获取到Server的ProjectAssetBundlesInfo.txt";
@@ -163,15 +174,23 @@ public class AssetBundleManager : MonoBehaviour
                      serverProjectAssetBundlesInfo = JsonUtility.FromJson<ProjectAssetBundlesInfo>(t.text);
                      File.WriteAllText(pathAndURL.localProjectAssetBundlesInfoPath, t.text);
 
-                     StartLoadAssetBundle(serverProjectAssetBundlesInfo);
+                     if (OnCached != null)
+                     {
+                         OnCached.Invoke(serverProjectAssetBundlesInfo,inProjectID,hxAssetBundleName);
+                     }
+                     else
+                     {
+                         StartLoadAssetBundle(serverProjectAssetBundlesInfo);
+                     }
+
                  },
                   null,
                   null
                 );
         }
 
-//  if(globalDebug)
-      GlobalDebug.ReplaceLine("HasLoaclInfo.txt:" + checkFile.ToString(), 16);
+        //  if(globalDebug)
+        GlobalDebug.ReplaceLine("HasLoaclInfo.txt:" + checkFile.ToString(), 16);
 
     }
 
@@ -205,7 +224,19 @@ public class AssetBundleManager : MonoBehaviour
 
     }
 
-    void LoopLoadCommonAssetBundle(int currentID)
+    public void LoopLoadCommonAssetBundleForAR()
+    {
+#if UNITY_IPHONE || UNITY_IOS
+        commonAssetBundlesInfo=commonAssetBundlesIOS;
+#elif UNITY_ANDROID
+        commonAssetBundlesInfo = commonAssetBundlesAndriod;
+#endif
+
+        commonAssetBundlesInfoHasLoadedCount = 0;
+        LoopLoadCommonAssetBundle(0, "8");
+    }
+
+    void LoopLoadCommonAssetBundle(int currentID, string sceneLoadMode = "0")
     {
         if (currentLoadedCommonAssetBundles.FindIndex(x => x.name == commonAssetBundlesInfo[currentID].name) == -1)
         {
@@ -215,33 +246,42 @@ public class AssetBundleManager : MonoBehaviour
             Loading loading = loadingManager.AddALoading(2);
 
             netCtrlManager.WebRequest(
-                "下载基础资源包 "+(currentID+1) ,
-               pathAndURL.serverCommonAssetBundlePath + commonAssetBundlesInfo[currentID].name + "^" + pathAndURL.commonPath + commonAssetBundlesInfo[currentID].name + "," + commonAssetBundlesInfo[currentID].hash + "," + commonAssetBundlesInfo[currentID].CRC,
-                loading.LoadingAnimation,
-               (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => { Debug.Log("ServerProjectAssetBundlesInfo Load Failed!"); },
-               null,
-               null,
-               (DownloadHandlerAssetBundle t) =>
-               {
-                   circlePointCurrent++;
-                   loadingAssetBundleTotalInfo.SetCirclePointOkColor(circlePointCurrent);
-          
-                   commonAssetBundlesInfoHasLoadedCount++;
+            "下载基础资源包 " + (currentID + 1),
+            pathAndURL.serverCommonAssetBundlePath + commonAssetBundlesInfo[currentID].name + "^" + pathAndURL.commonPath + commonAssetBundlesInfo[currentID].name + "," + commonAssetBundlesInfo[currentID].hash + "," + commonAssetBundlesInfo[currentID].CRC,
+            loading.LoadingAnimation,
+            (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => { Debug.Log("ServerProjectAssetBundlesInfo Load Failed!"); },
+            null,
+            null,
+            (DownloadHandlerAssetBundle t) =>
+            {
+                circlePointCurrent++;
+                loadingAssetBundleTotalInfo.SetCirclePointOkColor(circlePointCurrent);
 
-                   currentLoadedCommonAssetBundles.Add(t.assetBundle);
+                commonAssetBundlesInfoHasLoadedCount++;
 
-                   if (commonAssetBundlesInfoHasLoadedCount < commonAssetBundlesInfo.Length)
-                   {
-                        LoopLoadCommonAssetBundle(commonAssetBundlesInfoHasLoadedCount);
-                   }
-                   else if (commonAssetBundlesInfoHasLoadedCount == commonAssetBundlesInfo.Length)
-                   {
-                       Debug.Log("AllCommonAssetbundleLoaded!");
-                       GlobalDebug.Addline("AllCommonAssetbundleLoaded!");
-                       LoopLoadSceneAssetBundle(0,2);
-                   }
-               }
-              );
+                currentLoadedCommonAssetBundles.Add(t.assetBundle);
+
+                if (commonAssetBundlesInfoHasLoadedCount < commonAssetBundlesInfo.Length)
+                {
+                    LoopLoadCommonAssetBundle(commonAssetBundlesInfoHasLoadedCount);
+                }
+                else if (commonAssetBundlesInfoHasLoadedCount == commonAssetBundlesInfo.Length)
+                {
+                    Debug.Log("AllCommonAssetbundleLoaded!");
+                    GlobalDebug.Addline("AllCommonAssetbundleLoaded!");
+
+                    if (sceneLoadMode == "8")
+                    {
+                           //ar直接开始加载
+                           sceneInteractiveManger.OnAllAssetBundleLoaded();
+                    }
+                    else
+                    {
+                        LoopLoadSceneAssetBundle(0, 2);
+                    }
+                }
+            }
+           );
         }
     }
 
@@ -291,20 +331,20 @@ public class AssetBundleManager : MonoBehaviour
     public void LoopLoadSceneAssetBundleDefault()
     {
         loadingAssetBundleTotalInfo.OpenTotalInfo(sceneAssetBundlesInfoTotalCount);
-        circlePointCurrent =0;
-        LoopLoadSceneAssetBundle(0,5);
+        circlePointCurrent = 0;
+        LoopLoadSceneAssetBundle(0, 5);
     }
 
 
-    public void LoopLoadSceneAssetBundle(int currentID,int loadingType)
+    public void LoopLoadSceneAssetBundle(int currentID, int loadingType)
     {
         Loading loading = loadingManager.AddALoading(loadingType);
         ProjectAssetBundlesInfo p = serverProjectAssetBundlesInfo;
 
         string sceneName = p.needExportScenePath[currentID].Split('.')[0];
         string[] splitStr = sceneName.Split('/');
-        sceneName= splitStr[splitStr.Length - 1];
-        sceneName =sceneName.ToUpper();
+        sceneName = splitStr[splitStr.Length - 1];
+        sceneName = sceneName.ToUpper();
 
         if (sceneName == "OUTDOOR")
         {
@@ -312,12 +352,12 @@ public class AssetBundleManager : MonoBehaviour
         }
         else
         {
-            sceneName +="户型";
+            sceneName += "户型";
         }
 
         //index的
         netCtrlManager.WebRequest(
-            "下载 "+(sceneName),
+            "下载 " + (sceneName),
             pathAndURL.serverAssetBundlePath + p.sceneAssetBundle[currentID] + "^" + pathAndURL.projectPath + p.sceneAssetBundle[currentID] + "," + p.sceneAssetBundleHash[currentID] + "," + p.sceneAssetBundleCRC[currentID],
                loading.LoadingAnimation,
               (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => { Debug.Log("ServerProjectAssetBundlesInfo Load Failed!"); },
@@ -328,15 +368,15 @@ public class AssetBundleManager : MonoBehaviour
                  //改变加载场景数圆点的颜色
                  circlePointCurrent++;
                  loadingAssetBundleTotalInfo.SetCirclePointOkColor(circlePointCurrent);
-                 
-//               if (p.sceneTypeSet != null && p.sceneTypeSet.Length == p.needExportScenePath.Length && p.sceneTypeSet[sceneAssetBundlesInfoHasLoadedCount] == 8)
-//               {
-//定点360不加载
-//               }
-//               else
-//               {
+
+                 //               if (p.sceneTypeSet != null && p.sceneTypeSet.Length == p.needExportScenePath.Length && p.sceneTypeSet[sceneAssetBundlesInfoHasLoadedCount] == 8)
+                 //               {
+                 //定点360不加载
+                 //               }
+                 //               else
+                 //               {
                  currentLoadedSceneAssetBundles.Add(t.assetBundle);
-//               }
+                 //               }
 
                  if (p.sceneTypeSet != null && p.sceneTypeSet.Length == p.needExportScenePath.Length && p.sceneTypeSet[sceneAssetBundlesInfoHasLoadedCount] == 8)
                  {
@@ -361,7 +401,7 @@ public class AssetBundleManager : MonoBehaviour
                  }
                  else if (sceneAssetBundlesInfoHasLoadedCount == sceneAssetBundlesInfoTotalCount)
                  {
-//                   Debug.Log("AllSceneAssetbundleLoaded!");
+                     //                   Debug.Log("AllSceneAssetbundleLoaded!");
                      loadingAssetBundleTotalInfo.CloseTotalInfo();
                      //sceneInteractiveManger.finishLoadAssetBundle = true;
                      sceneInteractiveManger.OnAllAssetBundleLoaded();
@@ -376,7 +416,7 @@ public class AssetBundleManager : MonoBehaviour
 
         if (startID == 0)
         {
-//            OnSceneRemoved.AddListener(()=> { Debug.LogError("gggggggggg"); });
+            //            OnSceneRemoved.AddListener(()=> { Debug.LogError("gggggggggg"); });
             sceneInteractiveManger.globalCameraCenter.ChangeCamera(sceneInteractiveManger.globalCameraCenter.cameras[0]);
         }
 
@@ -433,9 +473,77 @@ public class AssetBundleManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.0333f);
         }
-        LoopRemoveAddedScene(++currentID);  
+        LoopRemoveAddedScene(++currentID);
     }
 
+    //for AR 
+    public void LoadAssetBundleAndAddToSceneInARMode(string projectID, HXInfo hXInfo)
+    {
+
+        foreach (HXInfo h in hxInfoCache.hasLoadedHXinfo)
+        {
+            Debug.Log(h.projectID);
+            Debug.Log(h.hxAssetBundleName);
+
+            //判断是否已经加载
+            if (h.projectID== hXInfo.projectID&&h.hxAssetBundleName == hXInfo.hxAssetBundleName)
+            {
+                Debug.Log("已加载" + h.projectID+"_"+ h.hxAssetBundleName + " AssetBundle");
+
+                sceneInteractiveManger.arManager.findSenceInteractiveInfo = h.senceInteractiveInfo;
+                sceneInteractiveManger.arManager.CheckCurrentState();
+
+                return;
+            }
+        }
+
+
+        Loading loading = loadingManager.AddALoading(6);
+
+//        loadingAssetBundleTotalInfo.OpenTotalInfo(1);
+        circlePointCurrent = 0;
+
+        netCtrlManager.WebRequest(
+            "正在加载户型",
+            pathAndURL.serverAssetBundlePath + hXInfo.hxAssetBundleName + "^" + pathAndURL.projectPath + hXInfo.hxAssetBundleName + "," + hXInfo.hash + "," + hXInfo.crc,
+               loading.LoadingAnimation,
+              (NetCtrlManager.RequestHandler r, UnityWebRequestAsyncOperation a, string info) => { Debug.Log("LoadAddSingerScene Failed!"); },
+              null,
+              null,
+             (DownloadHandlerAssetBundle t) =>
+             {
+                 currentLoadedSceneAssetBundles.Add(t.assetBundle);
+//                 loadingAssetBundleTotalInfo.CloseTotalInfo();
+
+                 Loading loadingScene2 = loadingManager.AddALoading(5);
+
+                 foreach (Transform tr in loadingScene2.GetComponentsInChildren<Transform>())
+                 {
+                     if (tr.name == "BG")
+                     {
+        //                 tr.gameObject.SetActive(false);
+                     }
+                 }
+
+                 loadingScene2.LoadingAnimation(SceneManager.LoadSceneAsync(hXInfo.hxSenePath, LoadSceneMode.Additive), "正在加载");               
+                 loadingScene2.OnLoadedEvent.AddListener
+                 (
+                     () => 
+                     {
+                         
+                         hXInfo.senceInteractiveInfo = sceneInteractiveManger.senceInteractiveInfoGroup[sceneInteractiveManger.senceInteractiveInfoGroup.Count - 1];
+                         //获取刚添加Assetbundle的户型名
+                         hXInfo.modeName = hXInfo.senceInteractiveInfo.huXingType.hxName;
+                         sceneInteractiveManger.arManager.findSenceInteractiveInfo = hXInfo.senceInteractiveInfo;
+                         hxInfoCache.GetHXInfoFromServer(projectID, hXInfo);
+                     }
+                  );
+                 
+             }
+            );
+    }
+
+    //for 360 point
     public void LoadAddSingerScene(string sceneName)
     {
         Loading loading = loadingManager.AddALoading(5);

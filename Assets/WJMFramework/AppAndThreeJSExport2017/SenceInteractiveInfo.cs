@@ -188,8 +188,7 @@ public class SenceInteractiveInfo : MonoBehaviour
 
     void Start()
     {
-        //以下目前版本2017.2.0b4会崩溃
-        // GameObject g = GameObject.Find("GlobalManager");
+
         if (sceneInteractiveManger == null)
         {
             GameObject g = GameObject.Find("GlobalManager");

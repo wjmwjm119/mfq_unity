@@ -17,7 +17,9 @@ public class HXGUI : MonoBehaviour
     public HuXingInfoLabel huXingInfoLabel;
 
     public ImageButton enterHXBtn;
-//  public ImageButton enterMYBtnInPortrait;
+    //  public ImageButton enterMYBtnInPortrait;
+
+    public CanveGroupFade triggerPMT;
     public CanveGroupFade triggerEnterHX;
     public CanveGroupFade triggerShare;
     public CanveGroupFade triggerEnterFangJian;
@@ -52,31 +54,24 @@ public class HXGUI : MonoBehaviour
     SenceInteractiveInfo hxfbScene;
     string hxfbCameraArgs;
 
-    public void EnterAR_HX(SenceInteractiveInfo s)
+    public void EnterAR_HX(SenceInteractiveInfo senceInteractiveInfo)
     {
-
         GlobalDebug.Addline("EnterAR_HX");
 
-        hxScene = s;
-
-        for (int i = 0; i < hxSceneHuXingTypeFinal.Length; i++)
-        {
-            if (hxSceneHuXingTypeFinal[i].hxName == s.huXingType.hxName)
-            {
-                currentSelectHuXingType = hxSceneHuXingTypeFinal[i];
-            }
-        }
-
+        triggerFCZ.AlphaPlayForward();
+        triggerPMT.AlphaPlayBackward();
         triggerEnterHX.AlphaPlayBackward();
         triggerEnterFangJian.AlphaPlayBackward();
-//      triggerShare.AlphaPlayBackward();
+        appBridge.defaultGUI.triggerEnterFangJianPortrait.AlphaPlayBackward();
+        triggerShare.AlphaPlayForward();
         triggerVR.AlphaPlayBackward();
         triggerHuXingThumbnail.AlphaPlayBackward();
 
-        huXingInfoLabel.DisplayHuXingInfoLabel(currentSelectHuXingType.GetHuXingTypeInfo());
-        pmtImagePlayer.netTexture2DGroup = currentSelectHuXingType.netTexture2DGroup;
-
+        huXingInfoLabel.DisplayHuXingInfoLabel(senceInteractiveInfo.huXingType.GetHuXingTypeInfo());
+        hxScene = senceInteractiveInfo;
+        currentSelectHuXingType = senceInteractiveInfo.huXingType;
         DisplayHuXingFloorScrollMenu();
+
 
     }
 
@@ -320,7 +315,7 @@ public class HXGUI : MonoBehaviour
 
     }
 
-    void DisplayHuXingFloorScrollMenu()
+    public void DisplayHuXingFloorScrollMenu()
     {
         if (currentSelectHuXingType.allFloor.Length > 1)
         {

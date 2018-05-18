@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -34,6 +36,8 @@ public class SceneInteractiveManger : MonoBehaviour
     public bool finishLoadAssetBundle;
     bool lastFinishLoadAssetBundle;
 
+
+
     public enum LoadAtState
     {
         normal = 0,
@@ -48,6 +52,17 @@ public class SceneInteractiveManger : MonoBehaviour
     int currentAddSceneID;
 
     public CameraUniversal currentThumbnailCamera;
+/*
+    [Serializable]
+    public class OnLoaded : UnityEvent<string> { };
+    public OnLoaded onLoadDone;
+*/
+    public UnityAction<string> onLoadDone;
+
+     void Awake()
+    {
+       
+    }
 
     void Start()
     {
@@ -56,6 +71,7 @@ public class SceneInteractiveManger : MonoBehaviour
         SceneManager.sceneLoaded += GetAddSceneName;
     }
 
+    /*
     //制作人员测试做好的场景
     public void StartLoadLocalScene()
     {
@@ -96,6 +112,8 @@ public class SceneInteractiveManger : MonoBehaviour
 
         }
     }
+*/
+
 
     IEnumerator LocalLoadSenceInteractiveIE(bool isOnlineTalk = false)
     {
@@ -141,8 +159,8 @@ public class SceneInteractiveManger : MonoBehaviour
 
             case "8":
                 //不加载主场景,只加载户型,以供AR扫描,跳过第一个主场景
-                currentAddSceneID = 0;
-                LoopAdditiveScene(true);
+//                currentAddSceneID = 0;
+//                LoopAdditiveScene(true);
 
                 arManager.OpenARCamrea();
                 break;
@@ -220,7 +238,6 @@ public class SceneInteractiveManger : MonoBehaviour
                             loadingScene.OnLoadedEvent.AddListener(() => { LoopAdditiveScene(); });
                         }
             
-
         }
         else if(currentAddSceneID == assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath.Length)
         {
@@ -235,9 +252,13 @@ public class SceneInteractiveManger : MonoBehaviour
                 defaultGUI.mainBtnGroup.GetComponent<ButtonGroup>().imageButtonGroup[4].SetBtnState(true, 0);
             }
 
+            if(onLoadDone!=null)
+            onLoadDone.Invoke("OnLoadDone");
+            
+
             appBridge.Unity2App("unityLoadDone");
             appBridge.Unity2App("unityReady");
-
+            
             Debug.Log("unityLoadDone");
             GlobalDebug.Addline("unityLoadDone");
 
@@ -327,31 +348,33 @@ public class SceneInteractiveManger : MonoBehaviour
 //          Debug.Log(3333);
             if (s.sceneType == SenceInteractiveInfo.SceneType.大场景)
             {
-                if (s.f3d_Area.replaceDefaultBtnName != "")
+                if (s.f3d_Area.replaceDefaultBtnName!=null&&s.f3d_Area.replaceDefaultBtnName != "")
                 {
                     mainBtnEventProxyGroup.baseButtonGroup[0].label.text = s.f3d_Area.replaceDefaultBtnName;
                     mainBtnEventProxyGroup.baseButtonGroup[0].shadowLabel.text = s.f3d_Area.replaceDefaultBtnName;
                 }
 
-                 if (s.f3d_Intro.replaceDefaultBtnName != "")
+                 if (s.f3d_Intro.replaceDefaultBtnName!=null&&s.f3d_Intro.replaceDefaultBtnName != "")
                 {
                     mainBtnEventProxyGroup.baseButtonGroup[1].label.text = s.f3d_Intro.replaceDefaultBtnName;
                     mainBtnEventProxyGroup.baseButtonGroup[1].shadowLabel.text = s.f3d_Intro.replaceDefaultBtnName;
                 }
 
-                if (s.f3d_Supports.replaceDefaultBtnName != "")
+                if (s.f3d_Supports.replaceDefaultBtnName!=null&&s.f3d_Supports.replaceDefaultBtnName != "")
                 {
+                    Debug.LogError(111111111111111);
+                    Debug.LogError(s.f3d_Supports.replaceDefaultBtnName);
                     mainBtnEventProxyGroup.baseButtonGroup[2].label.text = s.f3d_Supports.replaceDefaultBtnName;
                     mainBtnEventProxyGroup.baseButtonGroup[2].shadowLabel.text = s.f3d_Supports.replaceDefaultBtnName;
                 }
 
-                if (s.f3d_Traffic.replaceDefaultBtnName != "")
+                if (s.f3d_Traffic.replaceDefaultBtnName!=null&&s.f3d_Traffic.replaceDefaultBtnName != "")
                 {
                     mainBtnEventProxyGroup.baseButtonGroup[3].label.text = s.f3d_Traffic.replaceDefaultBtnName;
                     mainBtnEventProxyGroup.baseButtonGroup[3].shadowLabel.text = s.f3d_Traffic.replaceDefaultBtnName;
                 }
 
-                if (s.f3d_HXFB.replaceDefaultBtnName != "")
+                if (s.f3d_HXFB.replaceDefaultBtnName!=null&&s.f3d_HXFB.replaceDefaultBtnName != "")
                 {
                     mainBtnEventProxyGroup.baseButtonGroup[4].label.text = s.f3d_HXFB.replaceDefaultBtnName;
                     mainBtnEventProxyGroup.baseButtonGroup[4].shadowLabel.text = s.f3d_HXFB.replaceDefaultBtnName;
@@ -369,7 +392,13 @@ public class SceneInteractiveManger : MonoBehaviour
 
             }
             else
-            {      
+            {
+                //是否在AR模式下
+                if (ARManager.isInARMode)
+                {
+                    arManager.findSenceInteractiveInfo = s;
+                }
+
                 //将户型单场景中的info复制到allHuXingTypeFromFinal
                 foreach (HuXingType hFinal in hxGUI.hxSceneHuXingTypeFinal)
                 {
@@ -448,9 +477,11 @@ public class SceneInteractiveManger : MonoBehaviour
             if(s.huXingType.hxMeshRoot!=null)
             s.transform.position = s.huXingType.hxMeshRoot.position;
 
+            Debug.Log("HiddenScene");
             HiddenScene(s);
 
             senceInteractiveInfoGroup.Add(s);
+
 
             Debug.Log(s.sceneName + " SenceType: " + s.sceneType);
         }

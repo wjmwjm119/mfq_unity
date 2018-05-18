@@ -10,13 +10,10 @@ public class HuXingType
 {
     //网络上的ID;
 
-
-
     //户型名
     public string hxName = "";
     public string displayName = "";
     public string arMapName = "";
-
 
     //户型简介
     [HideInInspector]

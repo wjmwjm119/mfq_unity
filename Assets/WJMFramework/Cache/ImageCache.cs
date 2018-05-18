@@ -47,11 +47,11 @@ public class ImageCache : MonoBehaviour
     void LoopLoadAndCacheImageFromServer(int currentID)
     {
         string imageSeverlLoadPath =pathAndURL.imageFinalUrl + allNetTextrue2D[currentID].url;
-//      string imageSeverlLoadPath = "http://123.59.40.145/APP/allproject/201708240001/" + allNetTextrue2D[currentID].url;
+//     string imageSeverlLoadPath = "http://123.59.40.145/APP/allproject/201708240001/" + allNetTextrue2D[currentID].url;
 
         Debug.Log(imageSeverlLoadPath);
-        //        Debug.Log(allNetTextrue2D[currentID].texName);
-        //        Debug.Log(allNetTextrue2D[currentID].url);
+//     Debug.Log(allNetTextrue2D[currentID].texName);
+//     Debug.Log(allNetTextrue2D[currentID].url);
         Debug.Log(pathAndURL.localImageCachePath + "/" + allNetTextrue2D[currentID].texName);
       
         //本地有存在此图片就不再从服务器上下载

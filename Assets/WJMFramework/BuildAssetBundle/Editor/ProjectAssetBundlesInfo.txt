@@ -1,0 +1,1 @@
+{"buildTime":"2018,5,10,14,53,32","hiddenDefaultUI":false,"needExportScenePath":["Assets/WJMFramework/Scene/Start.unity"],"sceneAssetBundle":["start"],"sceneTypeSet":[],"sceneAssetBundleHash":["1c25f0616a70a09dae55620e8343936b"],"sceneAssetBundleCRC":[270547592],"addCommonAssetBundle":["basesource"]}
