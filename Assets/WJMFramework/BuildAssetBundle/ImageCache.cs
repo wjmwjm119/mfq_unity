@@ -83,6 +83,16 @@ public class ImageCache : MonoBehaviour
 
     void LoadNext()
     {
+        //是否需要打断加载
+        if (SceneInteractiveManger.needBreakLoad)
+        {
+            GlobalDebug.Addline("BreakAddSource");
+            Debug.Log("BreakAddSource");
+            assetBundleManager.sceneInteractiveManger.unload.LoadUnloadScene();
+            return;
+        }
+
+
         currentLoadID++;
         if (currentLoadID < allNetTextrue2D.Count)
         {
@@ -93,6 +103,7 @@ public class ImageCache : MonoBehaviour
             OnAllImageLoaded();
             //                currentLoadID++;
         }
+
     }
 
     void OnAllImageLoaded() 
@@ -113,6 +124,8 @@ public class ImageCache : MonoBehaviour
         isLoopLoading = false;
         Debug.Log("AllImageLoaded");
         GlobalDebug.Addline("AllImageLoaded");
+
+        SceneInteractiveManger.isLoopingAddSource = false;
 
         //当图片都下载存储了就表示整个项目都已经缓存了,保存从服务上得到的ProjectInfo
         serverProjectInfo.SaveProjectInfoToLocal();

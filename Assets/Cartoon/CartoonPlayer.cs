@@ -54,7 +54,12 @@ public class CartoonPlayer : MonoBehaviour
     public UnityEvent OnOpen;
     public UnityEvent OnClose;
 
+    public UnityEvent OnSpeak;
+    public UnityEvent OnStopSpeak;
+
     public static bool hasInit;
+    bool isStop;
+    bool lastAudioState;
 
     void Update()
     {
@@ -90,8 +95,11 @@ public class CartoonPlayer : MonoBehaviour
         }
 
 
-        if (fileAudioClip != null&& audioSource.isPlaying)
+
+
+        if (fileAudioClip != null && audioSource.isPlaying)
         {
+            
             if (audioSource.time < fileAudioClip.length - 0.11f)
             {
                 fileAudioClip.GetData(fileAudioSamples, (int)(audioSource.time * fileAudioClip.frequency) + fileAudioSamples.Length);
@@ -110,8 +118,8 @@ public class CartoonPlayer : MonoBehaviour
                 }
             }
 
-
         }
+
 
         //由音强来判断是否要播放音乐
 
@@ -156,6 +164,25 @@ public class CartoonPlayer : MonoBehaviour
                 PlayCartoonAni("n01",0);
             }
         }
+
+
+
+
+            if (audioSource != null&&lastAudioState != audioSource.isPlaying)
+            {
+                if (audioSource.isPlaying)
+                {
+                    OnSpeak.Invoke();
+                }
+                else
+                {
+                    OnStopSpeak.Invoke();
+                }
+
+                lastAudioState = audioSource.isPlaying;
+            }
+        
+
     }
 
 
@@ -292,6 +319,7 @@ public class CartoonPlayer : MonoBehaviour
         if (cartoonAniClip.Substring(0,1) =="n")
         {
             PlayCartoonAni(cartoonAniClip, delayTime,(string arg) => { Debug.Log(arg + " OnComplete"); PlayCartoonAni("n0" + UnityEngine.Random.Range(1, 3).ToString(), UnityEngine.Random.Range(3f, 6f)); }, cartoonAniClip);
+
         }
         else
         {

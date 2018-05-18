@@ -376,7 +376,7 @@ public class AssetBundleManager : MonoBehaviour
 
         if (startID == 0)
         {
-//            OnSceneRemoved.AddListener(()=> { Debug.LogError("gggggggggg"); });
+//         OnSceneRemoved.AddListener(()=> { Debug.LogError("gggggggggg"); });
             sceneInteractiveManger.globalCameraCenter.ChangeCamera(sceneInteractiveManger.globalCameraCenter.cameras[0]);
         }
 

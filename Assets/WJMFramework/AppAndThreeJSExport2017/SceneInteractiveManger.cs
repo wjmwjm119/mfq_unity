@@ -8,8 +8,9 @@ using UnityEngine.UI;
 public class SceneInteractiveManger : MonoBehaviour
 {
     public AppBridge appBridge;
-//  public ShaderLib shaderLib;
-//  public ARManager arManager;
+    public Unload unload;
+// public ShaderLib shaderLib;
+// public ARManager arManager;
     public AssetBundleManager assetBundleManager;
     public LoadingManager loadingManager;
     public RemoteManger remoteManger;
@@ -19,8 +20,8 @@ public class SceneInteractiveManger : MonoBehaviour
     public HXGUI hxGUI;
     public ImageCache imageCache;
 
- //   public CanveGroupFade cartoonPlayerFade;
- //   public CartoonPlayer cartoonPlayer;
+ //public CanveGroupFade cartoonPlayerFade;
+ //public CartoonPlayer cartoonPlayer;
 
     public RenderTexture thumbnailOutdoor;
     public RenderTexture thumbnailHX;
@@ -32,6 +33,9 @@ public class SceneInteractiveManger : MonoBehaviour
 
     public bool finishLoadAssetBundle;
     bool lastFinishLoadAssetBundle;
+
+    public static bool isLoopingAddSource;
+    public static bool needBreakLoad;
 
     public enum LoadAtState
     {
@@ -114,6 +118,9 @@ public class SceneInteractiveManger : MonoBehaviour
 
         defaultGUI.triggerCancelBtn.AlphaPlayBackward();
 
+        //已经开始循环加载场景
+        isLoopingAddSource = true;
+
         switch (appBridge.appProjectInfo.sceneLoadMode)
         {
             
@@ -136,7 +143,7 @@ public class SceneInteractiveManger : MonoBehaviour
                 //加载主场景，并且激活
                 Loading loadingScene3 = loadingManager.AddALoading(5);
                 loadingScene3.LoadingAnimation(SceneManager.LoadSceneAsync(assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath[0], LoadSceneMode.Additive), "正在加载");
-                loadingScene3.OnLoadedEvent.AddListener(() => { StartCoroutine(LoadSenceInteractiveIE()); });
+                loadingScene3.OnLoadedEvent.AddListener(() => {StartCoroutine(LoadSenceInteractiveIE()); });
                 break;
 
             case "8":
@@ -164,25 +171,48 @@ public class SceneInteractiveManger : MonoBehaviour
 
     IEnumerator LoadSenceInteractiveIE(bool isOnlineTalk = false)
     {
-        yield return new WaitForSeconds(0.3f);
-
-        if (senceInteractiveInfoGroup[0]!=null)
+        //是否需要打断加载
+        if (needBreakLoad)
         {
-            ChangeInteractiveScene(senceInteractiveInfoGroup[0], true);
+            GlobalDebug.Addline("BreakAddSource");
+            Debug.Log("BreakAddSource");
+
+            unload.LoadUnloadScene();
+            yield return new WaitForSeconds(0.3f);
         }
         else
         {
-            Debug.LogError("大场景未含SenceInteractiveInfo");
+            yield return new WaitForSeconds(0.3f);
+
+            if (senceInteractiveInfoGroup[0] != null)
+            {
+                ChangeInteractiveScene(senceInteractiveInfoGroup[0], true);
+            }
+            else
+            {
+                Debug.LogError("大场景未含SenceInteractiveInfo");
+            }
+
+            if (isOnlineTalk)
+                remoteManger.StartOnlineTalk();
+            LoopAdditiveScene();
         }
-
-        if (isOnlineTalk)
-            remoteManger.StartOnlineTalk();
-        LoopAdditiveScene();
-
     }
 
     void LoopAdditiveScene(bool loadImageInEnd=true)
     {
+
+        //是否需要打断加载
+        if (needBreakLoad)
+        {
+            GlobalDebug.Addline("BreakAddSource");
+            Debug.Log("BreakAddSource");
+
+            unload.LoadUnloadScene();
+            return;
+        }
+
+
         currentAddSceneID++;
 
         if (currentAddSceneID < assetBundleManager.serverProjectAssetBundlesInfo.needExportScenePath.Length)
@@ -221,8 +251,15 @@ public class SceneInteractiveManger : MonoBehaviour
             GlobalDebug.Addline("All Additive Scene Loaded!");
             Debug.Log("All Additive Scene Loaded!");
 
-            if(loadImageInEnd)
-            imageCache.LoopLoadAndCacheImageFromServer();
+            //已完成循环加载场景
+            isLoopingAddSource = false;
+
+            if (loadImageInEnd)
+            {
+                //如果还要下载图片
+                isLoopingAddSource = true;
+                imageCache.LoopLoadAndCacheImageFromServer();
+            }
 
             if (appBridge.appProjectInfo.sceneLoadMode =="2")
             {
@@ -289,9 +326,7 @@ public class SceneInteractiveManger : MonoBehaviour
 
     public void AddSenceInteractiveInfo(SenceInteractiveInfo s)
     {
-
 //      Debug.Log(1111);
-
         if (s.meshRoot != null)
         {
             //查找websky，因为由些老的项目websky没有正确设置
@@ -301,7 +336,6 @@ public class SceneInteractiveManger : MonoBehaviour
                 if (t != null)
                     s.websky = t;
             }
-
             RecoverMatShader(s.meshRoot);
         }
 
@@ -322,7 +356,7 @@ public class SceneInteractiveManger : MonoBehaviour
                 RecoverMatShader(c.camBase.transform);
             }
         
-//          Debug.Log(3333);
+//         Debug.Log(3333);
             if (s.sceneType == SenceInteractiveInfo.SceneType.大场景)
             {
                 //设置大场景相机的layer
@@ -349,8 +383,7 @@ public class SceneInteractiveManger : MonoBehaviour
                             if (s.huXingType.displayName == "")
                             {
                                 s.huXingType.displayName = s.huXingType.hxName;
-                            }
-                                
+                            }                     
                             hFinal.displayName = s.huXingType.displayName;
                         }
 
@@ -365,8 +398,8 @@ public class SceneInteractiveManger : MonoBehaviour
                         hFinal.rotOffset = s.huXingType.rotOffset;
                         hFinal.nkCameraPosAndXYZcount = s.huXingType.nkCameraPosAndXYZcount;
                         hFinal.defaultMYFloorName = s.huXingType.defaultMYFloorName;
-//                        hFinal.hxAudioClip = s.huXingType.hxAudioClip;
-//                        hFinal.cartoonType = s.huXingType.cartoonType;
+//                     hFinal.hxAudioClip = s.huXingType.hxAudioClip;
+//                     hFinal.cartoonType = s.huXingType.cartoonType;
 
 /*
                         if (s.huXingType.allFloor.Length != hFinal.allFloor.Length)
@@ -610,6 +643,7 @@ public class SceneInteractiveManger : MonoBehaviour
                 if (!cartoonArgs.hasPlayed)
                 {
                     cartoonPlayer.OpenCartoonPeopleUseAudioFile(cartoonArgs.hxAudioClip, cartoonArgs.cartoonType);
+                    cartoonPlayer.Pause();
                     cartoonArgs.hasPlayed = true;
                 }
                 else

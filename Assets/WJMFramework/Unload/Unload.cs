@@ -19,6 +19,7 @@ public class Unload : MonoBehaviour
         if (autoUnloadAndReset)
         {
             AppBridge.needSendUnloadMessageToUnity = true;
+
             StartCoroutine(UnloadUnusedAssetsIE());
         }
         else if (AppBridge.needSendUnloadMessageToUnity)
@@ -64,6 +65,9 @@ public class Unload : MonoBehaviour
     //在start场景调用,转到Unload场景,进行资源清空
     public void LoadUnloadScene()
     {
+        SceneInteractiveManger.needBreakLoad = false;
+        SceneInteractiveManger.isLoopingAddSource = false;
+
         if (assetBundleManager != null)
             assetBundleManager.UnLoadAssetBundle();
 

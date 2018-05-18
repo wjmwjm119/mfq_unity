@@ -22,7 +22,7 @@ public class AppBridge : MonoBehaviour
 
     public static bool isInRemoteState;
 
-//  public BackAction backAction;
+    //  public BackAction backAction;
 
     public void Exit()
     {
@@ -66,11 +66,11 @@ public class AppBridge : MonoBehaviour
     private static extern void unityCancelLoad();//取消加载
     [DllImport("__Internal")]
     private static extern void unityExit();//退出
-    
 
- //[DllImport("__Internal")]
- //private static extern void unityEnterMYInPortraitDone();//竖屏进入户型漫游
- //unityOpenRoomType(string roomID)    进入户型
+
+    //[DllImport("__Internal")]
+    //private static extern void unityEnterMYInPortraitDone();//竖屏进入户型漫游
+    //unityOpenRoomType(string roomID)    进入户型
 
 #endif
 
@@ -159,8 +159,8 @@ public class AppBridge : MonoBehaviour
 
     public void Load_Test()
     {
-        Load(JsonUtility.ToJson(appProjectInfo));   
-//      Load(serverProjectInfo.projectInfoJsonFromServer);
+        Load(JsonUtility.ToJson(appProjectInfo));
+        //      Load(serverProjectInfo.projectInfoJsonFromServer);
     }
 
     static string EncodeDateKEY(int year, int month, int day)
@@ -258,17 +258,17 @@ public class AppBridge : MonoBehaviour
 
         if (remoteUserIDLength < 10)
         {
-//            Debug.Log(remoteUserIDLength);
-            appProjectInfo.remoteUserID = appProjectInfo.remoteUserID.PadLeft(10,'0');
+            //Debug.Log(remoteUserIDLength);
+            appProjectInfo.remoteUserID = appProjectInfo.remoteUserID.PadLeft(10, '0');
         }
 
         if (userIDLenght < 10)
         {
-//            Debug.Log(remoteUserIDLength);
-            appProjectInfo.userID = appProjectInfo.userID.PadLeft(10,'0');
+            //Debug.Log(remoteUserIDLength);
+            appProjectInfo.userID = appProjectInfo.userID.PadLeft(10, '0');
         }
 
-        appProjectInfo.userID=appProjectInfo.userID.Remove(0, 1).PadLeft(10,'0');
+        appProjectInfo.userID = appProjectInfo.userID.Remove(0, 1).PadLeft(10, '0');
 
         if (appProjectInfo.userType == "1")
         {
@@ -283,15 +283,32 @@ public class AppBridge : MonoBehaviour
         remoteManger.userID = appProjectInfo.userID;
         remoteManger.remoteID = appProjectInfo.remoteUserID;
 
-
-        serverProjectInfo.LoadServerProjectInfo(appProjectInfo.dataServer, appProjectInfo.dataServer,appProjectInfo.projectID, appProjectInfo.sceneLoadMode);
+        serverProjectInfo.LoadServerProjectInfo(appProjectInfo.dataServer, appProjectInfo.dataServer, appProjectInfo.projectID, appProjectInfo.sceneLoadMode);
     }
+
+
+    public void UnloadTest()
+    {
+        Unload();
+    }
+
 
     void Unload()
     {
-        GlobalDebug.Addline("APP2Unity Unload");
-        Debug.Log("APP2Unity Unload");
-        unload.LoadUnloadScene();
+
+        if (SceneInteractiveManger.isLoopingAddSource)
+        {
+            GlobalDebug.Addline("Need Break Add Source");
+            Debug.Log("Need Break Add Source");
+            SceneInteractiveManger.needBreakLoad = true;
+        }
+        else
+        {
+            GlobalDebug.Addline("APP2Unity Unload");
+            Debug.Log("APP2Unity Unload");
+            unload.LoadUnloadScene();
+        }
+
     }
 
     void VedioButton(string state)

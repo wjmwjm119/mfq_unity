@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class ZBZ : MonoBehaviour
 {
-
     public Image zbz;
     public CanvasGroup canvasGroup;
     public CameraUniversalCenter cameraUniversalCenter;
@@ -17,9 +16,5 @@ public class ZBZ : MonoBehaviour
             zbz.rectTransform.localPosition = new Vector3(-2.84444f * cameraUniversalCenter.rotForZBZ, zbz.rectTransform.localPosition.y, 0);
         }
     }
-
-
-
-
 
 }
