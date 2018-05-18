@@ -52,7 +52,12 @@ public class CartoonPlayer : MonoBehaviour
     public UnityEvent OnOpen;
     public UnityEvent OnClose;
 
+    public UnityEvent OnSpeak;
+    public UnityEvent OnStopSpeak;
+
     public static bool hasInit;
+    bool isStop;
+    bool lastAudioState;
 
     void Update()
     {
@@ -88,8 +93,14 @@ public class CartoonPlayer : MonoBehaviour
         }
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> unity2017
         if (fileAudioClip != null && audioSource.isPlaying)
         {
+            
             if (audioSource.time < fileAudioClip.length - 0.11f)
             {
                 currentStartPos = (int)(audioSource.time * fileAudioClip.frequency);
@@ -108,10 +119,17 @@ public class CartoonPlayer : MonoBehaviour
                     }
                 }
 
+<<<<<<< HEAD
             }
 
         }
 
+=======
+        }
+
+
+        //由音强来判断是否要播放音乐
+>>>>>>> unity2017
 
 //  由音强来判断是否要播放音乐
 //  averageVolume = 20;
@@ -156,6 +174,25 @@ public class CartoonPlayer : MonoBehaviour
 
             }
         }
+
+
+
+
+            if (audioSource != null&&lastAudioState != audioSource.isPlaying)
+            {
+                if (audioSource.isPlaying)
+                {
+                    OnSpeak.Invoke();
+                }
+                else
+                {
+                    OnStopSpeak.Invoke();
+                }
+
+                lastAudioState = audioSource.isPlaying;
+            }
+        
+
     }
 
     /// <summary>
@@ -288,7 +325,12 @@ public class CartoonPlayer : MonoBehaviour
         //默认眨眼动作
         if (cartoonAniClip.Substring(0,1) =="n")
         {
+<<<<<<< HEAD
             PlayCartoonAni(cartoonAniClip, delayTime,(string arg) => {Debug.Log(arg + " OnComplete"); PlayCartoonAni("n0" + UnityEngine.Random.Range(1, 3).ToString(), UnityEngine.Random.Range(3f, 6f)); }, cartoonAniClip);
+=======
+            PlayCartoonAni(cartoonAniClip, delayTime,(string arg) => { Debug.Log(arg + " OnComplete"); PlayCartoonAni("n0" + UnityEngine.Random.Range(1, 3).ToString(), UnityEngine.Random.Range(3f, 6f)); }, cartoonAniClip);
+
+>>>>>>> unity2017
         }
         else
         {

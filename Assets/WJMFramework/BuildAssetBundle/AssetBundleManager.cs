@@ -416,7 +416,11 @@ public class AssetBundleManager : MonoBehaviour
 
         if (startID == 0)
         {
+<<<<<<< HEAD
             //            OnSceneRemoved.AddListener(()=> { Debug.LogError("gggggggggg"); });
+=======
+//         OnSceneRemoved.AddListener(()=> { Debug.LogError("gggggggggg"); });
+>>>>>>> unity2017
             sceneInteractiveManger.globalCameraCenter.ChangeCamera(sceneInteractiveManger.globalCameraCenter.cameras[0]);
         }
 
