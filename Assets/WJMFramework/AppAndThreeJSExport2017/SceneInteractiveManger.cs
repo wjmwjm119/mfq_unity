@@ -10,15 +10,11 @@ using UnityEngine.UI;
 public class SceneInteractiveManger : MonoBehaviour
 {
     public AppBridge appBridge;
-<<<<<<< HEAD
     //  public ShaderLib shaderLib;
     public ARManager arManager;
     public EventProxyGroup mainBtnEventProxyGroup;
-=======
+
     public Unload unload;
-// public ShaderLib shaderLib;
-// public ARManager arManager;
->>>>>>> unity2017
     public AssetBundleManager assetBundleManager;
     public LoadingManager loadingManager;
     public RemoteManger remoteManger;
@@ -42,12 +38,8 @@ public class SceneInteractiveManger : MonoBehaviour
     public bool finishLoadAssetBundle;
     bool lastFinishLoadAssetBundle;
 
-<<<<<<< HEAD
-
-=======
     public static bool isLoopingAddSource;
     public static bool needBreakLoad;
->>>>>>> unity2017
 
     public enum LoadAtState
     {
@@ -360,10 +352,6 @@ public class SceneInteractiveManger : MonoBehaviour
 
     public void AddSenceInteractiveInfo(SenceInteractiveInfo s)
     {
-<<<<<<< HEAD
-=======
-//      Debug.Log(1111);
->>>>>>> unity2017
         if (s.meshRoot != null)
         {
             //查找websky，因为由些老的项目websky没有正确设置

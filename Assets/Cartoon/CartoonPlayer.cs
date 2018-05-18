@@ -46,7 +46,7 @@ public class CartoonPlayer : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    [HideInInspector]
+
     public UnityEvent hasStopWhenPause;
 
     public UnityEvent OnOpen;
@@ -64,16 +64,16 @@ public class CartoonPlayer : MonoBehaviour
         //unity开启MIC时执行以下代码
         if (micAudioClip != null)
         {
-            text.text =micDeviceName + "\n"; ;
-            text.text += Microphone.IsRecording(micDeviceName).ToString()+"\n";
+            text.text = micDeviceName + "\n"; ;
+            text.text += Microphone.IsRecording(micDeviceName).ToString() + "\n";
 
             //当记录音频开始过了0.2秒后
-            if(Time.time>micStartTime+0.1f* (currentSliceID+1f))
+            if (Time.time > micStartTime + 0.1f * (currentSliceID + 1f))
             {
                 currentSliceID++;
                 text.text += "currentSliceID" + currentSliceID + "\n";
                 text.text += "currentSliceID" + currentSliceID % 10 + "\n";
-                text.text += micAudioClip.GetData(micWaveSamples, currentSliceID % 10).ToString()+"\n";
+                text.text += micAudioClip.GetData(micWaveSamples, currentSliceID % 10).ToString() + "\n";
 
                 averageVolume = 0;
                 maxVolume = 0;
@@ -81,26 +81,20 @@ public class CartoonPlayer : MonoBehaviour
                 for (int i = 0; i < 2205; i++)
                 {
                     float inValue = Math.Abs(micWaveSamples[i]);
-                   averageVolume += inValue;
+                    averageVolume += inValue;
                     if (inValue > maxVolume)
                     {
                         maxVolume = inValue;
                     }
                 }
                 text.text += averageVolume * 0.0005f + "\n";
-                text.text += maxVolume * 0.0005f* 2205 + "\n";
+                text.text += maxVolume * 0.0005f * 2205 + "\n";
             }
         }
 
-
-<<<<<<< HEAD
-=======
-
-
->>>>>>> unity2017
         if (fileAudioClip != null && audioSource.isPlaying)
         {
-            
+
             if (audioSource.time < fileAudioClip.length - 0.11f)
             {
                 currentStartPos = (int)(audioSource.time * fileAudioClip.frequency);
@@ -118,80 +112,68 @@ public class CartoonPlayer : MonoBehaviour
                         maxVolume = inValue;
                     }
                 }
-
-<<<<<<< HEAD
             }
 
-        }
+            //  由音强来判断是否要播放音乐
+            //  averageVolume = 20;
 
-=======
-        }
+            waveLine.rectTransform.localScale = new Vector3(1, averageVolume * 0.005f, 1);
 
-
-        //由音强来判断是否要播放音乐
->>>>>>> unity2017
-
-//  由音强来判断是否要播放音乐
-//  averageVolume = 20;
-
-        waveLine.rectTransform.localScale = new Vector3(1, averageVolume * 0.005f, 1);
-
-        if (averageVolume * 0.005f > 0.1f)
-        {
-            averageVolumeTrriger = true;
-        }
-        else if(averageVolume * 0.005f < 0.05f)
-        {
-            averageVolumeTrriger = false;
-        }
-
-        if (isSpeak)
-        {
-            if (!averageVolumeTrriger)
+            if (averageVolume * 0.005f > 0.1f)
             {
-                isSpeak = false;
+                averageVolumeTrriger = true;
             }
-        }
-        else
-        {
-            if (averageVolumeTrriger)
+            else if (averageVolume * 0.005f < 0.05f)
             {
-                isSpeak = true;
+                averageVolumeTrriger = false;
             }
-        }
-
-        if (isSpeakLast != isSpeak)
-        {
-            isSpeakLast = isSpeak;
 
             if (isSpeak)
             {
-                PlayCartoonAni("a0" + UnityEngine.Random.Range(1, 9).ToString(),0);
+                if (!averageVolumeTrriger)
+                {
+                    isSpeak = false;
+                }
             }
             else
             {
-                PlayCartoonAni("n01",0);
-
-            }
-        }
-
-
-
-
-            if (audioSource != null&&lastAudioState != audioSource.isPlaying)
-            {
-                if (audioSource.isPlaying)
+                if (averageVolumeTrriger)
                 {
-                    OnSpeak.Invoke();
+                    isSpeak = true;
+                }
+            }
+
+            if (isSpeakLast != isSpeak)
+            {
+                isSpeakLast = isSpeak;
+
+                if (isSpeak)
+                {
+                    PlayCartoonAni("a0" + UnityEngine.Random.Range(1, 9).ToString(), 0);
                 }
                 else
                 {
-                    OnStopSpeak.Invoke();
-                }
+                    PlayCartoonAni("n01", 0);
 
-                lastAudioState = audioSource.isPlaying;
+                }
             }
-        
+        }
+
+        if (audioSource != null && lastAudioState != audioSource.isPlaying)
+        {
+            if (audioSource.isPlaying)
+            {
+                Debug.Log("OnSpeak");
+                OnSpeak.Invoke();
+            }
+            else
+            {
+                Debug.Log("OnStopSpeak");
+                OnStopSpeak.Invoke();
+            }
+
+            lastAudioState = audioSource.isPlaying;
+        }
 
     }
 
@@ -325,12 +307,7 @@ public class CartoonPlayer : MonoBehaviour
         //默认眨眼动作
         if (cartoonAniClip.Substring(0,1) =="n")
         {
-<<<<<<< HEAD
-            PlayCartoonAni(cartoonAniClip, delayTime,(string arg) => {Debug.Log(arg + " OnComplete"); PlayCartoonAni("n0" + UnityEngine.Random.Range(1, 3).ToString(), UnityEngine.Random.Range(3f, 6f)); }, cartoonAniClip);
-=======
             PlayCartoonAni(cartoonAniClip, delayTime,(string arg) => { Debug.Log(arg + " OnComplete"); PlayCartoonAni("n0" + UnityEngine.Random.Range(1, 3).ToString(), UnityEngine.Random.Range(3f, 6f)); }, cartoonAniClip);
-
->>>>>>> unity2017
         }
         else
         {

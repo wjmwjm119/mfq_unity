@@ -19,7 +19,7 @@ public class LoadingAssetBundleAnimation : Loading
 
     bool oneTimeStart = true;
     bool oneTimePercent = true;
-    /*
+    
         string[] tipsGorup =
         {
             "发起讲盘前，音量开大更清晰",
@@ -34,13 +34,13 @@ public class LoadingAssetBundleAnimation : Loading
             "双指张开并拢，可以缩放楼盘户型。",
             "户型漫游时,摁住屏幕的上半部分前进"
         };
-    */
-
+    
+/*
     string[] tipsGorup =
     {
         "正在升级系统，请稍后"
     };
-
+*/
 
 
     public override void LoadingAnimation(NetCtrlManager.RequestHandler r, AsyncOperation inAsy,string info)
