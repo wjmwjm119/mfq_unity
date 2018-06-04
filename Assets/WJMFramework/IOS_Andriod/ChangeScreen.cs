@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChangeScreen : MonoBehaviour
 {
-
+    /*
 	// Use this for initialization
 	void Start ()
     {
@@ -22,6 +22,6 @@ public class ChangeScreen : MonoBehaviour
         GlobalDebug.Addline(inDir.ToString());
         GlobalDebug.Addline(Screen.orientation.ToString());
     }
-
+    */
 
 }

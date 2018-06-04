@@ -371,7 +371,6 @@ public class HXGUI : MonoBehaviour
             {
                 hxScene.websky.gameObject.SetActive(true);
             }
-//           appBridge.Unity2App("unityEnterMYInPortraitDone");
         }
 
         huXingFloorScrollMenu.SetNonStandFloorBtnVisblity(false);

@@ -240,12 +240,10 @@ public class RemoteGUI : MonoBehaviour
         avatar.AlphaPlayBackward();
         vedio_Trriger.AlphaPlayBackward();
 
-
         appBridge.Unity2App("unityCloseRemote", "6");
         string logStr = "unityCloseRemote 6";
         Debug.Log(logStr);
         GlobalDebug.Addline(logStr);
-
     }
 
 

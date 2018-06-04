@@ -16,18 +16,21 @@ public class AppBridge : MonoBehaviour
     public RemoteManger remoteManger;
     public HXGUI hxGUI;
     public BackAction backAction;
+    public ARManager aRManager;
     public AppProjectInfo appProjectInfo;
+
 
     public static bool needSendUnloadMessageToUnity;
 
     public static bool isInRemoteState;
 
-    //  public BackAction backAction;
+ //public BackAction backAction;
 
     public void Exit()
     {
-        defaultGUI.Portrait();
-        Unity2App("unityProtrait");
+//     defaultGUI.Portrait();
+        GlobalDebug.Addline("unityExit");
+        Debug.Log("unityExit");
         Unity2App("unityExit");
     }
 
@@ -36,16 +39,13 @@ public class AppBridge : MonoBehaviour
         Unity2App("unityCancelLoad");
     }
 
-
 #if !TEST
 
 #if UNITY_IOS
     [DllImport("__Internal")]
     private static extern void unityReady(); // 告诉外部已经准备好
     [DllImport("__Internal")]
-    private static extern void unityProtrait(); // 竖屏时的回调
-    [DllImport("__Internal")]
-    private static extern void unityLandscape();// 横屏时的回调
+    private static extern void unityChangeOrientationDone(string orientation);// 切换横竖屏回调
     [DllImport("__Internal")]
     private static extern void unityLoadDone(); // 资源加载完毕后的回调
     [DllImport("__Internal")]
@@ -66,12 +66,8 @@ public class AppBridge : MonoBehaviour
     private static extern void unityCancelLoad();//取消加载
     [DllImport("__Internal")]
     private static extern void unityExit();//退出
-
-
-    //[DllImport("__Internal")]
-    //private static extern void unityEnterMYInPortraitDone();//竖屏进入户型漫游
-    //unityOpenRoomType(string roomID)    进入户型
-
+    [DllImport("__Internal")]
+    private static extern void unityArRecoInfo(string info)
 #endif
 
 #endif
@@ -105,11 +101,8 @@ public class AppBridge : MonoBehaviour
                 case "unityReady":
                     unityReady();
                     break;
-                case "unityProtrait":
-                    unityProtrait();
-                    break;
-                case "unityLandscape":
-                    unityLandscape();
+                case "unityChangeOrientationDone":
+                    unityChangeOrientationDone((string)args[0]);
                     break;
                 case "unityLoadDone":
                     unityLoadDone();
@@ -126,12 +119,15 @@ public class AppBridge : MonoBehaviour
                 case "unityOpenRoomTypeDone":
                     unityOpenRoomTypeDone();
                     break;
+
                 case "unityBackRoomTypeDone":
                     unityBackRoomTypeDone();
                     break;
-//              case "unityEnterMYInPortraitDone":
-//                  unityEnterMYInPortraitDone();
-//                  break;
+
+                case "unityArRecoInfo":
+                    unityArRecoInfo((string)args[0]);
+                    break;
+
                 case "unitySetMusic":
                     unitySetMusic((string)args[0]);
                     break;
@@ -327,21 +323,50 @@ public class AppBridge : MonoBehaviour
 
     }
 
-    void Landscape(string musicState)
+    void ChangeOrientation(string orientation)
     {
-        GlobalDebug.Addline("APP2Unity Landscape");
-        Debug.Log("APP2Unity Landscape");
-        defaultGUI.Landscape(musicState,true);
+        GlobalDebug.Addline("APP2Unity ChangeOrientation "+ orientation);
+        Debug.Log("APP2Unity ChangeOrientation "+ orientation);
+
+        if (orientation == "0")
+        {
+            defaultGUI.ChangeOrientation(true);
+        }
+        else if(orientation == "1")
+        {
+            defaultGUI.ChangeOrientation(false);
+        }
+    }
+
+    void DisplayUI(string state)
+    {
+        defaultGUI.DisplayUI(state);
+    }
+
+
+    /*
+        void Landscape(string musicState)
+        {
+            GlobalDebug.Addline("APP2Unity Landscape");
+            Debug.Log("APP2Unity Landscape");
+            defaultGUI.Landscape(musicState,true);
+        }
+
+        void Portrait()
+        {
+            GlobalDebug.Addline("APP2Unity Portrait");
+            Debug.Log("APP2Unity Portrait");
+            defaultGUI.Portrait();
+        }
+    */
+
+    void MusicButton(string musicState)
+    {
 
     }
 
-    void Portrait()
-    {
-        GlobalDebug.Addline("APP2Unity Portrait");
-        Debug.Log("APP2Unity Portrait");
-        defaultGUI.Portrait();
-    }
 
+    /*
     void ChangeUIOrientation(string orientation)
     {
 
@@ -357,6 +382,7 @@ public class AppBridge : MonoBehaviour
         GlobalDebug.Addline("APP2Unity ChangeUI");
         Debug.Log("APP2Unity ChangeUI");
     }
+    */
 
     void CloseRemote(string state)
     {
@@ -485,6 +511,17 @@ public class AppBridge : MonoBehaviour
     {
         defaultGUI.triggerCancelBtn.AlphaPlayForward();
     }
+
+    void EnterARMode()
+    {
+        aRManager.EnterARMode();
+    }
+
+    void ExitARMode()
+    {
+        aRManager.ExitARMode();
+    }
+
 
     public void SetSatatusBar2(string state)
     {

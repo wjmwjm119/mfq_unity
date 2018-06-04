@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class DefaultGUI : MonoBehaviour
 {
-    public AppBridge appBridege;
+    public AppBridge appBridge;
     public SceneInteractiveManger sceneInteractiveManger;
     public CanveGroupFade defaultGUIRoot;
     public CanveGroupFade mainBtnGroup;
@@ -67,36 +67,11 @@ public class DefaultGUI : MonoBehaviour
         }
     */
 
-    //全屏
-    public void Landscape(string musicState,bool useOrientation)
+
+
+    public  void MusicButton(string musicState)
     {
-        isLandscape = true;
-        CartoonPlayer.hasInit = true;
-        sceneInteractiveManger.PlayCartoonAni();
-
-        triggerMusic.AlphaPlayForward();
-        leftWarning.AlphaPlayBackward();
-        rightWarning.AlphaPlayForward();
-
-        defaultGUIRoot.AlphaPlayForward();
-        mainBtnGroup.AlphaPlayForward();
-        triggerHXList.AlphaPlayForward();
-        triggerXFGroup.AlphaPlayForward();
-        triggerBackBtn.AlphaPlayForward();
-        triggerExit.AlphaPlayForward();
-        triggerVRBtn.AlphaPlayForward();
-        triggerShare.AlphaPlayForward();
-        triggerEnterFangJianPortrait.AlphaPlayBackward();
-
         currentMusicState = musicState;
-
-        if(useOrientation)
-        Screen.orientation = ScreenOrientation.LandscapeLeft;
-
-        appBridege.Unity2App("unityLandscape");
-        Debug.Log("unityLandscape");
-        GlobalDebug.Addline("unityLandscape");
-
         if (musicState == "0" && !musicBtn.buttonState)
         {
             musicBtn.buttonState = true;
@@ -111,75 +86,102 @@ public class DefaultGUI : MonoBehaviour
         {
             triggerMusic.AlphaPlayBackward();
         }
+    }
 
-        if (appBridege.appProjectInfo.sceneLoadMode == "9")
+    public void ChangeOrientation(bool inIsLandscape)
+    {
+        if (inIsLandscape)
         {
-            triggerExit.AlphaPlayBackward();
-            triggerVRBtn.AlphaPlayBackward();
-            triggerShare.AlphaPlayBackward();
-            AppBridge.isInRemoteState = true;
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
+
+            appBridge.Unity2App("unityChangeOrientationDone","0");
+            Debug.Log("unityChangeOrientationDone Landscape");
+            GlobalDebug.Addline("unityChangeOrientationDone Landscape");
+        }
+        else
+        {
+            Screen.orientation = ScreenOrientation.Portrait;
+
+            appBridge.Unity2App("unityChangeOrientationDone","1");
+            Debug.Log("unityChangeOrientationDone Portrait");
+            GlobalDebug.Addline("unityChangeOrientationDone Portrait");
         }
 
-            
+
     }
 
-
-    //半屏
-    public void Portrait(bool useOrientation = true)
+    public void DisplayUI(string state)
     {
-        isLandscape = false;
-        CartoonPlayer.hasInit = false;
-        sceneInteractiveManger.CloseCartoonAni();
+        switch (state)
+        {
+            case "0":
+                defaultGUIRoot.AlphaPlayBackward();
+                break;
+            case "1":
+                defaultGUIRoot.AlphaPlayForward();
+                isLandscape = true;
 
-        leftWarning.AlphaPlayForward();
-        rightWarning.AlphaPlayBackward();
-        defaultGUIRoot.AlphaPlayForward();
-        mainBtnGroup.AlphaPlayBackward();
-        triggerHXList.AlphaPlayBackward();
-        triggerXFGroup.AlphaPlayBackward();
-        triggerBackBtn.AlphaPlayBackward();
-        triggerExit.AlphaPlayBackward();
-        triggerVRBtn.AlphaPlayBackward();
-        triggerShare.AlphaPlayBackward();
-        triggerEnterFangJianPortrait.AlphaPlayForward();
-        triggerMusic.AlphaPlayBackward();
+                triggerMusic.AlphaPlayForward();
+                leftWarning.AlphaPlayBackward();
+                rightWarning.AlphaPlayForward();
+                mainBtnGroup.AlphaPlayForward();
+                triggerHXList.AlphaPlayForward();
+                triggerXFGroup.AlphaPlayForward();
+                triggerBackBtn.AlphaPlayForward();
+                triggerExit.AlphaPlayForward();
+                triggerVRBtn.AlphaPlayForward();
+                triggerShare.AlphaPlayForward();
+                triggerEnterFangJianPortrait.AlphaPlayBackward();          
+                //设置卡通角色
+                CartoonPlayer.hasInit = true;
+                sceneInteractiveManger.PlayCartoonAni();
 
-        if(useOrientation)
-        Screen.orientation = ScreenOrientation.Portrait;
+                //在线讲盘设置,在线讲盘
+                if (appBridge.appProjectInfo.sceneLoadMode == "9")
+                {
+                    triggerExit.AlphaPlayBackward();
+                    triggerVRBtn.AlphaPlayBackward();
+                    triggerShare.AlphaPlayBackward();
+                    AppBridge.isInRemoteState = true;
+                }
 
-        appBridege.Unity2App("unityProtrait");
-        Debug.Log("unityProtrait");
-        GlobalDebug.Addline("unityProtrait");
+                break;
+            case "2":
+                defaultGUIRoot.AlphaPlayForward();
+                isLandscape = false;
+
+                leftWarning.AlphaPlayForward();
+                rightWarning.AlphaPlayBackward();
+                mainBtnGroup.AlphaPlayBackward();
+                triggerHXList.AlphaPlayBackward();
+                triggerXFGroup.AlphaPlayBackward();
+                triggerBackBtn.AlphaPlayBackward();
+                triggerExit.AlphaPlayBackward();
+                triggerVRBtn.AlphaPlayBackward();
+                triggerShare.AlphaPlayBackward();
+                triggerEnterFangJianPortrait.AlphaPlayForward();
+                triggerMusic.AlphaPlayBackward();
+
+                //设置卡通角色
+                CartoonPlayer.hasInit = false;
+                sceneInteractiveManger.CloseCartoonAni();
+
+                break;
+        }
+//     appBridege.Unity2App("DisplayUI");
+        Debug.Log("DisplayUI "+state);
+        GlobalDebug.Addline("DisplayUI "+state);
 
     }
-
-
 
     public void OpenMusic()
     {
-        /*
-        FindBGMusic();
-
-        if (audioCtrl != null)
-        {
-            audioCtrl.PlayMusic();
-        }
-        */
-        appBridege.Unity2App("unitySetMusic","1");
+        appBridge.Unity2App("unitySetMusic","1");
     }
 
     public void CloseMusic()
     {
-        /*
-        FindBGMusic();
-
-        if (audioCtrl != null)
-        {
-            audioCtrl.MuteMusic();
-        }
-        */
-
-        appBridege.Unity2App("unitySetMusic", "0");
+        appBridge.Unity2App("unitySetMusic", "0");
     }
 
     void FindBGMusic()
@@ -195,11 +197,10 @@ public class DefaultGUI : MonoBehaviour
                 }
             }
         }
-
     }
 
     public void ToPanorama()
     {
-        appBridege.Unity2App("unityToPanorama", appBridege.serverProjectInfo.projectRootInfo.data.panoramaSwitch.link);
+        appBridge.Unity2App("unityToPanorama", appBridge.serverProjectInfo.projectRootInfo.data.panoramaSwitch.link);
     }
 }
