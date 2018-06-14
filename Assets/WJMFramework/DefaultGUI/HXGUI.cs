@@ -575,6 +575,7 @@ public class HXGUI : MonoBehaviour
     {
         Vector3 fastToPosition = currentSelectHuXingType.currentAtFloor.pointForMove2[int.Parse(moveToPointID)].localPosition;
         Vector3 fastToForward = -currentSelectHuXingType.currentAtFloor.pointForMove2[int.Parse(moveToPointID)].forward;
+        fastToForward= currentSelectHuXingType.hxMeshRoot.InverseTransformVector(fastToForward);
 
         hxScene.cameraUniversalCenter.currentCamera.SetCameraPositionAndXYZCountAllArgs(
             fastToPosition.x.ToString(),
@@ -585,7 +586,7 @@ public class HXGUI : MonoBehaviour
             ""
             );
 
-        hxScene.cameraUniversalCenter.currentCamera.RotateToVector(fastToForward);
+        hxScene.cameraUniversalCenter.currentCamera.RotateToVector( fastToForward);
 
    
     }

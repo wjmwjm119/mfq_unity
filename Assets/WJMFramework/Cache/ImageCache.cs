@@ -46,6 +46,15 @@ public class ImageCache : MonoBehaviour
 
     void LoopLoadAndCacheImageFromServer(int currentID)
     {
+        //是否需要打断加载
+        if (SceneInteractiveManger.needBreakLoad)
+        {
+            GlobalDebug.Addline("Break Load Image");
+            Debug.Log("Break Load Image");
+            assetBundleManager.sceneInteractiveManger.unload.LoadUnloadScene();
+            return;
+        }
+
         string imageSeverlLoadPath =pathAndURL.imageFinalUrl + allNetTextrue2D[currentID].url;
 //     string imageSeverlLoadPath = "http://123.59.40.145/APP/allproject/201708240001/" + allNetTextrue2D[currentID].url;
 
@@ -83,16 +92,6 @@ public class ImageCache : MonoBehaviour
 
     void LoadNext()
     {
-        //是否需要打断加载
-        if (SceneInteractiveManger.needBreakLoad)
-        {
-            GlobalDebug.Addline("BreakAddSource");
-            Debug.Log("BreakAddSource");
-            assetBundleManager.sceneInteractiveManger.unload.LoadUnloadScene();
-            return;
-        }
-
-
         currentLoadID++;
         if (currentLoadID < allNetTextrue2D.Count)
         {

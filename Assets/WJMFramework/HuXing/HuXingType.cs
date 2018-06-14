@@ -37,11 +37,12 @@ public class HuXingType
 
     public string defaultMYFloorName = "1F";
     public floor[] allFloor;
+    public FastMovePointManager fastMovePointManager;
 
-/*
-    public AudioClip hxAudioClip;
-    public int cartoonType;
- */
+    /*
+        public AudioClip hxAudioClip;
+        public int cartoonType;
+     */
     public bool isMYing = false;
 
 

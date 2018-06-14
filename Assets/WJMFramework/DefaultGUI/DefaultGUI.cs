@@ -27,8 +27,9 @@ public class DefaultGUI : MonoBehaviour
 
     bool oneTime = false;
 
-    public static bool isLandscape;
-    public static bool lastIsLandscape;
+    public static bool isPortraitUI;
+    //    public static bool lastIsPortraitUI;
+    bool isChangeOrientation;
 
     AudioCtrl audioCtrl;
 
@@ -40,8 +41,8 @@ public class DefaultGUI : MonoBehaviour
         if (!oneTime)
         {
             oneTime = true;
-            isLandscape = false;
-            lastIsLandscape = true;
+            isPortraitUI = true;
+//         lastIsPortraitUI = false;
         }
 //        DisplayDefaultGUI();
     }
@@ -68,7 +69,7 @@ public class DefaultGUI : MonoBehaviour
     */
 
 
-
+/*
     public  void MusicButton(string musicState)
     {
         currentMusicState = musicState;
@@ -87,27 +88,45 @@ public class DefaultGUI : MonoBehaviour
             triggerMusic.AlphaPlayBackward();
         }
     }
-
-    public void ChangeOrientation(bool inIsLandscape)
+*/
+    
+    public void ChangeOrientation(bool isPortrait)
     {
-        if (inIsLandscape)
+        if (isChangeOrientation)
         {
-            Screen.orientation = ScreenOrientation.LandscapeLeft;
+            return;
+        }
+        isChangeOrientation = true;
 
-            appBridge.Unity2App("unityChangeOrientationDone","0");
-            Debug.Log("unityChangeOrientationDone Landscape");
-            GlobalDebug.Addline("unityChangeOrientationDone Landscape");
+        if (isPortrait)
+        {
+            Screen.orientation = ScreenOrientation.Portrait;
+            StartCoroutine(IEWaitChangeOrientationDone(ScreenOrientation.Portrait));
         }
         else
         {
-            Screen.orientation = ScreenOrientation.Portrait;
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
+            StartCoroutine(IEWaitChangeOrientationDone(ScreenOrientation.LandscapeLeft));
+        }
+    }
 
-            appBridge.Unity2App("unityChangeOrientationDone","1");
+    IEnumerator IEWaitChangeOrientationDone(ScreenOrientation toOrientation)
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        if (toOrientation == ScreenOrientation.Portrait)
+        {
+            appBridge.Unity2App("unityChangeOrientationDone", "0");
             Debug.Log("unityChangeOrientationDone Portrait");
             GlobalDebug.Addline("unityChangeOrientationDone Portrait");
         }
-
-
+        else if (toOrientation == ScreenOrientation.LandscapeLeft)
+        {
+            appBridge.Unity2App("unityChangeOrientationDone", "1");
+            Debug.Log("unityChangeOrientationDone Landscape");
+            GlobalDebug.Addline("unityChangeOrientationDone Landscape");
+        }
+        isChangeOrientation = false;
     }
 
     public void DisplayUI(string state)
@@ -119,9 +138,9 @@ public class DefaultGUI : MonoBehaviour
                 break;
             case "1":
                 defaultGUIRoot.AlphaPlayForward();
-                isLandscape = true;
+                isPortraitUI = false;
 
-                triggerMusic.AlphaPlayForward();
+//                triggerMusic.AlphaPlayForward();
                 leftWarning.AlphaPlayBackward();
                 rightWarning.AlphaPlayForward();
                 mainBtnGroup.AlphaPlayForward();
@@ -148,7 +167,7 @@ public class DefaultGUI : MonoBehaviour
                 break;
             case "2":
                 defaultGUIRoot.AlphaPlayForward();
-                isLandscape = false;
+                isPortraitUI = true;
 
                 leftWarning.AlphaPlayForward();
                 rightWarning.AlphaPlayBackward();
@@ -160,7 +179,7 @@ public class DefaultGUI : MonoBehaviour
                 triggerVRBtn.AlphaPlayBackward();
                 triggerShare.AlphaPlayBackward();
                 triggerEnterFangJianPortrait.AlphaPlayForward();
-                triggerMusic.AlphaPlayBackward();
+//                triggerMusic.AlphaPlayBackward();
 
                 //设置卡通角色
                 CartoonPlayer.hasInit = false;

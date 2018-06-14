@@ -51,10 +51,7 @@ public class SenceInteractiveInfo : MonoBehaviour
     {
         if (lastInteractiveAction != null)
         {
-            if (lastInteractiveAction.falseEvent != null)
-            {
-                lastInteractiveAction.falseEvent.Invoke();
-            }
+
         }
 
         if (lastNeedDisplayRoot != null)
@@ -75,20 +72,34 @@ public class SenceInteractiveInfo : MonoBehaviour
             lastNeedDisplayRoot = i.needDisplayRoot;
         }
 
-        if (i.trueEvent != null)
-        {
-            i.trueEvent.Invoke();
-        }
-
         lastInteractiveAction = i;
+    }
 
+    public void ProcessInteractiveActionCustomEvent(InteractiveAction i,bool stateEvent)
+    {
+        if (stateEvent)
+        {
+            if (i.trueEvent != null)
+            {
+                i.trueEvent.Invoke();
+                Debug.Log("trueEvent");
+            }
+        }
+        else
+        {
+            if (i.falseEvent != null)
+            {
+                i.falseEvent.Invoke();
+                Debug.Log("falseEvent");
+            }
+        }
 
     }
 
     //简介,配套,交通
-    public void ProcessMainBtnAction(int toInt)
+    public void ProcessMainBtnAction(int btnID,bool btnState)
     {
-        switch (toInt)
+        switch (btnID)
         {
             case 0:
                 ProcessInteractiveAction(f3d_Home);
@@ -96,37 +107,102 @@ public class SenceInteractiveInfo : MonoBehaviour
 
             case 1:
                 if (!f3d_Area.disableDefaultAction)//是否有禁用默认操作
-                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(0);
+                {
+                    if (btnState)
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(0);
+                    }
+                    else
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessFalseEvent(0);
+                    }
+                }
+                else
+                {
+                    ProcessInteractiveActionCustomEvent(f3d_Area, btnState);
+                }
+
                 ProcessInteractiveAction(f3d_Area);
                 break;
 
             case 2:
                 if (!f3d_Intro.disableDefaultAction)
-                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(1);
+                {
+                    if (btnState)
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(1);
+                    }
+                    else
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessFalseEvent(1);
+                    }
+                }
+                else
+                {
+                    ProcessInteractiveActionCustomEvent(f3d_Intro, false);
+                }
                 ProcessInteractiveAction(f3d_Intro);
-
                 break;
 
             case 3:
                 if (!f3d_Supports.disableDefaultAction)
-                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(2);
+                {
+                    if (btnState)
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(2);
+                    }
+                    else
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessFalseEvent(2);
+                    }
+                }
+                else
+                {
+                    ProcessInteractiveActionCustomEvent(f3d_Supports, false);
+                }
+
                 ProcessInteractiveAction(f3d_Supports);
                 break;
 
             case 4:
                 if (!f3d_Traffic.disableDefaultAction)
-                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(3);
+                {
+                    if (btnState)
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(3);
+                        ProcessInteractiveActionCustomEvent(f3d_Traffic, true);
+                    }
+                    else
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessFalseEvent(3);
+                        ProcessInteractiveActionCustomEvent(f3d_Traffic, false);
+                    }
+                }
+                else
+                {
+                    ProcessInteractiveActionCustomEvent(f3d_Traffic, false);
+                }
                 ProcessInteractiveAction(f3d_Traffic);
                 break;
 
             case 5:
                 if (!f3d_HXFB.disableDefaultAction)
-                    sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(4);
+                {
+                    if (btnState)
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessTrueEvent(4);
+                        ProcessInteractiveActionCustomEvent(f3d_HXFB, true);
+                    }
+                    else
+                    {
+                        sceneInteractiveManger.mainBtnEventProxyGroup.ProcessFalseEvent(4);
+                        ProcessInteractiveActionCustomEvent(f3d_HXFB, false);
+                    }
+                }
                 ProcessInteractiveAction(f3d_HXFB);
                 break;
-        }    
+        }
     }
-
 
     public bool ProcessHXFBAction(string hxName)
     {

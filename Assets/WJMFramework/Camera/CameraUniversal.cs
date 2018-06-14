@@ -115,7 +115,7 @@ public class CameraUniversal : MonoBehaviour
     }
 
 
-public  void TouchDown(Vector2 pos)
+    public  void TouchDown(Vector2 pos)
     {
 
         if (cameraEnableState)
@@ -708,7 +708,7 @@ public  void TouchDown(Vector2 pos)
 
         camBase.localPosition = defaultPosition;
 
-//      GlobalDebug.Addline(this.gameObject.name+"_ResetCamera");
+//     GlobalDebug.Addline(this.gameObject.name+"_ResetCamera");
         if (CameraUniversalCenter.isInMirrorHX)
         {
             camBase.localPosition = new Vector3(-defaultPosition.x, defaultPosition.y, defaultPosition.z);

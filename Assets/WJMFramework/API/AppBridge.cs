@@ -16,13 +16,14 @@ public class AppBridge : MonoBehaviour
     public RemoteManger remoteManger;
     public HXGUI hxGUI;
     public BackAction backAction;
-    public ARManager aRManager;
+//    public ARManager aRManager;
     public AppProjectInfo appProjectInfo;
 
 
     public static bool needSendUnloadMessageToUnity;
 
     public static bool isInRemoteState;
+
 
  //public BackAction backAction;
 
@@ -32,6 +33,7 @@ public class AppBridge : MonoBehaviour
         GlobalDebug.Addline("unityExit");
         Debug.Log("unityExit");
         Unity2App("unityExit");
+//        Unload();
     }
 
     public void CanceLoad()
@@ -67,7 +69,7 @@ public class AppBridge : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void unityExit();//退出
     [DllImport("__Internal")]
-    private static extern void unityArRecoInfo(string info)
+    private static extern void unityArRecoInfo(string info);
 #endif
 
 #endif
@@ -294,8 +296,8 @@ public class AppBridge : MonoBehaviour
 
         if (SceneInteractiveManger.isLoopingAddSource)
         {
-            GlobalDebug.Addline("Need Break Add Source");
-            Debug.Log("Need Break Add Source");
+            GlobalDebug.Addline("Start Break Loading!");
+            Debug.Log("Start Break Loading!");
             SceneInteractiveManger.needBreakLoad = true;
         }
         else
@@ -351,38 +353,34 @@ public class AppBridge : MonoBehaviour
             Debug.Log("APP2Unity Landscape");
             defaultGUI.Landscape(musicState,true);
         }
+  */
 
+/*
         void Portrait()
         {
             GlobalDebug.Addline("APP2Unity Portrait");
             Debug.Log("APP2Unity Portrait");
             defaultGUI.Portrait();
         }
-    */
+*/
 
-    void MusicButton(string musicState)
+    void DisplayMusicButton(string musicState)
     {
-
-    }
-
-
-    /*
-    void ChangeUIOrientation(string orientation)
-    {
-
-        if (orientation == "0")
+        switch (musicState)
         {
-            defaultGUI.Portrait(false);
+            case "0":
+                defaultGUI.triggerMusic.AlphaPlayForward();
+                defaultGUI.musicBtn.SetBtnState(true, 0);
+                break;
+            case "1":
+                defaultGUI.triggerMusic.AlphaPlayForward();
+                defaultGUI.musicBtn.SetBtnState(false, 0);
+                break;
+            case "2":
+                defaultGUI.triggerMusic.AlphaPlayBackward();
+                break;
         }
-        else if (orientation == "1")
-        {
-            defaultGUI.Landscape(defaultGUI.currentMusicState, false);
-        }
-
-        GlobalDebug.Addline("APP2Unity ChangeUI");
-        Debug.Log("APP2Unity ChangeUI");
     }
-    */
 
     void CloseRemote(string state)
     {
@@ -510,16 +508,18 @@ public class AppBridge : MonoBehaviour
     void DisplayCancelBtn()
     {
         defaultGUI.triggerCancelBtn.AlphaPlayForward();
+        GlobalDebug.Addline("APP2Unity DisplayCancelBtn");
+        Debug.Log("APP2Unity DisplayCancelBtn");
     }
 
     void EnterARMode()
     {
-        aRManager.EnterARMode();
+//        aRManager.EnterARMode();
     }
 
     void ExitARMode()
     {
-        aRManager.ExitARMode();
+//        aRManager.ExitARMode();
     }
 
 

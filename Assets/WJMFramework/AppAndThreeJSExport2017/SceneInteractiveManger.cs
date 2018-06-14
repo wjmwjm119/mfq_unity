@@ -11,7 +11,7 @@ public class SceneInteractiveManger : MonoBehaviour
 {
     public AppBridge appBridge;
     //  public ShaderLib shaderLib;
-    public ARManager arManager;
+//    public ARManager arManager;
     public EventProxyGroup mainBtnEventProxyGroup;
 
     public Unload unload;
@@ -168,7 +168,7 @@ public class SceneInteractiveManger : MonoBehaviour
 //                currentAddSceneID = 0;
 //                LoopAdditiveScene(true);
 
-                arManager.OpenARCamrea();
+//                arManager.OpenARCamrea();
                 break;
 
             case "9":
@@ -197,9 +197,8 @@ public class SceneInteractiveManger : MonoBehaviour
         //是否需要打断加载
         if (needBreakLoad)
         {
-            GlobalDebug.Addline("BreakAddSource");
-            Debug.Log("BreakAddSource");
-
+            GlobalDebug.Addline("Break Add Scene");
+            Debug.Log("Break Add Scene");
             unload.LoadUnloadScene();
             yield return new WaitForSeconds(0.3f);
         }
@@ -224,13 +223,11 @@ public class SceneInteractiveManger : MonoBehaviour
 
     void LoopAdditiveScene(bool loadImageInEnd=true)
     {
-
         //是否需要打断加载
         if (needBreakLoad)
         {
-            GlobalDebug.Addline("BreakAddSource");
-            Debug.Log("BreakAddSource");
-
+            GlobalDebug.Addline("Break Add Scene");
+            Debug.Log("Break Add Scene");
             unload.LoadUnloadScene();
             return;
         }
@@ -329,11 +326,11 @@ public class SceneInteractiveManger : MonoBehaviour
 
 
     //简介,配套,交通
-    public void MainBtnAction(int toInt)
+    public void MainBtnAction(int btnID, bool btnState)
     {
         if (senceInteractiveInfoGroup != null && senceInteractiveInfoGroup[0] != null && senceInteractiveInfoGroup[0].sceneType == SenceInteractiveInfo.SceneType.大场景)
         {
-            senceInteractiveInfoGroup[0].ProcessMainBtnAction(toInt);
+            senceInteractiveInfoGroup[0].ProcessMainBtnAction(btnID, btnState);
         }
     }
 
@@ -397,8 +394,7 @@ public class SceneInteractiveManger : MonoBehaviour
 
                 if (s.f3d_Supports.replaceDefaultBtnName!=null&&s.f3d_Supports.replaceDefaultBtnName != "")
                 {
-                    Debug.LogError(111111111111111);
-                    Debug.LogError(s.f3d_Supports.replaceDefaultBtnName);
+//                    Debug.LogError(s.f3d_Supports.replaceDefaultBtnName);
                     mainBtnEventProxyGroup.baseButtonGroup[2].label.text = s.f3d_Supports.replaceDefaultBtnName;
                     mainBtnEventProxyGroup.baseButtonGroup[2].shadowLabel.text = s.f3d_Supports.replaceDefaultBtnName;
                 }
@@ -428,11 +424,13 @@ public class SceneInteractiveManger : MonoBehaviour
             }
             else
             {
+                /*
                 //是否在AR模式下
                 if (ARManager.isInARMode)
                 {
                     arManager.findSenceInteractiveInfo = s;
                 }
+                */
 
                 //将户型单场景中的info复制到allHuXingTypeFromFinal
                 foreach (HuXingType hFinal in hxGUI.hxSceneHuXingTypeFinal)
@@ -616,7 +614,6 @@ public class SceneInteractiveManger : MonoBehaviour
 
     public void ChangeInteractiveScene(SenceInteractiveInfo toInteractiveScene,bool disableCurrentSceneMesh)
     {
-
 //     Debug.Log(toInteractiveScene.name);
 //     Debug.Log(currentActiveSenceInteractiveInfo.name);
 
@@ -657,7 +654,7 @@ public class SceneInteractiveManger : MonoBehaviour
             if (toInteractiveScene.meshRoot != null)
                 toInteractiveScene.meshRoot.gameObject.SetActive(true);
             mainSenceInteractiveInfo = toInteractiveScene;
-            //            defaultGUI.DisplayDefaultGUI();
+            //defaultGUI.DisplayDefaultGUI();
         }
         else if (toInteractiveScene.sceneType == SenceInteractiveInfo.SceneType.Point360)
         {
@@ -700,7 +697,7 @@ public class SceneInteractiveManger : MonoBehaviour
         if (currentActiveSenceInteractiveInfo != null)
         {
             CartoonPlayArgs cartoonArgs = currentActiveSenceInteractiveInfo.GetComponent<CartoonPlayArgs>();
-            if (DefaultGUI.isLandscape && cartoonArgs != null && cartoonArgs.hxAudioClip != null)
+            if (!DefaultGUI.isPortraitUI && cartoonArgs != null && cartoonArgs.hxAudioClip != null)
             {
                 //如果已经播放，默认是不播放的
                 if (!cartoonArgs.hasPlayed)

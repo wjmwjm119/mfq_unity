@@ -72,7 +72,7 @@ public class HXInfoCache : MonoBehaviour
 
                     hasLoadedHXinfo.Add(hXInfo);
 
-                    assetBundleManager.sceneInteractiveManger.arManager.CheckCurrentState();
+//                    assetBundleManager.sceneInteractiveManger.arManager.CheckCurrentState();
 
                     return;
                 }

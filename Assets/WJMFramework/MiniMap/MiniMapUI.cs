@@ -59,19 +59,15 @@ public class MiniMapUI :MonoBehaviour,IPointerClickHandler
 
         if (Physics.Raycast(ray, out hit, 1000))
         {
-
             Debug.Log(hit.collider.name);
 
             ColliderTriggerButton c = hit.transform.GetComponent<ColliderTriggerButton>();
             ColliderTriggerButton.touchRayCastFrom = ColliderTriggerButton.TouchRayCastFrom.Minimap;
             if (c != null)
             {
-                c.ExeTriggerEvent();
+                c.ExeTriggerEvent(null);
             }
-
         }
-
-
     }
 
 

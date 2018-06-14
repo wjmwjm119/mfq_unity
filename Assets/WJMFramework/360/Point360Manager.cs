@@ -52,7 +52,7 @@ public class Point360Manager : MonoBehaviour
             colliderTriggerRoot.gameObject.SetActive(true);
             ColliderTriggerButton.touchRayCastFrom = ColliderTriggerButton.TouchRayCastFrom.Minimap;
             if (defaultColliderTriggerButton!=null)
-            defaultColliderTriggerButton.ExeTriggerEvent();
+            defaultColliderTriggerButton.ExeTriggerEvent(null);
 
         }
 

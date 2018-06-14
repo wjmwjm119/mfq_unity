@@ -252,10 +252,10 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
             if (Physics.Raycast(ray, out hit, 1000))
             {
                 ColliderTriggerButton c = hit.transform.GetComponent<ColliderTriggerButton>();
-                ColliderTriggerButton.touchRayCastFrom = ColliderTriggerButton.TouchRayCastFrom.TouchCtrl;
+                ColliderTriggerButton.touchRayCastFrom = ColliderTriggerButton.TouchRayCastFrom.MainScreen;
                 if (c!= null)
                 {
-                    c.ExeTriggerEvent();
+                    c.ExeTriggerEvent(this);
                 }       
             }
         }

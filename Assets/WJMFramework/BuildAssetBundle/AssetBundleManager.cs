@@ -63,8 +63,8 @@ public class AssetBundleManager : MonoBehaviour
 
     void Awake()
     {
-        //    DontDestroyOnLoad(this);
-//        Caching.ClearCache();
+//     DontDestroyOnLoad(this);
+//     Caching.ClearCache();
         Caching.compressionEnabled = false;
 
         currentLoadedCommonAssetBundles = new List<AssetBundle>();
@@ -488,8 +488,8 @@ public class AssetBundleManager : MonoBehaviour
             {
                 Debug.Log("已加载" + h.projectID+"_"+ h.hxAssetBundleName + " AssetBundle");
 
-                sceneInteractiveManger.arManager.findSenceInteractiveInfo = h.senceInteractiveInfo;
-                sceneInteractiveManger.arManager.CheckCurrentState();
+//                sceneInteractiveManger.arManager.findSenceInteractiveInfo = h.senceInteractiveInfo;
+//                sceneInteractiveManger.arManager.CheckCurrentState();
 
                 return;
             }
@@ -532,7 +532,7 @@ public class AssetBundleManager : MonoBehaviour
                          hXInfo.senceInteractiveInfo = sceneInteractiveManger.senceInteractiveInfoGroup[sceneInteractiveManger.senceInteractiveInfoGroup.Count - 1];
                          //获取刚添加Assetbundle的户型名
                          hXInfo.modeName = hXInfo.senceInteractiveInfo.huXingType.hxName;
-                         sceneInteractiveManger.arManager.findSenceInteractiveInfo = hXInfo.senceInteractiveInfo;
+//                         sceneInteractiveManger.arManager.findSenceInteractiveInfo = hXInfo.senceInteractiveInfo;
                          hxInfoCache.GetHXInfoFromServer(projectID, hXInfo);
                      }
                   );

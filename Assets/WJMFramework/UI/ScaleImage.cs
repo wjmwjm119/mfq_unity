@@ -136,6 +136,7 @@ public class ScaleImage : RawImage, IPointerDownHandler,IPointerUpHandler, IDrag
     {
         if (Time.time - onDownTime < 0.1f)
         {
+            if(closeImageBtn!=null)
             closeImageBtn.SetBtnStateForRemote(true, 0);
 //          GlobalDebug.Addline((Time.time - onDownTime).ToString());
         }
