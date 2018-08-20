@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class SimpleVR : MonoBehaviour
 {
+    public AppBridge appBridge;
     public CanveGroupFade defaultGUI;
     public Transform globalManager;
     public Transform rotX;
@@ -37,7 +38,7 @@ public class SimpleVR : MonoBehaviour
 
     public void OpenVRGlass()
     {
-
+        
 //     leftViewImage.rectTransform.anchoredPosition = new Vector2(-0.25f * Screen.width, 0);
 //     leftViewImage.rectTransform.sizeDelta = new Vector2(-0.5f * Screen.width, 0);
 //     rightViewImage.rectTransform.anchoredPosition = new Vector2(0.25f * Screen.width, 0);
@@ -71,6 +72,9 @@ public class SimpleVR : MonoBehaviour
 
 
         vrViewCanveGroupFade.AlphaPlayForward();
+
+        appBridge.Unity2App("unityVRState", "1");
+
     }
 
     public void CloseVRGlass()
@@ -96,7 +100,7 @@ public class SimpleVR : MonoBehaviour
 //      cameraUniversal.vrMoveForward = false;
         cameraUniversal = null;
         defaultGUI.AlphaPlayForward();
-
+        appBridge.Unity2App("unityVRState", "0");
     }
 
 
@@ -128,7 +132,7 @@ public class SimpleVR : MonoBehaviour
                     moveImage.color = new Color(0, 0.5f, 1f);
                     cameraUniversal.vrMoveForward = true;
 
-//                    GlobalDebug.ReplaceLine("True", 10);
+//                 GlobalDebug.ReplaceLine("True", 10);
             }
             else
             {

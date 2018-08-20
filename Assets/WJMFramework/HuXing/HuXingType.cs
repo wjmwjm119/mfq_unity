@@ -46,9 +46,11 @@ public class HuXingType
     public bool isMYing = false;
 
 
-
     [HideInInspector]
     public string qj360rul = "";
+
+//    [HideInInspector]
+    public string viewDisplayMode ="1";
 
     string huXingTypeInfo = "";
 

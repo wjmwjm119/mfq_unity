@@ -29,12 +29,14 @@ public class DefaultGUI : MonoBehaviour
 
     public static bool isPortraitUI;
     //    public static bool lastIsPortraitUI;
-    bool isChangeOrientation;
+
 
     AudioCtrl audioCtrl;
 
     [HideInInspector]
     public  string currentMusicState = "1";
+    [HideInInspector]
+    public bool isChangeOrientation;
 
     void Start()
     {

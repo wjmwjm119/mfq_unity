@@ -248,7 +248,8 @@ public class ServerProjectInfo : MonoBehaviour
         {
             hxGUI.hxSceneHuXingTypeFinal[i] = new HuXingType();
             hxGUI.hxSceneHuXingTypeFinal[i].hxName = hx[i].modeName;
-            
+            hxGUI.hxSceneHuXingTypeFinal[i].viewDisplayMode = hx[i].mode3Ddisplay==null?"1":hx[i].mode3Ddisplay;
+//            Debug.Log(hx[i].mode3Ddisplay);
             hxGUI.hxSceneHuXingTypeFinal[i].displayName = hx[i].display;
           //hxGUI.hxSceneHuXingTypeFinal[i].huXingID = hx[i].id;
             hxGUI.hxSceneHuXingTypeFinal[i].normalPrice =-1;
@@ -257,9 +258,9 @@ public class ServerProjectInfo : MonoBehaviour
             hxGUI.hxSceneHuXingTypeFinal[i].leiXing = "";
             hxGUI.hxSceneHuXingTypeFinal[i].introduction = hx[i].discr;
             //hxGUI.hxSceneHuXingTypeFinal[i].pmtUrl = "";
-
             hxGUI.hxSceneHuXingTypeFinal[i].allFloor = new HuXingType.floor[hx[i].floorData.Length];
             hxGUI.hxSceneHuXingTypeFinal[i].netTexture2DGroup = new List<NetTexture2D>();
+            
             for (int j = 0; j < hxGUI.hxSceneHuXingTypeFinal[i].allFloor.Length; j++)
             {
                 hxGUI.hxSceneHuXingTypeFinal[i].huXingID = hx[i].modeId;
@@ -382,7 +383,7 @@ public class HXInfo
     public string area;
     public string discr;
     public FloorData[] floorData;
-
+    public string mode3Ddisplay;
 
     public string projectID;
     public string hxAssetBundleName;

@@ -29,6 +29,8 @@ public class HXGUI : MonoBehaviour
     public CanveGroupFade triggerMusicBtn;
     public CanveGroupFade triggerFastMoveSM;
     public CanveGroupFade triggerCartoonAni;
+    public CanveGroupFade triggerLockMove;
+    public ImageButton lockMove;
 
     public CartoonPlayer cartoonPlayer;
     public ImageButton cartoonPauseBtn;
@@ -156,8 +158,8 @@ public class HXGUI : MonoBehaviour
     public void ExitHXNK()
     {
         triggerEnterHX.AlphaPlayForward();
-//      triggerEnterFangJian.transform.localPosition = new Vector3(0, 0, 0);
-        //triggerFCZ.transform.localPosition = Vector3.zero;
+//     triggerEnterFangJian.transform.localPosition = new Vector3(0, 0, 0);
+//     triggerFCZ.transform.localPosition = Vector3.zero;
         triggerFCZ.AlphaPlayBackward();
 
         huXingCameraBG.transform.parent = this.transform;
@@ -192,16 +194,15 @@ public class HXGUI : MonoBehaviour
 
         huXingInfoLabel.HiddenHuXingInfoLabel();
 
+
         appBridge.Unity2App("unityBackRoomTypeDone");
         Debug.Log("unityBackRoomTypeDone");
         GlobalDebug.Addline("unityBackRoomTypeDone");
-
     }
 
 
     public void EnterHuXing()
     {
-
         appBridge.Unity2App("unityOpenRoomType", currentSelectHuXingType.huXingID);
         Debug.Log("unityOpenRoomType:" + currentSelectHuXingType.huXingID);
         GlobalDebug.Addline("unityOpenRoomType:" + currentSelectHuXingType.huXingID);
@@ -253,7 +254,6 @@ public class HXGUI : MonoBehaviour
             }
 
             hxScene.huXingType.hasPlayed = true;
-
         }
   */          
 
@@ -281,7 +281,6 @@ public class HXGUI : MonoBehaviour
 
             sceneInteractiveManger.ChangeInteractiveScene(hxfbScene,true);
             
-
             //判断是否有Mesh
             if (hxScene.huXingType.hxMeshRoot != null)
             {
@@ -349,10 +348,9 @@ public class HXGUI : MonoBehaviour
         currentSelectHuXingType.HuXingChooseFloor(hxScene.cameraUniversalCenter, floorName);
     }
 
-
-
     public void EnterHuXingFloor(bool inPortrait)
     {
+        appBridge.Unity2App("unityMYLook", currentSelectHuXingType.viewDisplayMode);
         Debug.Log("EnterHuXingFloor");
 
         if(hxScene)
@@ -376,12 +374,27 @@ public class HXGUI : MonoBehaviour
         huXingFloorScrollMenu.SetNonStandFloorBtnVisblity(false);
         currentSelectHuXingType.EnterHuXingFloor(sceneInteractiveManger.currentActiveSenceInteractiveInfo.cameraUniversalCenter, currentSelectHuXingType.GetDefaultMYFloorName(), triggerFastMoveSM,huXingFastMoveScrollMenu);
 
-
+        if (currentSelectHuXingType.fastMovePointManager != null)
+        {
+//            currentSelectHuXingType.fastMovePointManager.SetMovePointsState(true);
+            triggerLockMove.AlphaPlayForward();
+            lockMove.SetBtnState(false, 0);
+//            LockMove();
+        }
 
     }
 
     public void ExitHuXingFloor(bool inPortrait)
     {
+        appBridge.Unity2App("unityNKLook", currentSelectHuXingType.viewDisplayMode);
+        if (currentSelectHuXingType.fastMovePointManager != null)
+        {
+            //            currentSelectHuXingType.fastMovePointManager.SetMovePointsState(false);
+            triggerLockMove.AlphaPlayBackward();
+            lockMove.SetBtnState(true, 0);
+
+            //            UnLockMove();
+        }
 
         triggerFCZ.AlphaPlayForward();
 
@@ -409,9 +422,9 @@ public class HXGUI : MonoBehaviour
         huXingFastMoveScrollMenu.GetComponent<RectTransform>().DOAnchorPosY(60, 1);
         triggerFastMoveSM.AlphaPlayBackward();
 
+
+
     }
-
-
 
     public void CreateHuXingScrollMenu(SceneInteractiveManger s)
     {
@@ -644,4 +657,17 @@ public class HXGUI : MonoBehaviour
         }
     }
 
+    public void LockMove()
+    {
+       currentSelectHuXingType.fastMovePointManager.SetMovePointsState(true);
+       sceneInteractiveManger.currentActiveSenceInteractiveInfo.cameraUniversalCenter.currentCamera.resetXcountWhenTouchup = false;
+       sceneInteractiveManger.currentActiveSenceInteractiveInfo.cameraUniversalCenter.currentCamera.lockMove = true;
+    }
+
+    public void UnLockMove()
+    {
+        currentSelectHuXingType.fastMovePointManager.SetMovePointsState(false);
+        sceneInteractiveManger.currentActiveSenceInteractiveInfo.cameraUniversalCenter.currentCamera.resetXcountWhenTouchup = sceneInteractiveManger.currentActiveSenceInteractiveInfo.cameraUniversalCenter.currentCamera.oringXcountWhenTouchup;
+        sceneInteractiveManger.currentActiveSenceInteractiveInfo.cameraUniversalCenter.currentCamera.lockMove = false;
+    }
 }

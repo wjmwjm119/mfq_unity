@@ -7,13 +7,15 @@ using UnityEngine.UI;
 
 public class CameraUniversal : MonoBehaviour
 {
-
-
     public bool cameraEnableState;
     public bool useCamreaDepth;
 
+    [HideInInspector]
+    public bool oringXcountWhenTouchup;
     public bool resetXcountWhenTouchup = false;
     public bool resetCameraStateWhenDisable=true;
+    
+
 
     public bool XAxes = true;
     public bool YAxes = true;
@@ -98,11 +100,15 @@ public class CameraUniversal : MonoBehaviour
     int orginCullMask;
     CameraClearFlags orginCameraCleraFlags;
 
+    
+
     //如果是在镜像户型下用来设置初始位置用
     Vector3 hxMirrorOffset;
 
     [HideInInspector]
     public bool vrMoveForward = false;
+    [HideInInspector]
+    public bool lockMove = false;
 
     public bool isARCamera = false;
 
@@ -141,7 +147,6 @@ public class CameraUniversal : MonoBehaviour
             {
                 Xcount = 0;
             }
-
         }
     }
 
@@ -167,7 +172,6 @@ public class CameraUniversal : MonoBehaviour
         }
     }
     
-
     public  void MouseScroll(float scroll)
     {
         if (cameraEnableState)
@@ -184,12 +188,11 @@ public class CameraUniversal : MonoBehaviour
 
             if (colliderMeshObject.Raycast(ray, out hit, 800))
             {
-
                 if (hit.transform.gameObject.name == "ColliderPlan")
                 {
                     Debug.DrawLine(ray.origin, hit.point);
                     Vector3 toPos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-//                    Debug.Log("MoveCameraPos");
+//                 Debug.Log("MoveCameraPos");
                     MoveCameraPos(toPos);
                 }
             }
@@ -205,7 +208,7 @@ public class CameraUniversal : MonoBehaviour
     {
         if (!hasInit)
         {
-
+            oringXcountWhenTouchup = resetXcountWhenTouchup;
             if (camBase != null && camBase.GetComponent<CharacterController>() != null)
             {
                 camBase.GetComponent<CharacterController>().height = 0.02f;
@@ -274,20 +277,23 @@ public class CameraUniversal : MonoBehaviour
         if(!isARCamera)
         UpdatePosition();
 
-        if (!inZoomState&&pressed && maximumZ < 0.1f)
+        if (!lockMove)
         {
-            if (currentTouchPos.y < 0.3f * Screen.height)
+            if (!inZoomState && pressed && maximumZ < 0.1f)
             {
-                firstPersonVertical = -1;
+                if (currentTouchPos.y < 0.3f * Screen.height)
+                {
+                    firstPersonVertical = -1;
+                }
+                else
+                {
+                    firstPersonVertical = 1;
+                }
             }
             else
             {
-                firstPersonVertical = 1;
+                firstPersonVertical = 0;
             }
-        }
-        else
-        {
-            firstPersonVertical = 0;
         }
 
         if (vrMoveForward)
@@ -398,9 +404,6 @@ public class CameraUniversal : MonoBehaviour
 
         return outYcount;
     }
-
-
-
 
     public void CameraPathAutoPlay()
     {
@@ -668,7 +671,6 @@ public class CameraUniversal : MonoBehaviour
         Ycount = ModiferYCount(Ycount, mYconut);
     }
 
-
     public void LookAtPoint(Vector3 lookAtPosition, Vector3 lookForward,bool endEnableCtrl=true)//一个相机目标点的位置，和目标点朝前的向量
     {
         Debug.Log("lookAtPosition");
@@ -681,7 +683,6 @@ public class CameraUniversal : MonoBehaviour
 
     void RecodeInitialCameraState()
     {
-
 //      GlobalDebug.Addline("RecodeInitialCameraState");
 //      Debug.Log(this.name+"_RecodeInitialCameraState");
 

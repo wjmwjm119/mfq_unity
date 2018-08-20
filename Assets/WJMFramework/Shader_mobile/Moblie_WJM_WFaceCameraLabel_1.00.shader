@@ -12,6 +12,7 @@ Shader "@Moblie_WJM_WFaceCameraLabel"
 		_MainTex("DiffuseMap(RGBA)", 2D) = "white" {}
 		_Width("Width",float) = 1
 		_Height("Height",float) = 1
+		_isBillborad("isBillBoard",Range(0,1)) = 1
 		_sizeBlend("Object&Screen",Range(0,1)) = 0
 		_scale("Scale",Range(0,2)) = 0.8
 		_PviotOffsetX("Pviot OffsetX",Range(-1,1)) = 0
@@ -56,7 +57,7 @@ Shader "@Moblie_WJM_WFaceCameraLabel"
 		float	_Width;
 		float   _Height;
 		float _sizeBlend;
-
+		float _isBillborad;
 		float _PviotOffsetX;
 		float _PviotOffsetY;
 		float _scale;
@@ -81,6 +82,8 @@ Shader "@Moblie_WJM_WFaceCameraLabel"
 
 		v2f vertBase(appdata v)
 		{
+			float4 noBillboardSpace = UnityObjectToClipPos(v.vertex);
+
 			v2f o = (v2f)0;
 			o.uv1And2.xy = TRANSFORM_TEX(v.texcoord, _MainTex);
 
@@ -111,10 +114,16 @@ Shader "@Moblie_WJM_WFaceCameraLabel"
 			vt.z = ori.z;
 			vt.xy += ori.xy;
 		
-			o.pos = mul(UNITY_MATRIX_P, vt);
-
+			o.pos= lerp(noBillboardSpace, mul(UNITY_MATRIX_P, vt), _isBillborad);
 
 			o.uv1And2.x=1- (o.uv1And2.x*1/_aniImageCount+floor(_Time.y*_aniImageCount % _aniImageCount)* 1 / _aniImageCount);
+
+#if USING_FOG
+			float fogCoord = length(eyePos.xyz); // radial fog distance
+			UNITY_CALC_FOG_FACTOR_RAW(fogCoord);
+			o.fog = saturate(unityFogFactor);
+#endif
+
 
 
 			TRANSFER_VERTEX_TO_FRAGMENT(o);

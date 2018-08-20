@@ -65,9 +65,7 @@ public class CameraUniversalCenter : BaseEventCenter
             currentCameraRot = currentCamera.transform.eulerAngles.y + currentCamera.zhiBeiZhenCorrect;
             rotForZBZ = currentCameraRot + zbzOffset;
         }
-
     }
-
 
     public void AddCameraToGroup(CameraUniversal addIn)
     {
@@ -122,9 +120,9 @@ public class CameraUniversalCenter : BaseEventCenter
 
             targetCamera.EnableCamera();
 
-//          Vector3 toPos = targetCamera.transform.position;
-//          Debug.Log(Vector3.Distance(toPos, lastCamera.transform.position));
-//          Quaternion toRo = targetCamera.transform.localRotation;
+//         Vector3 toPos = targetCamera.transform.position;
+//         Debug.Log(Vector3.Distance(toPos, lastCamera.transform.position));
+//         Quaternion toRo = targetCamera.transform.localRotation;
 
             targetCamera.SetCameraPositionAndXYZCount(currentState, 0);
             targetCamera.DisableCameraCtrl();

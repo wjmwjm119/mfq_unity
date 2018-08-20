@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class FastMovePoint : ColliderTriggerButton
 {
+
+// public bool isInMirror;
+
     public static bool canMove;
 
     public override void ExeTriggerEvent(TouchCtrl touchCtrl)
@@ -11,12 +14,13 @@ public class FastMovePoint : ColliderTriggerButton
         base.ExeTriggerEvent(touchCtrl);
         if (canMove&&touchCtrl != null)
             touchCtrl.cameraCenter.currentCamera.SetCameraPositionAndXYZCountAllArgs(
-                transform.position.x.ToString(),
+                (CameraUniversalCenter.isInMirrorHX?-transform.localPosition.x:transform.localPosition.x).ToString(),
                 "",
-                transform.position.z.ToString(),
+                transform.localPosition.z.ToString(),
                 "",
                 "",
-                ""
+                "",
+                0.3f
                 );
 
 

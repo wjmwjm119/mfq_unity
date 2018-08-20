@@ -6,7 +6,6 @@ using System;
 using System.Runtime.InteropServices;
 using DG.Tweening;
 
-
 public class AppBridge : MonoBehaviour
 {
     public Unload unload;
@@ -16,24 +15,24 @@ public class AppBridge : MonoBehaviour
     public RemoteManger remoteManger;
     public HXGUI hxGUI;
     public BackAction backAction;
-//    public ARManager aRManager;
+// public ARManager aRManager;
     public AppProjectInfo appProjectInfo;
-
 
     public static bool needSendUnloadMessageToUnity;
 
     public static bool isInRemoteState;
 
-
  //public BackAction backAction;
 
     public void Exit()
     {
-//     defaultGUI.Portrait();
-        GlobalDebug.Addline("unityExit");
-        Debug.Log("unityExit");
-        Unity2App("unityExit");
-//        Unload();
+        //如果在切屏是要等切屏完成
+        if (!defaultGUI.isChangeOrientation)
+        {
+            GlobalDebug.Addline("unityExit");
+            Debug.Log("unityExit");
+            Unity2App("unityExit");
+        }
     }
 
     public void CanceLoad()
@@ -70,6 +69,13 @@ public class AppBridge : MonoBehaviour
     private static extern void unityExit();//退出
     [DllImport("__Internal")]
     private static extern void unityArRecoInfo(string info);
+    [DllImport("__Internal")]
+    private static extern void unityNKLook(string displayMode);
+    [DllImport("__Internal")]
+    private static extern void unityMYLook(string displayMode);
+    [DllImport("__Internal")]
+    private static extern void unityVRState(string state);
+
 #endif
 
 #endif
@@ -144,6 +150,18 @@ public class AppBridge : MonoBehaviour
 
                 case "unityExit":
                     unityExit();
+                    break;
+
+                 case "unityNKLook":
+                    unityNKLook((string)args[0]);
+                    break;
+
+                 case "unityMYLook":
+                    unityMYLook((string)args[0]);
+                    break;
+
+                 case "unityVRState":
+                    unityVRState((string)args[0]);
                     break;
 
                 default:
@@ -557,9 +575,9 @@ public class AppBridge : MonoBehaviour
         public string userType;
 //      ublic string isRemote;
         public string remoteServer;
-        //        public string portraitWidth;
-        //        public string portraitHeight;
-        //        public string debug;
+//     public string portraitWidth;
+//     public string portraitHeight;
+//     public string debug;
         public string checkKey;
     }
 

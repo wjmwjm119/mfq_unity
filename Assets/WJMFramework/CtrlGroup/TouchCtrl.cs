@@ -149,6 +149,7 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
     public void OnPointerClick(PointerEventData eventData)
     {
 /*
+ * 
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
         ClickPoint360Collider(eventData);
 #endif
@@ -245,16 +246,21 @@ public class TouchCtrl:Graphic, IPointerDownHandler,IPointerUpHandler,IDragHandl
 
     public void ClickPoint360Collider(PointerEventData p)
     {
+        
         if (cameraCenter != null)
         {
             ray = cameraCenter.currentCamera.GetComponent<Camera>().ScreenPointToRay(p.position);
+            //28层是快速移动的层
+//            if (Physics.Raycast(ray, out hit, 1000,1<<28))
 
             if (Physics.Raycast(ray, out hit, 1000))
             {
-                ColliderTriggerButton c = hit.transform.GetComponent<ColliderTriggerButton>();
+                FastMovePoint c = hit.transform.GetComponent<FastMovePoint>();
                 ColliderTriggerButton.touchRayCastFrom = ColliderTriggerButton.TouchRayCastFrom.MainScreen;
+//                Debug.Log(hit.transform.name);
                 if (c!= null)
                 {
+ //                   Debug.Log(".TouchRayCastFrom.MainScreen");
                     c.ExeTriggerEvent(this);
                 }       
             }

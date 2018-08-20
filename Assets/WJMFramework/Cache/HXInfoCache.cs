@@ -58,6 +58,9 @@ public class HXInfoCache : MonoBehaviour
                     p.data.hxInfo[i].crc = hXInfo.crc;
                     p.data.hxInfo[i].projectID = hXInfo.projectID;
                     p.data.hxInfo[i].senceInteractiveInfo = hXInfo.senceInteractiveInfo;
+
+//                    p.data.hxInfo[i].mode3Ddisplay = p.data.hxInfo[i].mode3Ddisplay;
+
                     hXInfo = p.data.hxInfo[i];
 
                     hXInfo.senceInteractiveInfo.huXingType.introduction = hXInfo.discr;

@@ -700,13 +700,15 @@ public class AssetBundleManager : MonoBehaviour
         AssetBundle[] AB = currentLoadedSceneAssetBundles.ToArray();
         for (int i = 0; i < AB.Length; i++)
         {
+            if(AB[i]!=null)
             AB[i].Unload(true);
         }
 
         AB = currentLoadedCommonAssetBundles.ToArray();
         for (int i = 0; i < AB.Length; i++)
         {
-            AB[i].Unload(true);
+            if (AB[i] != null)
+                AB[i].Unload(true);
         }
 
         Debug.Log("UnLoadAssetBundle");

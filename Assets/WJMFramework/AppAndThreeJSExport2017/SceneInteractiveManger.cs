@@ -457,17 +457,19 @@ public class SceneInteractiveManger : MonoBehaviour
                         hFinal.rotOffset = s.huXingType.rotOffset;
                         hFinal.nkCameraPosAndXYZcount = s.huXingType.nkCameraPosAndXYZcount;
                         hFinal.defaultMYFloorName = s.huXingType.defaultMYFloorName;
-//                     hFinal.hxAudioClip = s.huXingType.hxAudioClip;
-//                     hFinal.cartoonType = s.huXingType.cartoonType;
+                        hFinal.fastMovePointManager = s.huXingType.fastMovePointManager;
 
-/*
-                        if (s.huXingType.allFloor.Length != hFinal.allFloor.Length)
-                        {
-                            GlobalDebug.Addline("服务器的户型楼层数与模型设置的楼层不一致,请检查楼层设置是否正确且统一");
-                            Debug.LogError("服务器的户型楼层数与模型设置的楼层不一致,请检查楼层设置是否正确且统一");
-                            return;
-                        }
-*/
+                        //                     hFinal.hxAudioClip = s.huXingType.hxAudioClip;
+                        //                     hFinal.cartoonType = s.huXingType.cartoonType;
+
+                        /*
+                                                if (s.huXingType.allFloor.Length != hFinal.allFloor.Length)
+                                                {
+                                                    GlobalDebug.Addline("服务器的户型楼层数与模型设置的楼层不一致,请检查楼层设置是否正确且统一");
+                                                    Debug.LogError("服务器的户型楼层数与模型设置的楼层不一致,请检查楼层设置是否正确且统一");
+                                                    return;
+                                                }
+                        */
                         for (int i = 0; i < s.huXingType.allFloor.Length; i++)
                         {
                             for (int j = 0; j < hFinal.allFloor.Length; j++)
@@ -543,6 +545,16 @@ public class SceneInteractiveManger : MonoBehaviour
             }
             if(s.huXingType.hxMeshRoot!=null)
             s.huXingType.hxMeshRoot.gameObject.SetActive(false);
+
+            if (s.huXingType.fastMovePointManager != null)
+            {
+                foreach (Transform t in s.huXingType.fastMovePointManager.GetComponentsInChildren<Transform>())
+                {
+                    //28层为快速移动层
+//                    t.gameObject.layer = 28;
+                }
+            }
+
 
             //设置毛坯相机的layer
             foreach (CameraUniversal c in s.cameraUniversalCenter.cameras)

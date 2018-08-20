@@ -49,11 +49,6 @@ public class SenceInteractiveInfo : MonoBehaviour
 
     public void ProcessInteractiveAction( InteractiveAction i)
     {
-        if (lastInteractiveAction != null)
-        {
-
-        }
-
         if (lastNeedDisplayRoot != null)
         {
             lastNeedDisplayRoot.gameObject.SetActive(false);
@@ -82,7 +77,7 @@ public class SenceInteractiveInfo : MonoBehaviour
             if (i.trueEvent != null)
             {
                 i.trueEvent.Invoke();
-                Debug.Log("trueEvent");
+ //               Debug.Log("trueEvent");
             }
         }
         else
@@ -90,7 +85,7 @@ public class SenceInteractiveInfo : MonoBehaviour
             if (i.falseEvent != null)
             {
                 i.falseEvent.Invoke();
-                Debug.Log("falseEvent");
+ //               Debug.Log("falseEvent");
             }
         }
 
@@ -103,10 +98,12 @@ public class SenceInteractiveInfo : MonoBehaviour
         {
             case 0:
                 ProcessInteractiveAction(f3d_Home);
+                ProcessInteractiveActionCustomEvent(f3d_Home, btnState);
                 break;
 
             case 1:
-                if (!f3d_Area.disableDefaultAction)//是否有禁用默认操作
+                //是否有禁用默认操作
+                if (!f3d_Area.disableDefaultAction)
                 {
                     if (btnState)
                     {
@@ -117,15 +114,14 @@ public class SenceInteractiveInfo : MonoBehaviour
                         sceneInteractiveManger.mainBtnEventProxyGroup.ProcessFalseEvent(0);
                     }
                 }
-                else
-                {
-                    ProcessInteractiveActionCustomEvent(f3d_Area, btnState);
-                }
 
                 ProcessInteractiveAction(f3d_Area);
+                ProcessInteractiveActionCustomEvent(f3d_Area, btnState);
+
                 break;
 
             case 2:
+                //是否有禁用默认操作
                 if (!f3d_Intro.disableDefaultAction)
                 {
                     if (btnState)
@@ -137,14 +133,14 @@ public class SenceInteractiveInfo : MonoBehaviour
                         sceneInteractiveManger.mainBtnEventProxyGroup.ProcessFalseEvent(1);
                     }
                 }
-                else
-                {
-                    ProcessInteractiveActionCustomEvent(f3d_Intro, false);
-                }
+
                 ProcessInteractiveAction(f3d_Intro);
+                ProcessInteractiveActionCustomEvent(f3d_Intro, btnState);
+
                 break;
 
             case 3:
+                //是否有禁用默认操作
                 if (!f3d_Supports.disableDefaultAction)
                 {
                     if (btnState)
@@ -156,15 +152,13 @@ public class SenceInteractiveInfo : MonoBehaviour
                         sceneInteractiveManger.mainBtnEventProxyGroup.ProcessFalseEvent(2);
                     }
                 }
-                else
-                {
-                    ProcessInteractiveActionCustomEvent(f3d_Supports, false);
-                }
 
                 ProcessInteractiveAction(f3d_Supports);
+                ProcessInteractiveActionCustomEvent(f3d_Supports, btnState);
                 break;
 
             case 4:
+                //是否有禁用默认操作
                 if (!f3d_Traffic.disableDefaultAction)
                 {
                     if (btnState)
@@ -178,14 +172,13 @@ public class SenceInteractiveInfo : MonoBehaviour
                         ProcessInteractiveActionCustomEvent(f3d_Traffic, false);
                     }
                 }
-                else
-                {
-                    ProcessInteractiveActionCustomEvent(f3d_Traffic, false);
-                }
+
                 ProcessInteractiveAction(f3d_Traffic);
+                ProcessInteractiveActionCustomEvent(f3d_Traffic, btnState);
                 break;
 
             case 5:
+                //是否有禁用默认操作
                 if (!f3d_HXFB.disableDefaultAction)
                 {
                     if (btnState)
@@ -199,7 +192,10 @@ public class SenceInteractiveInfo : MonoBehaviour
                         ProcessInteractiveActionCustomEvent(f3d_HXFB, false);
                     }
                 }
+
                 ProcessInteractiveAction(f3d_HXFB);
+                ProcessInteractiveActionCustomEvent(f3d_HXFB, btnState);
+
                 break;
         }
     }
@@ -209,7 +205,12 @@ public class SenceInteractiveInfo : MonoBehaviour
 
         if (hxName == "")
         {
+            if (lastInteractiveAction != null)
+            {
+                ProcessInteractiveActionCustomEvent(lastInteractiveAction, false);
+            }
             ProcessInteractiveAction(f3d_Home);
+            ProcessInteractiveActionCustomEvent(f3d_Home, true);
             return true;
         }
 
@@ -217,8 +218,15 @@ public class SenceInteractiveInfo : MonoBehaviour
         {
             if (i.needDisplayRoot.name == hxName)
             {
-                ProcessInteractiveAction(i);
+                
+                if (lastInteractiveAction != null)
+                {
+                    ProcessInteractiveActionCustomEvent(lastInteractiveAction, false);
+                }
 
+                ProcessInteractiveAction(i);
+                ProcessInteractiveActionCustomEvent(i, true);
+                
                 //将碰撞改成trigger
                 if (i.needDisplayRoot != null)
                 {

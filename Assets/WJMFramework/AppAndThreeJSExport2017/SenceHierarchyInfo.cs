@@ -334,10 +334,16 @@ public class SenceHierarchyInfo : MonoBehaviour
         for (int j = 0; j < allMaterials.Count; j++)
         {
 
-//             mainTex=new Texture2D(16,16);
-//             lightMap = new Texture2D(16, 16);
-//             cubeMap = new Cubemap(0,TextureFormat.ARGB32,false);
-//             normalMap = new Texture2D(16, 16);
+            //             mainTex=new Texture2D(16,16);
+            //             lightMap = new Texture2D(16, 16);
+            //             cubeMap = new Cubemap(0,TextureFormat.ARGB32,false);
+            //             normalMap = new Texture2D(16, 16);
+
+            mainTex = null;
+            lightMap = null;
+            cubeMap = null;
+            normalMap = null;
+
 
 
             if (allMaterials[j].GetTexture("_MainTex") != null)

@@ -11,6 +11,7 @@ public class LoadingManager : MonoBehaviour
     void Awake()
     {
 //        DontDestroyOnLoad(this);
+
     }
 
     public Loading AddALoading(int targetTypeID)

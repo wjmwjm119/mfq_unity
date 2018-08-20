@@ -113,6 +113,7 @@ public class ExportSenceData : EditorWindow
 
     void OnGUI()
     {
+
         if(senceHierarchyInfo != null && sceneAsset != null)
         EditorGUI.LabelField(new Rect(20, 10, 1000, 20), new GUIContent("Web 输出:"+savePath));
 
@@ -158,6 +159,19 @@ public class ExportSenceData : EditorWindow
 
             if (senceHierarchyInfo != null)
             {
+                //清空已存在的数据
+                senceHierarchyInfo.sceneAllGameObject.Clear();
+                senceHierarchyInfo.allTempObject3DInfo.Clear();
+                senceHierarchyInfo.allMesh.Clear();
+                senceHierarchyInfo.allMaterials.Clear();
+                senceHierarchyInfo.allCustomTexture.Clear();
+                senceHierarchyInfo.allLightmapTexture.Clear();
+                senceHierarchyInfo.allCubeMapTexture.Clear();
+                senceHierarchyInfo.allGameObject3DMesh.Clear();
+                senceHierarchyInfo.lastAllGameObject3DMesh.Clear();
+                senceHierarchyInfo.allGameObject3DTexture.Clear();
+                senceHierarchyInfo.allGameObject3DCubeTexture.Clear();
+
                 //BuildAsset时忽略这个物体，这个物体只用在导出web资源，运行时不需要
                 senceHierarchyInfo.gameObject.hideFlags = HideFlags.DontSaveInBuild;
 
@@ -202,6 +216,9 @@ public class ExportSenceData : EditorWindow
                 Debug.LogError(log);
             }
         }
+
+        //工具版本号
+        EditorGUI.LabelField(new Rect(20, 250, 1000, 20), new GUIContent("版本号:20180706"));
     }
 
     string GetParentPath(string inPath)
@@ -397,6 +414,16 @@ public class ExportSenceData : EditorWindow
         for (int i = 0; i < senceH.allTempObject3DInfo.Count; i++)
         {
             senceHierarchy += "{" + senceH.allTempObject3DInfo[i].nameJson + ",";
+
+            if (senceH.allTempObject3DInfo[i].nameJson.Contains(" "))
+            {
+                Debug.LogError(senceH.allTempObject3DInfo[i].nameJson + "物体名含有空格!");
+            }
+            else if (senceH.allTempObject3DInfo[i].nameJson.Contains("+"))
+            {
+                Debug.LogError(senceH.allTempObject3DInfo[i].nameJson + "物体名含有+号!");
+            }
+
             senceHierarchy += senceH.allTempObject3DInfo[i].idJson + ",";
             senceHierarchy += senceH.allTempObject3DInfo[i].layerJson + ",";
             senceHierarchy += senceH.allTempObject3DInfo[i].positionJson + ",";
@@ -408,6 +435,16 @@ public class ExportSenceData : EditorWindow
             {
                 senceHierarchy += senceH.allTempObject3DInfo[i].lightmapOffsetJson + ",";
                 senceHierarchy += senceH.allTempObject3DInfo[i].meshJson + ",";
+                if (senceH.allTempObject3DInfo[i].meshJson.Contains(" "))
+                {
+                    Debug.LogError(senceH.allTempObject3DInfo[i].meshJson + "Mesh网格名含有空格!");
+                }
+                else if (senceH.allTempObject3DInfo[i].nameJson.Contains("+"))
+                {
+                    Debug.LogError(senceH.allTempObject3DInfo[i].nameJson + "Mesh网格名含有+号!");
+                }
+
+
                 senceHierarchy += senceH.allTempObject3DInfo[i].renderOrderJson + ",";
                 senceHierarchy += senceH.allTempObject3DInfo[i].instanceChildPosition + ",";
                 senceHierarchy += senceH.allTempObject3DInfo[i].materialsJson + ",";
@@ -551,6 +588,16 @@ public class ExportSenceData : EditorWindow
 
         for (int i = 0; i < senceH.allCustomTexture.Count; i++)
         {
+            if (senceH.allCustomTexture[i].name.Contains(" "))
+            {
+                Debug.LogError(senceH.allCustomTexture[i].name + "贴图名含有空格!");
+            }
+            else if (senceH.allCustomTexture[i].name.Contains("+"))
+            {
+                Debug.LogError(senceH.allCustomTexture[i].name + "贴图名含有+号!");
+            }
+
+
             string expandName = AssetDatabase.GetAssetPath(senceH.allCustomTexture[i]).Split('.')[1];
             //  替换扩展名
             expandName = "jpg";
@@ -586,6 +633,16 @@ public class ExportSenceData : EditorWindow
 
         for (int i = 0; i < senceH.allLightmapTexture.Count; i++)
         {
+
+            if (senceH.allLightmapTexture[i].name.Contains(" "))
+            {
+                Debug.LogError(senceH.allLightmapTexture[i].name + "贴图名含有空格!");
+            }
+            else if (senceH.allLightmapTexture[i].name.Contains("+"))
+            {
+                Debug.LogError(senceH.allLightmapTexture[i].name + "贴图名含有+号!");
+            }
+
             string expandName = AssetDatabase.GetAssetPath(senceH.allLightmapTexture[i]).Split('.')[1];
 
             expandName = "jpg";
@@ -611,6 +668,15 @@ public class ExportSenceData : EditorWindow
 
         for (int i = 0; i < senceH.allCubeMapTexture.Count; i++)
         {
+            if (senceH.allCubeMapTexture[i].name.Contains(" "))
+            {
+                Debug.LogError(senceH.allCubeMapTexture[i].name + "贴图名含有空格!");
+            }
+            else if (senceH.allCubeMapTexture[i].name.Contains("+"))
+            {
+                Debug.LogError(senceH.allCubeMapTexture[i].name + "贴图名含有+号!");
+            }
+
             string expandName = AssetDatabase.GetAssetPath(senceH.allCubeMapTexture[i]).Split('.')[1];
 
             //  替换扩展名
@@ -651,8 +717,18 @@ public class ExportSenceData : EditorWindow
 
         for (int i = 0; i < mats.Length; i++)
         {
+
+            if (mats[i].name.Contains(" "))
+            {
+                Debug.LogError(mats[i].name + "材质名含有空格!");
+            }
+            else if (mats[i].name.Contains("+"))
+            {
+                Debug.LogError(mats[i].name + "材质名含有+号!");
+            }
+
             senceHierarchy += "{\"name\":\"" + mats[i].name + "\",";
-            senceHierarchy += "\"shader\":" + ShaderJsonPos(senceH,mats[i].shader.name) + ",";
+            senceHierarchy += "\"shader\":" + ShaderJsonPos(senceH,mats[i]) + ",";
             //          senceHierarchy += "\"_SpecColor2\":\"" + ColorToString(mats[i].GetColor("_SpecColor2")) + "\",";
             //          senceHierarchy += "\"_Shininess\":\"" + mats[i].GetFloat("_Shininess").ToString() + "\",";
             senceHierarchy += "\"_Color\":\"" + ColorToString(mats[i].GetColor("_Color")) + "\",";
@@ -1317,8 +1393,10 @@ public class ExportSenceData : EditorWindow
         return fileBytes;
     }
 
-    public string ShaderJsonPos(SenceHierarchyInfo s, string shaderName)
+    public string ShaderJsonPos(SenceHierarchyInfo s, Material mat)
     {
+
+        string shaderName = mat.shader.name;
         switch (shaderName)
         {
             //shadersVector4Pos 保存有所有shader字符窜的位置；
@@ -1357,7 +1435,7 @@ public class ExportSenceData : EditorWindow
             case "@Moblie_WJM_SpriteTreeLeaf":
                 return Vector4ToString(s.shadersVector4Pos[10], 10);
             default:
-                Debug.LogError(shaderName+"材质不支持");
+                Debug.LogError(mat.name+"材质的"+ shaderName+"shader不支持");
                 return "[]";
         }
 
